@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 6: Practical Risk Prioritization Workshop</title>
+  <style>
+    :root {
+      --bg: #f7f4ed;
+      --paper: #fffdf8;
+      --ink: #1f2937;
+      --muted: #5b6472;
+      --accent: #7c2d12;
+      --accent2: #1d4ed8;
+      --line: #d9d0bf;
+      --note: #eef4ff;
+      --ok: #eefaf2;
+      --warn: #fff7e8;
+    }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: radial-gradient(circle at top left, #efe8da 0, var(--bg) 45%);
+      font-family: Georgia, 'Times New Roman', serif;
+      line-height: 1.65;
+    }
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 34px 24px 60px;
+    }
+    h1 {
+      margin: 0 0 14px;
+      font-size: 2.2rem;
+      line-height: 1.12;
+      border-bottom: 4px solid var(--accent);
+      padding-bottom: 12px;
+    }
+    h2 {
+      margin-top: 34px;
+      margin-bottom: 10px;
+      font-size: 1.45rem;
+    }
+    p, li { font-size: 1.02rem; }
+    .intro, .note, .ok, .warn {
+      background: var(--paper);
+      border-left: 5px solid var(--accent);
+      padding: 16px 18px;
+      margin: 18px 0;
+      box-shadow: 0 8px 18px rgba(31, 41, 55, 0.05);
+    }
+    .note { background: var(--note); border-left-color: var(--accent2); }
+    .ok { background: var(--ok); border-left-color: #166534; }
+    .warn { background: var(--warn); border-left-color: #a16207; }
+    .scenario {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      padding: 16px;
+      margin: 16px 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      margin-top: 12px;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--line);
+    }
+    th { background: #f0eadf; }
+    .answer {
+      margin-top: 12px;
+      background: #f8fafc;
+      border-left: 4px solid #0f766e;
+      padding: 12px;
+    }
+    code {
+      font-family: 'Courier New', monospace;
+      background: #f2ede4;
+      padding: 2px 4px;
+      border-radius: 3px;
+    }
+    a { color: #0f4c81; }
+    @media print {
+      body { background: white; }
+      main { padding: 12px; }
+      .intro, .note, .ok, .warn { box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Lesson 6: Practical Risk Prioritization Workshop</h1>
+    <p><strong>Objective:</strong> apply Lesson 5 to realistic design-phase threats and make defensible priority decisions.</p>
+
+    <div class="intro">
+      Use this formula from Lesson 5: <code>Priority Score = Likelihood x Impact x Confidence Modifier</code>.<br>
+      Suggested confidence modifiers: <code>1.0</code> strong evidence, <code>1.2</code> some unknowns, <code>1.4</code> major uncertainty.
+    </div>
+
+    <h2>How to use this workshop</h2>
+    <ol>
+      <li>Read each scenario.</li>
+      <li>Score likelihood and impact.</li>
+      <li>Choose confidence modifier based on evidence quality.</li>
+      <li>Decide final priority (P0/P1/P2/P3).</li>
+      <li>Write one sentence defending your choice.</li>
+    </ol>
+
+    <div class="note">
+      Do not optimize for the exact number. Optimize for consistency and quality of reasoning.
+    </div>
+
+    <h2>Scenario 1: Browser Refresh Token Reuse</h2>
+    <div class="scenario">
+      <p><strong>Context:</strong> Browser-based public OAuth client. Refresh tokens are stored client-side. Rotation exists but reuse detection is not implemented. Revocation events are near-real-time but not measured.</p>
+      <p><strong>Threat:</strong> Stolen refresh token can be replayed to maintain persistent access.</p>
+      <table>
+        <thead>
+          <tr><th>Field</th><th>Your entry</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Likelihood (1-5)</td><td>___</td></tr>
+          <tr><td>Impact (1-5)</td><td>___</td></tr>
+          <tr><td>Confidence Modifier</td><td>___</td></tr>
+          <tr><td>Score</td><td>___</td></tr>
+          <tr><td>Priority</td><td>___</td></tr>
+          <tr><td>Decision</td><td>___</td></tr>
+        </tbody>
+      </table>
+      <div class="answer">
+        <strong>Worked answer (example):</strong><br>
+        Likelihood 4, Impact 5, Confidence 1.2 -> Score 24 -> <strong>P0</strong>.<br>
+        Decision: block release until reuse detection and validated revocation latency are in place.
+      </div>
+    </div>
+
+    <h2>Scenario 2: Optional TLS Floor in Internal Service Mesh</h2>
+    <div class="scenario">
+      <p><strong>Context:</strong> Internal services communicate across multiple network zones. TLS policy says "TLSv1.2 or above" but enforcement is not automated yet. Some legacy services may still negotiate weaker settings.</p>
+      <p><strong>Threat:</strong> Weak transport configuration allows interception or downgrade in high-value service paths.</p>
+      <table>
+        <thead>
+          <tr><th>Field</th><th>Your entry</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Likelihood (1-5)</td><td>___</td></tr>
+          <tr><td>Impact (1-5)</td><td>___</td></tr>
+          <tr><td>Confidence Modifier</td><td>___</td></tr>
+          <tr><td>Score</td><td>___</td></tr>
+          <tr><td>Priority</td><td>___</td></tr>
+          <tr><td>Decision</td><td>___</td></tr>
+        </tbody>
+      </table>
+      <div class="answer">
+        <strong>Worked answer (example):</strong><br>
+        Likelihood 3, Impact 4, Confidence 1.4 -> Score 16.8 -> <strong>P1</strong>.<br>
+        Decision: implement protocol enforcement and verification tests in current cycle; include legacy exception review.
+      </div>
+    </div>
+
+    <h2>Scenario 3: Defense-in-Depth Logging Gap on Privileged Action</h2>
+    <div class="scenario">
+      <p><strong>Context:</strong> Admin operation requires MFA and strong authorization controls. However, immutable audit logging for this operation is missing in one subsystem.</p>
+      <p><strong>Threat:</strong> Malicious or compromised admin action may not be attributable, reducing incident response quality.</p>
+      <table>
+        <thead>
+          <tr><th>Field</th><th>Your entry</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Likelihood (1-5)</td><td>___</td></tr>
+          <tr><td>Impact (1-5)</td><td>___</td></tr>
+          <tr><td>Confidence Modifier</td><td>___</td></tr>
+          <tr><td>Score</td><td>___</td></tr>
+          <tr><td>Priority</td><td>___</td></tr>
+          <tr><td>Decision</td><td>___</td></tr>
+        </tbody>
+      </table>
+      <div class="answer">
+        <strong>Worked answer (example):</strong><br>
+        Base: Likelihood 2, Impact 3, Confidence 1.0 -> Score 6 -> P2.<br>
+        If this admin action affects business-critical assets, apply escalation override -> <strong>P1</strong>.
+      </div>
+    </div>
+
+    <h2>Calibration Debrief</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Question</th>
+          <th>What good answers include</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Why did you pick that likelihood?</td>
+          <td>Exploit preconditions, attacker skill, boundary exposure, and chain complexity.</td>
+        </tr>
+        <tr>
+          <td>Why did you pick that impact?</td>
+          <td>Concrete business scenario: financial, regulatory, operational, trust consequences.</td>
+        </tr>
+        <tr>
+          <td>Why that confidence modifier?</td>
+          <td>Evidence quality and unknowns, not personal certainty.</td>
+        </tr>
+        <tr>
+          <td>Why final priority?</td>
+          <td>Score plus escalation rules and release consequences.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="warn">
+      If two reviewers produce very different priorities for the same scenario, do not average blindly. Resolve disagreement by comparing assumptions and evidence quality.
+    </div>
+
+    <div class="ok">
+      <strong>Completion criteria:</strong>
+      <ul>
+        <li>You can score all 3 scenarios and explain decisions clearly.</li>
+        <li>You can justify at least one escalation override.</li>
+        <li>You can separate "low severity" from "low business risk" when context changes.</li>
+      </ul>
+    </div>
+
+    <p><strong>Use with:</strong> <a href="./0005-risk-evaluation-and-prioritization.html">Lesson 5</a>, <a href="../reference/risk-prioritization-rubric.html">Risk Prioritization Rubric</a>, and <a href="../reference/risk-scoring-framework-and-standards-crosswalk.html">Risk Scoring Framework and Standards Crosswalk</a> (including the implementation-ready OWASP RRM to 1-5 mapping).</p>
+    <p><strong>Ask follow-up:</strong> Bring one real risk from your design and we will score it together line-by-line.</p>
+  </main>
+</body>
+</html>

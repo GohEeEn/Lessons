@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Risk Scoring Framework and Standards Crosswalk</title>
+  <style>
+    :root {
+      --bg: #f7f4ed;
+      --paper: #fffdf8;
+      --ink: #1f2937;
+      --line: #d8cfbf;
+      --accent: #7c2d12;
+      --note: #eef4ff;
+      --warn: #fff7e8;
+      --ok: #eefaf2;
+    }
+    body { margin: 0; background: var(--bg); color: var(--ink); font-family: Georgia, 'Times New Roman', serif; line-height: 1.6; }
+    main { max-width: 980px; margin: 0 auto; padding: 30px 22px 48px; }
+    h1 { margin: 0 0 14px; font-size: 2.1rem; border-bottom: 4px solid var(--accent); padding-bottom: 10px; }
+    h2 { margin-top: 28px; margin-bottom: 8px; font-size: 1.3rem; }
+    table { width: 100%; border-collapse: collapse; background: var(--paper); border: 1px solid var(--line); margin-top: 10px; }
+    th, td { text-align: left; vertical-align: top; padding: 10px; border-bottom: 1px solid var(--line); }
+    th { background: #efe9dc; }
+    .box { background: var(--paper); border-left: 5px solid var(--accent); padding: 14px 16px; margin: 14px 0; }
+    .note { background: var(--note); border-left-color: #1d4ed8; }
+    .warn { background: var(--warn); border-left-color: #a16207; }
+    .ok { background: var(--ok); border-left-color: #166534; }
+    code { background: #f2ede4; padding: 2px 4px; border-radius: 3px; font-family: 'Courier New', monospace; }
+    a { color: #0f4c81; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Risk Scoring Framework and Standards Crosswalk</h1>
+    <p>This page gives a quantifiable scoring table for design-phase prioritization and maps it to external references: OWASP Risk Rating Methodology and CVSS.</p>
+
+    <div class="box note">
+      <strong>External references:</strong>
+      <ul>
+        <li><a href="https://owasp.org/www-community/OWASP_Risk_Rating_Methodology">OWASP Risk Rating Methodology (RRM)</a></li>
+        <li><a href="https://www.first.org/cvss/">FIRST CVSS (v4.0 resources)</a></li>
+      </ul>
+    </div>
+
+    <h2>1) Quantifiable Point Model for Design-Phase Threat Risks</h2>
+    <p><code>Priority Score = Likelihood (1-5) x Impact (1-5) x Confidence Modifier (1.0 / 1.2 / 1.4)</code></p>
+
+    <table>
+      <thead>
+        <tr><th>Likelihood (1-5)</th><th>Definition</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Improbable; high attacker prerequisites and strong controls.</td></tr>
+        <tr><td>2</td><td>Low; exploitable only with meaningful constraints.</td></tr>
+        <tr><td>3</td><td>Feasible; realistic attacker path with moderate effort.</td></tr>
+        <tr><td>4</td><td>Likely; known patterns and weak/missing controls.</td></tr>
+        <tr><td>5</td><td>Highly likely; straightforward and repeatable exploitation.</td></tr>
+      </tbody>
+    </table>
+
+    <table>
+      <thead>
+        <tr><th>Impact (1-5)</th><th>Definition</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Minor localized impact; no material business consequence.</td></tr>
+        <tr><td>2</td><td>Limited operational/customer effect; quickly recoverable.</td></tr>
+        <tr><td>3</td><td>Material service/team impact; possible contractual concerns.</td></tr>
+        <tr><td>4</td><td>High multi-team/customer impact; likely legal/compliance concern.</td></tr>
+        <tr><td>5</td><td>Critical business impact; major breach, outage, or regulatory consequence.</td></tr>
+      </tbody>
+    </table>
+
+    <table>
+      <thead>
+        <tr><th>Confidence Modifier</th><th>When to use</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1.0</td><td>Strong evidence and clear assumptions.</td></tr>
+        <tr><td>1.2</td><td>Partial evidence or meaningful unknowns.</td></tr>
+        <tr><td>1.4</td><td>Major uncertainty; missing critical evidence.</td></tr>
+      </tbody>
+    </table>
+
+    <table>
+      <thead>
+        <tr><th>Score Band</th><th>Priority</th><th>Decision</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>20+</td><td>P0</td><td>Block release/exposure until mitigated and verified.</td></tr>
+        <tr><td>12-19.9</td><td>P1</td><td>Fix this cycle with owner and evidence plan.</td></tr>
+        <tr><td>6-11.9</td><td>P2</td><td>Planned remediation with timeline.</td></tr>
+        <tr><td>&lt;6</td><td>P3/P4</td><td>Monitor, harden, or accept with rationale.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="box ok">
+      <strong>Escalation override:</strong> any severity (including Defense in Depth) can escalate when a business-critical asset is materially exposed.
+    </div>
+
+    <h2>2) Crosswalk: RRM and CVSS</h2>
+    <table>
+      <thead>
+        <tr><th>Need</th><th>Best fit</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Design-phase threat prioritization</td>
+          <td>OWASP RRM style + custom org matrix</td>
+          <td>RRM is customizable and supports likelihood x impact reasoning; OWASP itself notes model customization is expected.</td>
+        </tr>
+        <tr>
+          <td>Known vulnerability severity</td>
+          <td>CVSS</td>
+          <td>CVSS is a published standard for vulnerability severity, not full business risk context by itself.</td>
+        </tr>
+        <tr>
+          <td>Control verification requirements</td>
+          <td>ASVS/MASVS + internal standards</td>
+          <td>Use verification standards to define required controls; use risk model to prioritize.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>3) Implementation-Ready RRM to 1-5 Mapping</h2>
+    <p>Use OWASP RRM factors to enrich your likelihood and impact estimation, then normalize to this course's deterministic 1-5 model.</p>
+
+    <table>
+      <thead>
+        <tr><th>RRM Input Group</th><th>RRM Factors</th><th>Normalization Target</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Likelihood inputs</td>
+          <td>Threat agent factors + vulnerability factors (for example skill, motive, opportunity, ease of exploit)</td>
+          <td>Likelihood (1-5)</td>
+        </tr>
+        <tr>
+          <td>Impact inputs</td>
+          <td>Technical impact + business impact factors</td>
+          <td>Impact (1-5), with business impact dominant when available</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table>
+      <thead>
+        <tr><th>RRM Average Band</th><th>Mapped 1-5 Score</th><th>Interpretation</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>0 to &lt;3</td><td>1-2</td><td>Low band; choose 1 if strongly constrained, 2 if feasible under constraints.</td></tr>
+        <tr><td>3 to &lt;6</td><td>3</td><td>Medium band; practical and plausible.</td></tr>
+        <tr><td>6 to 9</td><td>4-5</td><td>High band; choose 5 when repeatable and broadly exposed, otherwise 4.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="box note">
+      <strong>Transformation algorithm:</strong>
+      <ol>
+        <li>Score selected RRM likelihood factors and compute average.</li>
+        <li>Map average to Likelihood 1-5 using the band table above.</li>
+        <li>Score RRM technical and business impact factors and compute averages.</li>
+        <li>If business impact data exists, use business-impact mapping as primary Impact score; otherwise use technical impact mapping.</li>
+        <li>Apply confidence modifier (1.0, 1.2, 1.4) based on evidence quality and unknowns.</li>
+        <li>Compute final priority score and apply local priority bands and escalation overrides.</li>
+      </ol>
+    </div>
+
+    <div class="box warn">
+      <strong>Guardrail against false precision:</strong> Do not expose more than one decimal place in intermediate averages and always include a short rationale narrative. The model is for disciplined consistency, not pseudo-certainty.
+    </div>
+
+    <h2>4) Challenge: Is OWASP RRM alone enough for this purpose?</h2>
+    <div class="box warn">
+      <strong>Short answer:</strong> not by itself.
+      <ul>
+        <li>RRM provides a structure, but your organization still needs calibrated scoring anchors and priority thresholds.</li>
+        <li>RRM can produce repeatable ratings only if your factor definitions are tuned to your environment.</li>
+        <li>Design-phase uncertainty requires explicit confidence handling, which many teams omit.</li>
+      </ul>
+    </div>
+
+    <p><strong>Conclusion:</strong> It is possible and appropriate to use OWASP RRM principles for design-phase risk prioritization, but only as a base framework. You still need a deterministic local scoring table, override rules, and governance gates (which this course defines).</p>
+
+    <h2>5) Implementation Rule of Thumb</h2>
+    <ol>
+      <li>Use this matrix for design threats and architecture risks.</li>
+      <li>Use CVSS for concrete vulnerability findings.</li>
+      <li>When both exist, prioritize using business-context score and document CVSS as supporting evidence.</li>
+    </ol>
+
+    <p><strong>Use with:</strong> <a href="../lessons/0007-owasp-rrm-foundations.html">Lesson 7: OWASP RRM Foundations</a>, <a href="./risk-prioritization-rubric.html">Risk Prioritization Rubric</a>, and <a href="../lessons/0006-practical-risk-prioritization-workshop.html">Lesson 6 Workshop</a>.</p>
+  </main>
+</body>
+</html>
