@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Risk Prioritization Rubric</title>
+  <style>
+    :root {
+      --bg: #f6f3ec;
+      --paper: #fffdf8;
+      --ink: #1f2937;
+      --line: #d7cfbf;
+      --accent: #7c2d12;
+      --muted: #596273;
+    }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Georgia, 'Times New Roman', serif;
+      line-height: 1.52;
+    }
+    main {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 28px 22px 40px;
+    }
+    h1 {
+      margin: 0 0 12px;
+      border-bottom: 4px solid var(--accent);
+      padding-bottom: 10px;
+      font-size: 2rem;
+    }
+    h2 { margin-top: 26px; margin-bottom: 8px; font-size: 1.24rem; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      margin-top: 8px;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid var(--line);
+      padding: 10px;
+      font-size: 0.96rem;
+    }
+    th { background: #ece8dc; }
+    .hint { color: var(--muted); }
+    code {
+      font-family: 'Courier New', monospace;
+      background: #f2ede4;
+      padding: 2px 4px;
+      border-radius: 3px;
+    }
+    @media print {
+      body { background: white; }
+      main { padding: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Risk Prioritization Rubric</h1>
+    <p class="hint">Use this for design reviews and early threat modeling. Keep scoring transparent and defensible.</p>
+
+    <h2>1) Risk Formula</h2>
+    <p><code>Priority Score = Likelihood (1-5) x Impact (1-5) x Confidence Modifier (1.0 / 1.2 / 1.4)</code></p>
+
+    <h2>2) Likelihood Scale</h2>
+    <table>
+      <thead><tr><th>Score</th><th>Description</th><th>Typical indicators</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Improbable</td><td>High prerequisites, rare attacker capability, no clear chain</td></tr>
+        <tr><td>2</td><td>Low</td><td>Complex exploitation with strong controls in place</td></tr>
+        <tr><td>3</td><td>Feasible</td><td>Realistic chain with moderate effort</td></tr>
+        <tr><td>4</td><td>Likely</td><td>Known technique with weak/missing controls</td></tr>
+        <tr><td>5</td><td>Highly likely</td><td>Easy, repeatable, exposed path</td></tr>
+      </tbody>
+    </table>
+
+    <h2>3) Impact Scale</h2>
+    <table>
+      <thead><tr><th>Score</th><th>Description</th><th>Typical indicators</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Minor</td><td>Small localized effect, no sensitive data or material outage</td></tr>
+        <tr><td>2</td><td>Low</td><td>Limited user impact, recoverable quickly</td></tr>
+        <tr><td>3</td><td>Moderate</td><td>Service/team-level impact or meaningful data issue</td></tr>
+        <tr><td>4</td><td>High</td><td>Multi-team or external customer impact, contractual exposure</td></tr>
+        <tr><td>5</td><td>Critical</td><td>Business-critical interruption, major breach, legal/regulatory consequences</td></tr>
+      </tbody>
+    </table>
+
+    <h2>4) Confidence Modifier</h2>
+    <table>
+      <thead><tr><th>Modifier</th><th>Use when</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr><td>1.0</td><td>Evidence strong, assumptions validated</td><td>Proceed with normal prioritization</td></tr>
+        <tr><td>1.2</td><td>Some unknowns or partial evidence</td><td>Add explicit validation tasks</td></tr>
+        <tr><td>1.4</td><td>High uncertainty, missing key data</td><td>Escalate discovery and avoid deferral without owner</td></tr>
+      </tbody>
+    </table>
+
+    <h2>5) Priority Bands</h2>
+    <table>
+      <thead><tr><th>Score range</th><th>Priority</th><th>Expected decision</th></tr></thead>
+      <tbody>
+        <tr><td>20+</td><td>P0</td><td>Block release or exposure until mitigated and verified</td></tr>
+        <tr><td>12-19.9</td><td>P1</td><td>Fix this cycle with assigned owner and evidence plan</td></tr>
+        <tr><td>6-11.9</td><td>P2</td><td>Planned backlog with timeline and dependency tracking</td></tr>
+        <tr><td><6</td><td>P3</td><td>Monitor, defer with rationale, or close as accepted risk</td></tr>
+      </tbody>
+    </table>
+
+    <h2>6) Mandatory Output Fields Per Risk</h2>
+    <table>
+      <thead><tr><th>Field</th><th>Required content</th></tr></thead>
+      <tbody>
+        <tr><td>Risk statement</td><td>Attacker capability + boundary + asset impact</td></tr>
+        <tr><td>Score rationale</td><td>Why likelihood and impact were assigned</td></tr>
+        <tr><td>Control decision</td><td>Preventive/detective/reactive plan</td></tr>
+        <tr><td>Verification plan</td><td>Design, implementation, and runtime evidence expected</td></tr>
+        <tr><td>Owner and due date</td><td>Named accountable person/team</td></tr>
+      </tbody>
+    </table>
+
+    <h2>7) Review Sanity Checks</h2>
+    <ul>
+      <li>Do not prioritize by CVSS only.</li>
+      <li>Do not ignore high-uncertainty risks near critical assets.</li>
+      <li>Do not allow mitigation without evidence requirements.</li>
+      <li>Do not close a risk without explicit acceptance rationale.</li>
+    </ul>
+  </main>
+</body>
+</html>

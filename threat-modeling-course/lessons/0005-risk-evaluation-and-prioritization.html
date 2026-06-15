@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 5: Security Risk Evaluation and Prioritization</title>
+  <style>
+    :root {
+      --bg: #f6f3eb;
+      --paper: #fffdf8;
+      --ink: #1f2937;
+      --muted: #5b6472;
+      --accent: #7c2d12;
+      --accent2: #1d4ed8;
+      --line: #d9d0bf;
+      --soft: #eef4ff;
+      --warn: #fff7e8;
+      --ok: #eefaf2;
+    }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: radial-gradient(circle at top right, #efe7d8 0, var(--bg) 45%);
+      font-family: Georgia, 'Times New Roman', serif;
+      line-height: 1.66;
+    }
+    main {
+      max-width: 940px;
+      margin: 0 auto;
+      padding: 34px 24px 60px;
+    }
+    h1 {
+      margin: 0 0 14px;
+      font-size: 2.2rem;
+      line-height: 1.12;
+      border-bottom: 4px solid var(--accent);
+      padding-bottom: 12px;
+    }
+    h2 {
+      margin-top: 34px;
+      margin-bottom: 10px;
+      font-size: 1.45rem;
+    }
+    p, li { font-size: 1.02rem; }
+    .intro, .note, .warn, .ok {
+      background: var(--paper);
+      border-left: 5px solid var(--accent);
+      padding: 16px 18px;
+      margin: 18px 0;
+      box-shadow: 0 8px 18px rgba(31, 41, 55, 0.05);
+    }
+    .note { background: var(--soft); border-left-color: var(--accent2); }
+    .warn { background: var(--warn); border-left-color: #a16207; }
+    .ok { background: var(--ok); border-left-color: #166534; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin: 16px 0;
+    }
+    .card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      padding: 16px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      margin-top: 12px;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--line);
+    }
+    th { background: #f0eadf; }
+    code {
+      font-family: 'Courier New', monospace;
+      background: #f2ede4;
+      padding: 2px 4px;
+      border-radius: 3px;
+    }
+    a { color: #0f4c81; }
+    @media print {
+      body { background: white; }
+      main { padding: 12px; }
+      .intro, .note, .warn, .ok { box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Lesson 5: Security Risk Evaluation and Prioritization</h1>
+    <p><strong>In this lesson:</strong> you will learn how to determine risk from context, evaluate impact credibly, and prioritize security work without relying on guesswork or severity labels alone.</p>
+
+    <div class="intro">
+      <strong>Core shift:</strong> risk is not the same as vulnerability severity. Risk is the combination of exploitability, business impact, and context confidence. Prioritization should follow risk-to-business, not loudest finding.
+    </div>
+
+    <h2>1. Inputs Required to Evaluate Security Risk</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Input</th>
+          <th>What to capture</th>
+          <th>Why it affects prioritization</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Asset value</td>
+          <td>Data sensitivity, critical function, legal/regulatory exposure</td>
+          <td>Higher-value assets amplify impact</td>
+        </tr>
+        <tr>
+          <td>Trust boundary context</td>
+          <td>Where untrusted actors influence system behavior</td>
+          <td>Boundary exposure increases exploit paths</td>
+        </tr>
+        <tr>
+          <td>Attacker capability</td>
+          <td>Prerequisites, skill level, access needed, chain complexity</td>
+          <td>Determines practical likelihood</td>
+        </tr>
+        <tr>
+          <td>Control posture</td>
+          <td>Existing preventive, detective, and reactive controls</td>
+          <td>Reduces likelihood and/or blast radius</td>
+        </tr>
+        <tr>
+          <td>Business impact scenario</td>
+          <td>Concrete failure story: financial, operational, legal, trust damage</td>
+          <td>Avoids abstract “high/medium/low” inflation</td>
+        </tr>
+        <tr>
+          <td>Confidence level</td>
+          <td>Evidence quality and unknowns</td>
+          <td>Low confidence should raise review urgency</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>2. A Practical Scoring Model for Prioritization</h2>
+    <p>Use a transparent model in design reviews. Keep it simple enough to defend in a meeting.</p>
+
+    <div class="note">
+      <strong>Recommended model:</strong><br>
+      <code>Risk Priority = Likelihood x Impact x Confidence Modifier</code>
+    </div>
+
+    <div class="grid">
+      <section class="card">
+        <strong>Likelihood (1-5)</strong>
+        <ul>
+          <li>1: Highly impractical</li>
+          <li>3: Feasible with meaningful effort</li>
+          <li>5: Straightforward and repeatable</li>
+        </ul>
+      </section>
+      <section class="card">
+        <strong>Impact (1-5)</strong>
+        <ul>
+          <li>1: Minor localized effect</li>
+          <li>3: Material impact to one service or team</li>
+          <li>5: Business-critical, regulatory, or systemic impact</li>
+        </ul>
+      </section>
+      <section class="card">
+        <strong>Confidence Modifier</strong>
+        <ul>
+          <li>1.0: Strong evidence</li>
+          <li>1.2: Some unknowns</li>
+          <li>1.4: Major uncertainty or missing evidence</li>
+        </ul>
+      </section>
+    </div>
+
+    <p><strong>Why confidence can increase priority:</strong> unknown risk near critical assets is usually under-estimated. If uncertainty is high, prioritize discovery and verification.</p>
+
+    <h2>3. Evaluate Impact as a Scenario, Not a Label</h2>
+    <p>Instead of “Impact: High,” write a one-paragraph impact story.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Impact dimension</th>
+          <th>Questions to ask</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Confidentiality</td>
+          <td>What sensitive data can be exposed? At what scale?</td>
+        </tr>
+        <tr>
+          <td>Integrity</td>
+          <td>Can attacker alter high-trust decisions, records, or transactions?</td>
+        </tr>
+        <tr>
+          <td>Availability</td>
+          <td>What service outage or degradation occurs, and for whom?</td>
+        </tr>
+        <tr>
+          <td>Safety or legal</td>
+          <td>Does it create compliance, legal, contractual, or physical harm?</td>
+        </tr>
+        <tr>
+          <td>Reputation or trust</td>
+          <td>Would this incident materially reduce customer or partner trust?</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>4. Prioritization Output You Should Produce</h2>
+    <p>At the end of a review, deliver a ranked risk list with clear decisions.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Risk ID</th>
+          <th>Score and rationale</th>
+          <th>Priority tier</th>
+          <th>Decision</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>R-001</td>
+          <td>Likelihood 4, Impact 5, Confidence 1.2</td>
+          <td>P0</td>
+          <td>Block release until control and test evidence exist</td>
+        </tr>
+        <tr>
+          <td>R-002</td>
+          <td>Likelihood 3, Impact 4, Confidence 1.0</td>
+          <td>P1</td>
+          <td>Fix in current release, verify with integration tests</td>
+        </tr>
+        <tr>
+          <td>R-003</td>
+          <td>Likelihood 2, Impact 3, Confidence 1.4</td>
+          <td>P1-discovery</td>
+          <td>Time-box investigation to reduce uncertainty</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="warn">
+      <strong>Common mistake:</strong> prioritizing solely by technical severity (for example CVSS) without business context, exploit preconditions, or control coverage. Severity is an input, not the decision.
+    </div>
+
+    <h2>5. How to Decide Priority Tiers</h2>
+    <div class="ok">
+      <ul>
+        <li><strong>P0:</strong> likely and business-critical. Must be addressed before launch or before enabling exposed pathways.</li>
+        <li><strong>P1:</strong> significant but not immediate catastrophic risk. Planned in current cycle with explicit owner.</li>
+        <li><strong>P2:</strong> meaningful hardening item. Scheduled backlog with clear dependency and due window.</li>
+        <li><strong>P3:</strong> low-risk or low-confidence issue requiring monitoring or deferred investigation.</li>
+      </ul>
+    </div>
+
+    <h2>6. Design-Phase Prioritization Pattern</h2>
+    <ol>
+      <li>Rank by context-based risk score.</li>
+      <li>Map each top risk to a testable security requirement.</li>
+      <li>Attach implementation and runtime evidence expectations.</li>
+      <li>Define release gates for P0 and selected P1 risks.</li>
+      <li>Create discovery tasks for high-uncertainty risks.</li>
+    </ol>
+
+    <h2>7. Worked Example (OAuth Browser Client)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Risk statement</th>
+          <th>Evaluation</th>
+          <th>Priority decision</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Stolen refresh token enables persistent session access</td>
+          <td>Likelihood 4 (browser-side exposure path exists), Impact 5 (persistent account access), Confidence 1.2 (storage details partially unknown)</td>
+          <td>P0: require rotation, reuse detection, and revocation evidence before release</td>
+        </tr>
+        <tr>
+          <td>Revocation propagation delay allows post-revoke token use</td>
+          <td>Likelihood 3, Impact 4, Confidence 1.4 (latency SLO unproven)</td>
+          <td>P1-discovery: define SLO, instrument latency, validate failure behavior</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p><strong>Reference companion:</strong> use <a href="../reference/risk-prioritization-rubric.html">Risk Prioritization Rubric</a> during review sessions.</p>
+    <p><strong>OWASP RRM primer:</strong> if RRM is new, start with <a href="./0007-owasp-rrm-foundations.html">Lesson 7: OWASP Risk Rating Methodology Foundations</a>.</p>
+    <p><strong>Standards crosswalk:</strong> see <a href="../reference/risk-scoring-framework-and-standards-crosswalk.html">Risk Scoring Framework and Standards Crosswalk</a> for OWASP RRM/CVSS alignment and fit-for-purpose challenge.</p>
+    <p><strong>Practical workshop:</strong> complete <a href="./0006-practical-risk-prioritization-workshop.html">Lesson 6: Practical Risk Prioritization Workshop</a> before moving to the next module.</p>
+    <p><strong>Previous lessons:</strong> <a href="./0004-design-phase-threat-model-inputs-and-outputs.html">Lesson 4</a>, <a href="../reference/reviewer-mindset-framework.html">Reviewer Mindset Framework</a>.</p>
+
+    <div class="intro">
+      Ask follow-up questions with one real risk from your current design. The best way to internalize prioritization is to score and defend a decision in context.
+    </div>
+  </main>
+</body>
+</html>
