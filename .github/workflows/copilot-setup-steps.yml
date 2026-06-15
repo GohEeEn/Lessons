@@ -1,0 +1,54 @@
+name: "Copilot Setup Steps"
+
+# Run automatically when this file changes (validates it works),
+# or manually from the Actions tab.
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+  pull_request:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+
+jobs:
+  # Job name MUST be exactly `copilot-setup-steps` — Copilot will not pick it up otherwise.
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read  # needed to clone the repo
+
+    steps:
+      # 1. Clone the repository so tools can validate existing lesson files.
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Set up Node.js — needed for HTML validation and markdown linting.
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # 3. Install lesson quality tools globally so the agent can call them
+      #    from any working directory without a package.json.
+      #
+      #    html-validate  — validates HTML structure and catches missing tags,
+      #                     bad attributes, or broken Mermaid script blocks.
+      #    markdownlint-cli — lints learning-records/*.md for consistent style.
+      - name: Install lesson validation tools
+        run: npm install -g html-validate markdownlint-cli
+
+      # 4. Smoke-test: validate all existing lessons so the agent knows the
+      #    baseline is clean before it starts making changes.
+      - name: Validate existing HTML lessons
+        run: |
+          find . -path "*/lessons/*.html" -o -path "*/reference/*.html" \
+            | xargs html-validate --config '{"extends":["html-validate:recommended"],"rules":{"void-style":"off","no-trailing-whitespace":"off"}}'
+        continue-on-error: true  # non-blocking: agent sees warnings but still proceeds
+
+      # 5. Smoke-test: lint existing learning records.
+      - name: Lint learning records
+        run: |
+          find . -path "*/learning-records/*.md" | xargs markdownlint --disable MD013 MD033 --
+        continue-on-error: true  # non-blocking
