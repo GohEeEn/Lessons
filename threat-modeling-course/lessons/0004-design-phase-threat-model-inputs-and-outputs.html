@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 4: Design-Phase Threat Modeling Inputs and Outputs</title>
+  <style>
+    :root {
+      --bg: #f7f4ed;
+      --paper: #fffdf8;
+      --ink: #1f2937;
+      --muted: #5c6675;
+      --accent: #1d4ed8;
+      --accent2: #92400e;
+      --line: #d8d0c1;
+      --soft: #eef4ff;
+      --warn: #fff7e8;
+      --ok: #effaf3;
+    }
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top left, #eee8db 0, var(--bg) 44%);
+      color: var(--ink);
+      font-family: Georgia, 'Times New Roman', serif;
+      line-height: 1.66;
+    }
+    main {
+      max-width: 940px;
+      margin: 0 auto;
+      padding: 34px 24px 60px;
+    }
+    h1 {
+      margin: 0 0 14px;
+      font-size: 2.2rem;
+      border-bottom: 4px solid var(--accent);
+      padding-bottom: 12px;
+      line-height: 1.12;
+    }
+    h2 {
+      margin-top: 34px;
+      margin-bottom: 10px;
+      font-size: 1.45rem;
+    }
+    p, li { font-size: 1.02rem; }
+    .intro, .note, .warn, .ok {
+      background: var(--paper);
+      border-left: 5px solid var(--accent);
+      padding: 16px 18px;
+      margin: 18px 0;
+      box-shadow: 0 8px 18px rgba(31, 41, 55, 0.05);
+    }
+    .note { background: var(--soft); }
+    .warn { background: var(--warn); border-left-color: var(--accent2); }
+    .ok { background: var(--ok); border-left-color: #166534; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin: 16px 0;
+    }
+    .card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      padding: 16px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      margin-top: 12px;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--line);
+    }
+    th { background: #f0eadf; }
+    code {
+      font-family: 'Courier New', monospace;
+      background: #f2ede4;
+      padding: 2px 4px;
+      border-radius: 3px;
+    }
+    a { color: #0f4c81; }
+    @media print {
+      body { background: white; }
+      main { padding: 12px; }
+      .intro, .note, .warn, .ok { box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Lesson 4: Design-Phase Threat Modeling Inputs and Outputs</h1>
+    <p><strong>In this lesson:</strong> you will learn exactly what input artifacts you need before code exists, what output artifacts you must produce, and how to make design-phase threat modeling testable by downstream teams.</p>
+
+    <div class="intro">
+      <strong>Goal:</strong> produce a threat model that is useful now (for architecture decisions) and useful later (for implementation verification and runtime assurance). In design phase, you cannot prove control effectiveness yet, but you can produce a high-quality security contract.
+    </div>
+
+    <h2>1. Required Inputs for Design-Phase Threat Modeling</h2>
+    <p>You do not need final code. You do need enough structure to reason about trust and failure.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Input</th>
+          <th>Minimum required content</th>
+          <th>Why it matters</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>System scope</td>
+          <td>In-scope components, out-of-scope components, external dependencies</td>
+          <td>Prevents threat model drift and vague coverage</td>
+        </tr>
+        <tr>
+          <td>Business context</td>
+          <td>Primary use cases, critical business outcomes, unacceptable failures</td>
+          <td>Anchors prioritization on business harm</td>
+        </tr>
+        <tr>
+          <td>Asset inventory</td>
+          <td>Data classes, secrets, privileged operations, integrity-sensitive states</td>
+          <td>Defines what must be protected</td>
+        </tr>
+        <tr>
+          <td>Architecture draft</td>
+          <td>Component diagram and data flow diagram with trust boundaries</td>
+          <td>Enables attack-path reasoning before implementation</td>
+        </tr>
+        <tr>
+          <td>Identity model</td>
+          <td>Actors, authn/authz model, token/session strategy, privilege boundaries</td>
+          <td>Most critical failures often involve identity misuse</td>
+        </tr>
+        <tr>
+          <td>Assumptions list</td>
+          <td>Explicit "we assume" statements</td>
+          <td>Turns hidden dependencies into review targets</td>
+        </tr>
+        <tr>
+          <td>Constraints</td>
+          <td>Regulatory, platform, latency, cost, operational constraints</td>
+          <td>Controls must be feasible and sustainable</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="warn">
+      <strong>Anti-pattern:</strong> starting threat modeling with only a feature list and no trust boundaries. That produces generic findings and weak mitigations.
+    </div>
+
+    <h2>2. Mandatory Outputs from Design-Phase Threat Modeling</h2>
+    <p>Your output should function as a security contract that downstream teams can verify.</p>
+
+    <div class="grid">
+      <section class="card">
+        <strong>A. Threat register</strong>
+        <p>Each threat should include: boundary, attacker capability, assumption violated, impact, and priority.</p>
+      </section>
+      <section class="card">
+        <strong>B. Control decisions</strong>
+        <p>For each high-risk threat, define one or more controls and rationale.</p>
+      </section>
+      <section class="card">
+        <strong>C. Verification requirements</strong>
+        <p>For each control, define what evidence is needed at build and runtime stages.</p>
+      </section>
+      <section class="card">
+        <strong>D. Security backlog</strong>
+        <p>Create actionable tickets with owners, acceptance criteria, and release gates.</p>
+      </section>
+    </div>
+
+    <h2>3. Output Quality Bar: “Testable Security Statements”</h2>
+    <p>Replace vague statements with verifiable requirements.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Weak output</th>
+          <th>Strong output</th>
+          <th>Later verification hook</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Use secure auth</td>
+          <td>Resource server must reject tokens with invalid issuer, audience, expiry, signature, and scope.</td>
+          <td>Negative integration tests and production auth failure telemetry</td>
+        </tr>
+        <tr>
+          <td>Protect tokens</td>
+          <td>Refresh tokens must not be readable by browser scripts and must be rotated with reuse detection.</td>
+          <td>Code/config review plus replay test case</td>
+        </tr>
+        <tr>
+          <td>Enable revocation</td>
+          <td>Revocation propagation delay must remain below defined threshold, and stale revocation state must fail closed for privileged operations.</td>
+          <td>Operational SLO and chaos/failure-path validation</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>4. Ownership Model Across Phases</h2>
+    <div class="note">
+      Design phase produces the contract. Build phase proves implementation alignment. Runtime phase proves operational effectiveness.
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Phase</th>
+          <th>Primary owner</th>
+          <th>Expected evidence</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Design</td>
+          <td>Product architecture plus security reviewer</td>
+          <td>Threat register, control decisions, testable requirements, release gates</td>
+        </tr>
+        <tr>
+          <td>Implementation</td>
+          <td>Engineering plus AppSec and security tooling</td>
+          <td>Tests, static checks, code review evidence, secure configuration checks</td>
+        </tr>
+        <tr>
+          <td>Runtime</td>
+          <td>Operations plus detection engineering plus pentest</td>
+          <td>Monitoring, alerting, abuse-case simulation, pentest results, incident-readiness checks</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>5. A Practical Workflow (Design Only)</h2>
+    <ol>
+      <li>Collect input artifacts and mark known gaps explicitly.</li>
+      <li>Draw data flows and trust boundaries.</li>
+      <li>Write top assumptions as complete statements.</li>
+      <li>Generate threats by boundary crossing and assumption failure.</li>
+      <li>Select control strategies and document tradeoffs.</li>
+      <li>Translate controls into testable requirements.</li>
+      <li>Create downstream verification tasks and release gates.</li>
+    </ol>
+
+    <div class="ok">
+      <strong>Completion criteria in design phase:</strong>
+      <ul>
+        <li>You can explain why each major control exists.</li>
+        <li>Each control has a future verification path.</li>
+        <li>Unknowns are explicit and tracked, not hidden.</li>
+        <li>No critical threat is left with "we will figure it out later."</li>
+      </ul>
+    </div>
+
+    <h2>6. Recommended Companion Reference</h2>
+    <p>Use the companion one-page template: <a href="../reference/design-phase-threat-model-template.html">Design-Phase Threat Model Template</a>.</p>
+
+    <p>Also keep these open:</p>
+    <ul>
+      <li><a href="../reference/reviewer-mindset-framework.html">Reviewer Mindset Framework</a></li>
+      <li><a href="../reference/security-review-checklist.html">Security Review Checklist</a></li>
+      <li><a href="../reference/glossary.html">Glossary</a></li>
+    </ul>
+
+    <div class="intro">
+      Ask follow-up questions with one real design in mind. The most effective next step is to fill the template against a current product concept and challenge each assumption.
+    </div>
+  </main>
+</body>
+</html>
