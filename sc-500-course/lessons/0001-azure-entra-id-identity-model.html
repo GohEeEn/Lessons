@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lesson 0001 — The Azure Identity Model: Entra ID, Tenants & Subscriptions</title>
+  <style>
+    :root {
+      --ink: #1a1a1a;
+      --muted: #555;
+      --accent: #0050c8;
+      --accent-light: #e8f0fe;
+      --danger: #c0392b;
+      --success: #1a7a4a;
+      --warn-bg: #fffbea;
+      --warn-border: #f0c040;
+      --border: #ddd;
+      --bg: #fafafa;
+      --code-bg: #f4f4f4;
+      font-size: 17px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.75;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 6rem;
+    }
+    h1 { font-size: 2rem; line-height: 1.2; margin-bottom: 0.25rem; }
+    h2 { font-size: 1.35rem; margin-top: 2.5rem; margin-bottom: 0.6rem; border-bottom: 1px solid var(--border); padding-bottom: 0.25rem; }
+    h3 { font-size: 1.1rem; margin-top: 1.5rem; margin-bottom: 0.4rem; }
+    p { margin-bottom: 1rem; }
+    ul, ol { margin-left: 1.5rem; margin-bottom: 1rem; }
+    li { margin-bottom: 0.3rem; }
+    a { color: var(--accent); }
+    code {
+      font-family: 'Courier New', monospace;
+      background: var(--code-bg);
+      padding: 0.1em 0.35em;
+      border-radius: 3px;
+      font-size: 0.9em;
+    }
+    .meta {
+      color: var(--muted);
+      font-family: system-ui, sans-serif;
+      font-size: 0.85rem;
+      margin-bottom: 2rem;
+    }
+    .meta span { margin-right: 1.5rem; }
+    .callout {
+      border-left: 4px solid var(--accent);
+      background: var(--accent-light);
+      padding: 0.8rem 1.1rem;
+      margin: 1.5rem 0;
+      border-radius: 0 4px 4px 0;
+    }
+    .callout.warn {
+      border-left-color: var(--warn-border);
+      background: var(--warn-bg);
+    }
+    .callout.key {
+      border-left-color: #7b2d8b;
+      background: #f9f0fc;
+    }
+
+    /* ── Quiz ── */
+    .quiz { margin: 2rem 0; }
+    .question {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.2rem 1.4rem;
+      margin-bottom: 1.2rem;
+    }
+    .question p { margin-bottom: 0.8rem; font-weight: bold; }
+    .options { list-style: none; margin: 0; }
+    .options li {
+      margin-bottom: 0.4rem;
+    }
+    .options label {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      cursor: pointer;
+      padding: 0.45rem 0.6rem;
+      border-radius: 4px;
+      border: 1px solid transparent;
+      transition: background 0.15s;
+      font-family: system-ui, sans-serif;
+      font-size: 0.95rem;
+    }
+    .options label:hover { background: var(--accent-light); }
+    .options input[type="radio"] { margin-top: 3px; flex-shrink: 0; }
+    .check-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 0.5rem 1.2rem;
+      font-size: 0.95rem;
+      cursor: pointer;
+      margin-top: 0.6rem;
+      font-family: system-ui, sans-serif;
+    }
+    .check-btn:hover { background: #003fa0; }
+    .feedback {
+      margin-top: 0.7rem;
+      padding: 0.6rem 0.9rem;
+      border-radius: 4px;
+      font-family: system-ui, sans-serif;
+      font-size: 0.9rem;
+      display: none;
+    }
+    .feedback.correct { background: #e6f4ea; color: var(--success); border: 1px solid #a8d5b5; }
+    .feedback.incorrect { background: #fdecea; color: var(--danger); border: 1px solid #f5b7b1; }
+    .nav-links {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-family: system-ui, sans-serif;
+      font-size: 0.9rem;
+      display: flex;
+      gap: 2rem;
+    }
+    .ask-teacher {
+      margin-top: 2.5rem;
+      padding: 1rem 1.2rem;
+      background: #f0f7ff;
+      border: 1px solid #b3d4f5;
+      border-radius: 6px;
+      font-family: system-ui, sans-serif;
+      font-size: 0.9rem;
+    }
+    .ask-teacher strong { display: block; margin-bottom: 0.3rem; }
+    .cite {
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-family: system-ui, sans-serif;
+    }
+    .mermaid {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.2rem 1.5rem;
+      margin: 1.5rem 0;
+      text-align: center;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.2rem 0;
+      font-family: system-ui, sans-serif;
+      font-size: 0.92rem;
+    }
+    th {
+      background: var(--accent-light);
+      text-align: left;
+      padding: 0.55rem 0.8rem;
+      border: 1px solid var(--border);
+    }
+    td {
+      padding: 0.5rem 0.8rem;
+      border: 1px solid var(--border);
+      vertical-align: top;
+    }
+    tr:nth-child(even) td { background: #f7f7f7; }
+    .progress-bar {
+      height: 6px;
+      background: #e0e0e0;
+      border-radius: 3px;
+      margin-bottom: 2rem;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 7%;
+      background: var(--accent);
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Progress -->
+  <div class="progress-bar"><div class="progress-bar-fill"></div></div>
+
+  <h1>The Azure Identity Model</h1>
+  <p style="font-size:1.15rem; color:var(--muted); font-family:system-ui,sans-serif; margin-bottom:0.5rem;">
+    Entra ID, Tenants &amp; Subscriptions
+  </p>
+  <div class="meta">
+    <span>📚 Track 1: Identity, Access &amp; Governance</span>
+    <span>⏱ ~35 min</span>
+    <span>🗓 Lesson 0001</span>
+  </div>
+
+  <div class="callout">
+    <strong>Lesson goal:</strong> Build the mental model for <em>where identity lives</em> in Azure — the relationship between Entra ID tenants, Azure subscriptions, and why they are the security boundary you'll be defending in the SC-500 exam.
+  </div>
+
+  <!-- ── Section 1 ── -->
+  <h2>1. What is Microsoft Entra ID?</h2>
+  <p>
+    Microsoft Entra ID (formerly Azure Active Directory) is Microsoft's cloud-based <strong>identity and access management service</strong>. It is <em>not</em> a domain controller. It is not Active Directory on-prem. It is a multi-tenant, cloud-native directory that answers one question:
+  </p>
+  <div class="callout key">
+    <strong>The core question Entra ID answers:</strong><br>
+    "Is this principal (user, app, service) who they claim to be, and what are they allowed to do?"
+  </div>
+  <p>
+    Everything in Azure security starts here. Conditional Access, PIM, managed identities, app registrations — they are all capabilities layered on top of this identity foundation.
+    <span class="cite">[<a href="https://learn.microsoft.com/en-us/azure/active-directory/fundamentals/active-directory-whatis" target="_blank">Entra ID fundamentals — Microsoft Learn</a>]</span>
+  </p>
+
+  <!-- ── Section 2 ── -->
+  <h2>2. The Tenant: Your Security Boundary</h2>
+  <p>
+    When an organisation signs up for a Microsoft cloud service, a <strong>tenant</strong> is created. Think of it as a dedicated, isolated instance of Entra ID.
+  </p>
+
+  <div class="mermaid">
+graph TD
+  T["🏢 TENANT<br/>contoso.onmicrosoft.com"]
+  T --> U["👤 Users"]
+  T --> G["👥 Groups"]
+  T --> SP["⚙️ Service Principals"]
+  T --> AP["📱 Apps &amp; Roles"]
+  T --> S1["💳 Subscription<br/>(Dev)"]
+  T --> S2["💳 Subscription<br/>(Prod)"]
+  </div>
+
+  <ul>
+    <li>One organisation typically has <strong>one tenant</strong> (sometimes more for isolation).</li>
+    <li>A tenant owns <strong>one or more Azure subscriptions</strong>.</li>
+    <li>The tenant is the <strong>trust boundary</strong>: users inside it are trusted by default; external users are guests.</li>
+    <li>Every tenant has a globally unique <strong>Tenant ID</strong> (a GUID) and a default domain like <code>contoso.onmicrosoft.com</code>.</li>
+  </ul>
+
+  <div class="callout warn">
+    <strong>Common misconception:</strong> "The subscription is the security boundary." It is not. The <em>tenant</em> is where identity lives. Subscriptions are billing/resource containers — they trust their parent tenant for authentication.
+  </div>
+
+  <!-- ── Section 3 ── -->
+  <h2>3. Subscriptions &amp; Management Groups</h2>
+  <p>
+    An Azure <strong>subscription</strong> is a logical container for Azure resources (VMs, storage, databases). It has two key security properties:
+  </p>
+  <ol>
+    <li>It is associated with exactly <strong>one Entra ID tenant</strong> (can be transferred).</li>
+    <li>It is a <strong>billing boundary</strong> and an <strong>RBAC scope</strong> — permissions granted at subscription scope apply to all resources inside it.</li>
+  </ol>
+
+  <p>
+    <strong>Management Groups</strong> sit above subscriptions. They let you apply Azure Policy and RBAC across many subscriptions at once — critical for governance at enterprise scale.
+  </p>
+
+  <div class="mermaid">
+graph TD
+  R["Root Management Group"]
+  R --> O["Org Management Group"]
+  O --> P["Production MG"]
+  O --> D["Dev MG"]
+  P --> PA["Subscription: Prod-APAC"]
+  P --> PE["Subscription: Prod-EU"]
+  D --> DA["Subscription: Dev-All"]
+  </div>
+
+  <p class="cite">[<a href="https://learn.microsoft.com/en-us/azure/governance/management-groups/overview" target="_blank">Management groups overview — Microsoft Learn</a>]</p>
+
+  <!-- ── Section 4 ── -->
+  <h2>4. Key Identity Principals</h2>
+  <p>Not all identities are humans. Entra ID recognises three principal types you'll secure in the exam:</p>
+
+  <table>
+    <thead>
+      <tr><th>Principal</th><th>What it is</th><th>SC-500 relevance</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>User</strong></td>
+        <td>A human account in the tenant</td>
+        <td>PIM, Conditional Access, MFA, SSPR</td>
+      </tr>
+      <tr>
+        <td><strong>Service Principal</strong></td>
+        <td>The identity of an application registered in Entra ID</td>
+        <td>App registrations, OAuth consent, permission grants</td>
+      </tr>
+      <tr>
+        <td><strong>Managed Identity</strong></td>
+        <td>An automatically managed service principal for Azure resources (no password needed)</td>
+        <td>Eliminates secrets in code; secure access to Key Vault, storage, etc.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout key">
+    <strong>Security mindset link:</strong> From your threat modelling work, think of each principal type as a <em>trust boundary crossing point</em>. Every time a principal gains access to a resource, that's a potential lateral movement vector. Managed identities reduce this risk by removing long-lived credentials.
+  </div>
+
+  <!-- ── Section 5 ── -->
+  <h2>5. RBAC: Who Can Do What, Where</h2>
+  <p>
+    Azure Role-Based Access Control (RBAC) controls what actions a principal can perform on Azure resources. It has three components:
+  </p>
+  <ul>
+    <li><strong>Security Principal</strong>: user, group, service principal, or managed identity</li>
+    <li><strong>Role Definition</strong>: a set of allowed operations (e.g., <code>Reader</code>, <code>Contributor</code>, <code>Owner</code>)</li>
+    <li><strong>Scope</strong>: management group → subscription → resource group → resource</li>
+  </ul>
+  <p>
+    RBAC assignments are <strong>additive</strong> — a principal gets the union of all roles assigned to them across all scopes. There are no explicit deny assignments in basic RBAC (though Azure denies outside assignment scope).
+  </p>
+  <p class="cite">[<a href="https://learn.microsoft.com/en-us/azure/role-based-access-control/overview" target="_blank">What is Azure RBAC? — Microsoft Learn</a>]</p>
+
+  <!-- ── Quiz ── -->
+  <h2>6. Retrieval Practice</h2>
+  <p>Close your notes and answer from memory. Each answer is four words.</p>
+
+  <div class="quiz">
+
+    <!-- Q1 -->
+    <div class="question" id="q1">
+      <p>What is a tenant in Microsoft Entra ID?</p>
+      <ul class="options">
+        <li><label><input type="radio" name="q1" value="a"> A container for Azure resources</label></li>
+        <li><label><input type="radio" name="q1" value="b"> A dedicated directory instance</label></li>
+        <li><label><input type="radio" name="q1" value="c"> A billing scope boundary</label></li>
+        <li><label><input type="radio" name="q1" value="d"> An Azure subscription region</label></li>
+      </ul>
+      <button class="check-btn" onclick="check('q1','b','A dedicated, isolated instance of Entra ID — the trust boundary for your organisation\'s identities.')">Check answer</button>
+      <div class="feedback" id="q1-fb"></div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="question" id="q2">
+      <p>Which principal type eliminates the need for long-lived credentials in application code?</p>
+      <ul class="options">
+        <li><label><input type="radio" name="q2" value="a"> Service principal (manual)</label></li>
+        <li><label><input type="radio" name="q2" value="b"> User account with MFA</label></li>
+        <li><label><input type="radio" name="q2" value="c"> Managed identity (system/user)</label></li>
+        <li><label><input type="radio" name="q2" value="d"> Guest account with RBAC</label></li>
+      </ul>
+      <button class="check-btn" onclick="check('q2','c','Managed identities are automatically managed — no password or secret to rotate or leak.')">Check answer</button>
+      <div class="feedback" id="q2-fb"></div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question" id="q3">
+      <p>At which scope should you assign a role to apply it across ALL subscriptions in your organisation?</p>
+      <ul class="options">
+        <li><label><input type="radio" name="q3" value="a"> Resource group scope</label></li>
+        <li><label><input type="radio" name="q3" value="b"> Subscription scope</label></li>
+        <li><label><input type="radio" name="q3" value="c"> Root management group scope</label></li>
+        <li><label><input type="radio" name="q3" value="d"> Entra ID tenant scope</label></li>
+      </ul>
+      <button class="check-btn" onclick="check('q3','c','The root management group is the top of the RBAC scope hierarchy — assignments here inherit to all subscriptions.')">Check answer</button>
+      <div class="feedback" id="q3-fb"></div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="question" id="q4">
+      <p>A VM needs to read secrets from Key Vault without storing credentials. What should you assign to it?</p>
+      <ul class="options">
+        <li><label><input type="radio" name="q4" value="a"> A service principal with a secret</label></li>
+        <li><label><input type="radio" name="q4" value="b"> A system-assigned managed identity</label></li>
+        <li><label><input type="radio" name="q4" value="c"> A shared access signature (SAS)</label></li>
+        <li><label><input type="radio" name="q4" value="d"> A user with Key Vault Reader role</label></li>
+      </ul>
+      <button class="check-btn" onclick="check('q4','b','System-assigned managed identity — automatically tied to the VM lifecycle, zero credentials to manage.')">Check answer</button>
+      <div class="feedback" id="q4-fb"></div>
+    </div>
+
+  </div>
+
+  <!-- ── Lab ── -->
+  <h2>7. Hands-On Lab</h2>
+  <p>Complete this free Microsoft Learn module — it uses a sandbox (no Azure subscription needed):</p>
+  <ul>
+    <li>
+      <a href="https://learn.microsoft.com/en-us/training/modules/explore-basic-services-identity-types/" target="_blank">
+        <strong>Explore the basic services and identity types of Entra ID</strong>
+      </a>
+      — Microsoft Learn (free sandbox, ~35 min)
+    </li>
+  </ul>
+  <p>After the lab, come back and try to draw the tenant → subscription → resource group hierarchy from memory.</p>
+
+  <!-- ── Primary Source ── -->
+  <h2>8. Primary Source</h2>
+  <p>
+    <a href="https://learn.microsoft.com/en-us/azure/active-directory/fundamentals/active-directory-whatis" target="_blank">
+      <strong>What is Microsoft Entra ID? — Microsoft Learn</strong>
+    </a><br>
+    <span class="cite">Official documentation. Read the "Key terminology" and "Who uses Entra ID?" sections.</span>
+  </p>
+
+  <!-- ── Ask Teacher ── -->
+  <div class="ask-teacher">
+    <strong>💬 Ask your teacher</strong>
+    Anything unclear — a concept, a diagram, a quiz answer — ask Copilot directly in your terminal. Examples:
+    <ul style="margin-top:0.4rem; margin-left:1.2rem;">
+      <li><em>"What's the difference between system-assigned and user-assigned managed identities?"</em></li>
+      <li><em>"When would I use multiple tenants instead of one?"</em></li>
+      <li><em>"How does Entra ID relate to Active Directory Domain Services?"</em></li>
+    </ul>
+  </div>
+
+  <!-- ── Nav ── -->
+  <div class="nav-links">
+    <span>← No previous lesson</span>
+    <span>Next → <a href="0002-privileged-identity-management.html">Lesson 0002: Privileged Identity Management (PIM)</a></span>
+  </div>
+
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+  </script>
+
+  <script>
+    function check(qId, correct, explanation) {
+      const selected = document.querySelector(`input[name="${qId}"]:checked`);
+      const fb = document.getElementById(`${qId}-fb`);
+      if (!selected) { fb.style.display='block'; fb.className='feedback incorrect'; fb.textContent='Select an answer first.'; return; }
+      if (selected.value === correct) {
+        fb.className = 'feedback correct';
+        fb.innerHTML = '✅ Correct. ' + explanation;
+      } else {
+        fb.className = 'feedback incorrect';
+        fb.innerHTML = '❌ Not quite. ' + explanation;
+      }
+      fb.style.display = 'block';
+    }
+  </script>
+
+</body>
+</html>
