@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reviewer Mindset Framework</title>
+  <style>
+    :root {
+      --bg: #f5f1e8;
+      --paper: #fffdf8;
+      --ink: #1f2937;
+      --muted: #596273;
+      --accent: #7c2d12;
+      --accent-2: #0f766e;
+      --line: #d8d0c0;
+      --soft: #eef6f4;
+      --warn: #fff7e8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: linear-gradient(180deg, #efe7d8 0%, var(--bg) 220px);
+      color: var(--ink);
+      font-family: Georgia, 'Times New Roman', serif;
+      line-height: 1.5;
+    }
+    main {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 28px 24px 48px;
+    }
+    h1, h2, h3, p {
+      margin-top: 0;
+    }
+    h1 {
+      font-size: 2.35rem;
+      line-height: 1.05;
+      margin-bottom: 10px;
+      padding-bottom: 12px;
+      border-bottom: 4px solid var(--accent);
+      letter-spacing: -0.02em;
+    }
+    h2 {
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+    }
+    h3 {
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+    p, li {
+      font-size: 0.98rem;
+    }
+    .subtitle {
+      color: var(--muted);
+      font-style: italic;
+      margin-bottom: 18px;
+    }
+    .lede {
+      background: rgba(255, 253, 248, 0.92);
+      border-left: 5px solid var(--accent);
+      padding: 16px 18px;
+      margin-bottom: 22px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin: 18px 0;
+    }
+    .card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      padding: 16px;
+      box-shadow: 0 8px 18px rgba(31, 41, 55, 0.05);
+    }
+    .full {
+      grid-column: 1 / -1;
+    }
+    .callout {
+      background: var(--soft);
+      border-left: 4px solid var(--accent-2);
+      padding: 14px 16px;
+      margin: 18px 0;
+    }
+    .warning {
+      background: var(--warn);
+      border-left: 4px solid #a16207;
+      padding: 14px 16px;
+      margin: 18px 0;
+    }
+    ol, ul {
+      margin: 0;
+      padding-left: 22px;
+    }
+    li + li {
+      margin-top: 6px;
+    }
+    .loop {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin: 14px 0 6px;
+    }
+    .step {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      padding: 12px;
+      min-height: 118px;
+    }
+    .step strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--accent);
+    }
+    code {
+      font-family: 'Courier New', monospace;
+      background: #f2ede4;
+      padding: 2px 4px;
+      border-radius: 3px;
+    }
+    a { color: #0f4c81; }
+    .footer {
+      margin-top: 24px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+    @media (max-width: 760px) {
+      .grid, .loop {
+        grid-template-columns: 1fr;
+      }
+      h1 {
+        font-size: 1.9rem;
+      }
+    }
+    @media print {
+      body {
+        background: white;
+      }
+      main {
+        padding: 10px;
+      }
+      .card, .lede, .callout, .warning, .step {
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Reviewer Mindset Framework</h1>
+    <p class="subtitle">How to think well in domains you do not yet know deeply</p>
+
+    <div class="lede">
+      <strong>Core shift:</strong> your job is not to already know the domain. Your job is to find where trust, assumptions, attacker capability, and evidence concentrate, then reduce uncertainty without bluffing.
+    </div>
+
+    <div class="grid">
+      <section class="card">
+        <h2>1. Start from invariants</h2>
+        <p>Before platform details, ask what must never happen.</p>
+        <ul>
+          <li>Unauthorized access</li>
+          <li>Secret leakage</li>
+          <li>Integrity loss</li>
+          <li>Unsafe privilege gain</li>
+          <li>Unbounded abuse</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>2. Translate design into trust bets</h2>
+        <p>Every system quietly says: “we trust this enough.” Surface those bets.</p>
+        <ul>
+          <li>We trust this client enough</li>
+          <li>We trust this storage enough</li>
+          <li>We trust this identity claim enough</li>
+          <li>We trust this control to fail safely</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>3. Think in attacker capabilities</h2>
+        <p>Do not anchor on named bugs. Ask what the attacker can actually do.</p>
+        <ul>
+          <li>What can they send?</li>
+          <li>What can they see?</li>
+          <li>What can they steal?</li>
+          <li>What can they replay?</li>
+          <li>What can they persist?</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>4. Separate claims from evidence</h2>
+        <p>Reassuring language is not verification.</p>
+        <ul>
+          <li>Against whom is it secure?</li>
+          <li>By what mechanism?</li>
+          <li>Under which assumptions?</li>
+          <li>How does it fail?</li>
+          <li>How do we verify it?</li>
+        </ul>
+      </section>
+    </div>
+
+    <h2>The Portable Review Loop</h2>
+    <div class="loop">
+      <div class="step">
+        <strong>Asset</strong>
+        What matters here? Who would want it? What is the business harm?
+      </div>
+      <div class="step">
+        <strong>Boundary</strong>
+        Where does the system stop assuming and start validating?
+      </div>
+      <div class="step">
+        <strong>Assumption</strong>
+        What must be true for this design to be safe?
+      </div>
+      <div class="step">
+        <strong>Capability</strong>
+        What can an attacker send, observe, steal, replay, modify, or persist?
+      </div>
+      <div class="step">
+        <strong>Control</strong>
+        What control prevents or limits that failure?
+      </div>
+      <div class="step">
+        <strong>Evidence</strong>
+        Where is it enforced? How is it tested? What is the runtime proof?
+      </div>
+      <div class="step">
+        <strong>Unknown</strong>
+        What do I still not know that materially changes risk?
+      </div>
+      <div class="step">
+        <strong>Learn</strong>
+        Which standard, guide, or expert source closes that gap fastest?
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>Compact mental model:</strong><br>
+      Unknown domain <span aria-hidden="true">→</span> find assets <span aria-hidden="true">→</span> find trust boundaries <span aria-hidden="true">→</span> write assumptions <span aria-hidden="true">→</span> test attacker capabilities <span aria-hidden="true">→</span> map controls <span aria-hidden="true">→</span> ask for evidence <span aria-hidden="true">→</span> isolate unknowns <span aria-hidden="true">→</span> learn only what changes risk.
+    </div>
+
+    <div class="grid">
+      <section class="card full">
+        <h2>The Five Question Families</h2>
+        <div class="grid" style="margin: 0;">
+          <div>
+            <h3>Asset questions</h3>
+            <ul>
+              <li>What is valuable here?</li>
+              <li>Who would want it?</li>
+              <li>What is the actual business impact?</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Boundary questions</h3>
+            <ul>
+              <li>Where does control change hands?</li>
+              <li>Where does external influence enter?</li>
+              <li>Where does privilege or identity cross a line?</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Assumption questions</h3>
+            <ul>
+              <li>What are we assuming about this component or platform?</li>
+              <li>What if that assumption is only mostly true?</li>
+              <li>Which wrong assumption causes the worst failure?</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Capability questions</h3>
+            <ul>
+              <li>What can the attacker control or observe?</li>
+              <li>What is realistic on this platform?</li>
+              <li>What can they replay or persist?</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Evidence questions</h3>
+            <ul>
+              <li>Show me where this is enforced.</li>
+              <li>Show me how it is tested.</li>
+              <li>Show me what failure looks like.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="warning">
+      <strong>Failure mode to avoid:</strong> trying to sound knowledgeable too early. Better posture: “I do not know this platform deeply yet, so I am going to reason from assets, trust, assumptions, attacker capability, and evidence until the platform-specific gaps become clear.”
+    </div>
+
+    <div class="grid">
+      <section class="card">
+        <h2>How to cross domains</h2>
+        <p>Do not import web controls directly into mobile, AI, cloud, or identity systems. Import question families, then use the domain’s own standard.</p>
+        <ul>
+          <li>Web: OWASP ASVS</li>
+          <li>Mobile: OWASP MASVS and MASTG</li>
+          <li>Identity/OAuth: protocol guidance plus system-specific validation rules</li>
+          <li>AI systems: attacker goals, prompt/tool/data boundaries, output trust</li>
+        </ul>
+      </section>
+
+      <section class="card">
+        <h2>Practice habit</h2>
+        <p>After every review, write down:</p>
+        <ol>
+          <li>one assumption you accepted too easily,</li>
+          <li>one trust boundary you under-modeled,</li>
+          <li>one control you did not verify deeply enough,</li>
+          <li>one unknown you should have named earlier.</li>
+        </ol>
+      </section>
+    </div>
+
+    <p><strong>Use with:</strong> <a href="./security-review-checklist.html">Security Review Checklist</a> and <a href="./glossary.html">Glossary</a>.</p>
+
+    <div class="footer">
+      One-page reference for building reviewer judgment in unfamiliar domains • Created 2026-06-14
+    </div>
+  </main>
+</body>
+</html>

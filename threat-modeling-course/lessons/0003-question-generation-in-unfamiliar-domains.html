@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 3: Question Generation in Unfamiliar Domains</title>
+  <style>
+    :root {
+      --bg: #f8f5ee;
+      --paper: #fffdf8;
+      --ink: #1f2937;
+      --muted: #5c6675;
+      --accent: #14532d;
+      --accent-2: #9a3412;
+      --line: #d9d1c4;
+      --soft: #eef7f0;
+      --note: #eef4ff;
+      --warn: #fff7e8;
+    }
+    body {
+      margin: 0;
+      background: radial-gradient(circle at top right, #f1eadc 0, var(--bg) 44%);
+      color: var(--ink);
+      font-family: Georgia, 'Times New Roman', serif;
+      line-height: 1.68;
+    }
+    main {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 34px 24px 60px;
+    }
+    h1 {
+      font-size: 2.2rem;
+      line-height: 1.12;
+      margin: 0 0 14px;
+      padding-bottom: 12px;
+      border-bottom: 4px solid var(--accent);
+    }
+    h2 {
+      font-size: 1.45rem;
+      margin-top: 34px;
+      margin-bottom: 10px;
+    }
+    p, li {
+      font-size: 1.02rem;
+    }
+    .intro, .exercise, .note, .warning {
+      padding: 16px 18px;
+      background: var(--paper);
+      border-left: 5px solid var(--accent);
+      margin: 18px 0;
+      box-shadow: 0 8px 18px rgba(31, 41, 55, 0.05);
+    }
+    .exercise {
+      background: var(--note);
+      border-left-color: #1d4ed8;
+    }
+    .note {
+      background: var(--soft);
+      border-left-color: var(--accent);
+    }
+    .warning {
+      background: var(--warn);
+      border-left-color: var(--accent-2);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      margin: 18px 0;
+    }
+    .card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      padding: 16px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      margin-top: 14px;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--line);
+    }
+    th {
+      background: #f0eadf;
+    }
+    code {
+      font-family: 'Courier New', monospace;
+      background: #f2ede4;
+      padding: 2px 4px;
+      border-radius: 3px;
+    }
+    a { color: #0f4c81; }
+    @media print {
+      body { background: white; }
+      main { padding: 12px; }
+      .intro, .exercise, .note, .warning { box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Lesson 3: Question Generation in Unfamiliar Domains</h1>
+    <p><strong>In this lesson:</strong> you will learn how to generate strong security review questions when you do not yet understand the domain deeply. The goal is not to memorize domain trivia. The goal is to ask questions that expose the real trust structure of the system.</p>
+
+    <div class="intro">
+      <strong>Core idea:</strong> when you are unfamiliar with a domain, you do not need better answers first. You need better questions. Strong questions force the system to reveal its assumptions, trust boundaries, and failure modes.
+    </div>
+
+    <h2>1. Stop Asking for Features, Start Asking for Commitments</h2>
+    <p>Weak reviewers ask what the system does. Strong reviewers ask what the system must guarantee.</p>
+
+    <div class="grid">
+      <section class="card">
+        <strong>Weak question</strong>
+        <p>“Does the app use secure storage?”</p>
+      </section>
+      <section class="card">
+        <strong>Stronger question</strong>
+        <p>“What attacker are you defending secrets from in storage, and what platform mechanism enforces that boundary?”</p>
+      </section>
+      <section class="card">
+        <strong>Why it matters</strong>
+        <p>The first gets a reassuring label. The second forces a trust statement, an attacker model, and a control claim.</p>
+      </section>
+    </div>
+
+    <h2>2. The Five Question Families</h2>
+    <p>When the domain is unclear, reuse these families. They work across web, mobile, cloud, identity, and AI systems.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Family</th>
+          <th>What it reveals</th>
+          <th>Example question</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Asset</td>
+          <td>What actually matters</td>
+          <td>What would be the most expensive failure in this flow?</td>
+        </tr>
+        <tr>
+          <td>Boundary</td>
+          <td>Where trust changes</td>
+          <td>Where does the system stop assuming and start validating?</td>
+        </tr>
+        <tr>
+          <td>Assumption</td>
+          <td>Hidden dependencies</td>
+          <td>What must be true for this design to remain safe?</td>
+        </tr>
+        <tr>
+          <td>Capability</td>
+          <td>Attacker power</td>
+          <td>What can an attacker observe, modify, replay, or persist here?</td>
+        </tr>
+        <tr>
+          <td>Evidence</td>
+          <td>Whether the claim is real</td>
+          <td>Show me where this control is enforced and how you know it works.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>3. Question Escalation</h2>
+    <p>Good question generation is iterative. Start broad, then narrow toward evidence.</p>
+
+    <ol>
+      <li><strong>Orientation:</strong> What is the system trying to protect?</li>
+      <li><strong>Structure:</strong> Where are the trust boundaries and state changes?</li>
+      <li><strong>Risk:</strong> What assumptions, if false, create the worst outcome?</li>
+      <li><strong>Control:</strong> What is supposed to prevent that?</li>
+      <li><strong>Proof:</strong> How has that prevention been verified?</li>
+    </ol>
+
+    <div class="note">
+      <strong>Use this mental progression:</strong><br>
+      “Help me understand the shape” <span aria-hidden="true">→</span> “show me where trust changes” <span aria-hidden="true">→</span> “tell me what must be true” <span aria-hidden="true">→</span> “show me the control” <span aria-hidden="true">→</span> “show me the evidence.”
+    </div>
+
+    <h2>4. Translate the Same Question Across Domains</h2>
+    <p>The wording changes. The mental move stays the same.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Mental move</th>
+          <th>Web</th>
+          <th>Mobile</th>
+          <th>AI system</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Where does trust change?</td>
+          <td>Where does untrusted input enter the app or API?</td>
+          <td>Where do other apps, deep links, WebViews, or device storage influence behavior?</td>
+          <td>Where does external prompt, tool output, or retrieved data affect model decisions?</td>
+        </tr>
+        <tr>
+          <td>What assumption matters most?</td>
+          <td>What do we assume about session or token handling?</td>
+          <td>What do we assume about device security and local secret storage?</td>
+          <td>What do we assume about model obedience, tool scope, or trusted context?</td>
+        </tr>
+        <tr>
+          <td>What evidence do we need?</td>
+          <td>Show validation, authz, and negative tests.</td>
+          <td>Show platform storage choice, hardening, and device-side test evidence.</td>
+          <td>Show isolation, tool permissions, prompt-injection handling, and abuse tests.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>5. How to Think When You Feel Lost</h2>
+    <div class="warning">
+      Feeling lost usually means one of three things: you do not yet know the asset, you do not yet know where trust changes, or you are hearing control claims without evidence. Do not panic. Return to those three anchors.
+    </div>
+
+    <p>When you are lost, say to yourself:</p>
+    <ol>
+      <li>What matters here?</li>
+      <li>Who can influence it?</li>
+      <li>What must the receiver trust?</li>
+      <li>What if that trust is misplaced?</li>
+      <li>What control is carrying the risk?</li>
+      <li>How do I know?</li>
+    </ol>
+
+    <h2>6. The Reviewer’s Question Ladder</h2>
+    <div class="grid">
+      <section class="card">
+        <strong>Level 1: Mapping</strong>
+        <p>What components, actors, and data flows exist?</p>
+      </section>
+      <section class="card">
+        <strong>Level 2: Trust</strong>
+        <p>Which crossings require validation or authorization?</p>
+      </section>
+      <section class="card">
+        <strong>Level 3: Assumptions</strong>
+        <p>What has to be true about the platform or user behavior?</p>
+      </section>
+      <section class="card">
+        <strong>Level 4: Adversary</strong>
+        <p>What can the attacker control, observe, steal, or replay?</p>
+      </section>
+      <section class="card">
+        <strong>Level 5: Controls</strong>
+        <p>What is preventing the failure or reducing the blast radius?</p>
+      </section>
+      <section class="card">
+        <strong>Level 6: Evidence</strong>
+        <p>What proves the control works under failure conditions?</p>
+      </section>
+    </div>
+
+    <h2>Recommended Reading</h2>
+    <p><strong>Primary sources:</strong> keep using <a href="../reference/reviewer-mindset-framework.html">Reviewer Mindset Framework</a> as the mental model, and use <a href="../reference/security-review-checklist.html">Security Review Checklist</a> during live reviews. For domain-specific grounding, use <a href="https://owasp.org/www-project-application-security-verification-standard/">OWASP ASVS</a> for web and <a href="https://mas.owasp.org/MASVS/">OWASP MASVS</a> plus <a href="https://mas.owasp.org/MASTG/">MASTG</a> for mobile.</p>
+
+    <div class="exercise">
+      <strong>Practice exercise:</strong>
+      <p>Take one area you do not know well, such as mobile or AI. Write:</p>
+      <ol>
+        <li>three asset questions,</li>
+        <li>three trust-boundary questions,</li>
+        <li>three assumption questions,</li>
+        <li>two evidence questions.</li>
+      </ol>
+      <p>If your questions only ask for labels or technologies, rewrite them until they ask about trust, attacker capability, or proof.</p>
+    </div>
+
+    <p><strong>Ask follow-up questions.</strong> If you want, the next lesson can be domain-specific: “crossing from web security into mobile review” or “crossing from appsec into AI threat modeling.”</p>
+  </main>
+</body>
+</html>
