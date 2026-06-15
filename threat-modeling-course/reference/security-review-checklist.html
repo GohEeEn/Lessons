@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security Review Checklist: Trust Boundaries, Assumptions, and Control Verification</title>
+  <style>
+    :root {
+      --bg: #f7f4ec;
+      --paper: #fffdf8;
+      --ink: #1f2430;
+      --muted: #55606e;
+      --accent: #9a3412;
+      --line: #d8cfc0;
+      --blue: #1d4ed8;
+      --green: #166534;
+      --gold: #a16207;
+    }
+    body {
+      margin: 0;
+      background: linear-gradient(180deg, #efe8db 0%, var(--bg) 180px);
+      color: var(--ink);
+      font-family: Georgia, 'Times New Roman', serif;
+      line-height: 1.65;
+    }
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 32px 24px 56px;
+    }
+    h1, h2, h3 {
+      font-weight: 700;
+      line-height: 1.2;
+      margin: 0;
+    }
+    h1 {
+      font-size: 2.3rem;
+      padding-bottom: 12px;
+      border-bottom: 4px solid var(--accent);
+      margin-bottom: 18px;
+    }
+    h2 {
+      font-size: 1.45rem;
+      margin-top: 34px;
+      margin-bottom: 12px;
+    }
+    h3 {
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+    }
+    p, li {
+      font-size: 1.02rem;
+    }
+    .lede {
+      background: rgba(255, 253, 248, 0.9);
+      border-left: 5px solid var(--accent);
+      padding: 18px 20px;
+      margin: 20px 0 28px;
+      box-shadow: 0 8px 20px rgba(40, 34, 24, 0.05);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+    .card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-top: 4px solid var(--blue);
+      padding: 16px;
+      box-shadow: 0 8px 18px rgba(31, 36, 48, 0.05);
+    }
+    .prompt {
+      background: #f8fbff;
+      border-left: 4px solid var(--blue);
+      padding: 14px 16px;
+      margin: 14px 0;
+    }
+    .warn {
+      background: #fffbeb;
+      border-left: 4px solid var(--gold);
+      padding: 14px 16px;
+      margin: 14px 0;
+    }
+    .good {
+      background: #f0fdf4;
+      border-left: 4px solid var(--green);
+      padding: 14px 16px;
+      margin: 14px 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      margin-top: 12px;
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--line);
+    }
+    th {
+      background: #f1ecdf;
+      font-size: 0.95rem;
+    }
+    code {
+      font-family: 'Courier New', monospace;
+      background: #f3efe7;
+      padding: 2px 4px;
+      border-radius: 3px;
+    }
+    a {
+      color: var(--blue);
+    }
+    @media print {
+      body {
+        background: white;
+      }
+      main {
+        padding: 12px;
+      }
+      .card, .lede, .prompt, .warn, .good {
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Security Review Checklist</h1>
+    <p><strong>Trust Boundaries, Assumptions, and Control Verification</strong></p>
+
+    <div class="lede">
+      Use this during live reviews. Start at the boundary, force assumptions into explicit statements, then demand evidence that each control actually works in the real system rather than only in the design slide.
+    </div>
+
+    <h2>1. Find the Trust Boundary</h2>
+    <div class="grid">
+      <section class="card">
+        <h3>Definition</h3>
+        <p>A trust boundary exists wherever the system must stop assuming the other side is safe, correct, authenticated, or under the same controls.</p>
+      </section>
+      <section class="card">
+        <h3>Boundary Signals</h3>
+        <p>Different owner, different runtime, different privilege, different network zone, different storage, or different identity context.</p>
+      </section>
+      <section class="card">
+        <h3>Fast Test</h3>
+        <p>If the receiver must validate identity, integrity, authorization, freshness, or input quality, you are probably crossing a trust boundary.</p>
+      </section>
+    </div>
+
+    <div class="prompt">
+      <strong>Questions to ask:</strong>
+      <ul>
+        <li>Who controls each side of this interaction?</li>
+        <li>What data, identity, or command crosses here?</li>
+        <li>What can the sender influence?</li>
+        <li>What does the receiver have to verify before trusting it?</li>
+        <li>What changes if the sender is malicious, buggy, or stale?</li>
+      </ul>
+    </div>
+
+    <h2>2. Turn Assumptions into Review Questions</h2>
+    <p>Assumptions are hidden design dependencies. Write them as explicit statements, then try to break them.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Assumption Pattern</th>
+          <th>Review Question</th>
+          <th>Threat if False</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>We assume the client is well-behaved.</td>
+          <td>What happens if the client is modified, replaying, or malicious?</td>
+          <td>Bypass, replay, forged requests</td>
+        </tr>
+        <tr>
+          <td>We assume tokens remain confidential on the device.</td>
+          <td>How are tokens protected from XSS, extension abuse, logs, backup, and debug tooling?</td>
+          <td>Session theft, persistent access</td>
+        </tr>
+        <tr>
+          <td>We assume revocation is immediate.</td>
+          <td>What exact mechanism propagates revocation, and what is the worst-case delay?</td>
+          <td>Revoked tokens remain valid</td>
+        </tr>
+        <tr>
+          <td>We assume the identity provider is the source of truth.</td>
+          <td>How does the resource server authenticate metadata, JWKS, introspection, or denylist state?</td>
+          <td>Forged trust, stale validation</td>
+        </tr>
+        <tr>
+          <td>We assume the platform storage is secure.</td>
+          <td>Secure against whom: other apps, local malware, backups, rooted devices, developers, browser scripts?</td>
+          <td>False confidence, token leakage</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="warn">
+      <strong>Review posture:</strong> never leave an assumption as a sentence fragment like “tokens are stored securely.” Force the team to define actor, mechanism, scope, and failure mode.
+    </div>
+
+    <h2>3. Decide Whether Control Verification Is Sufficient</h2>
+    <p>A control is sufficiently verified when you have enough evidence to trust it in the actual operating environment, not just the architecture diagram.</p>
+
+    <div class="grid">
+      <section class="card">
+        <h3>Design Evidence</h3>
+        <p>Requirements, architecture, protocol choice, configuration intent.</p>
+      </section>
+      <section class="card">
+        <h3>Implementation Evidence</h3>
+        <p>Code path, framework settings, exact validation logic, storage and transport details.</p>
+      </section>
+      <section class="card">
+        <h3>Runtime Evidence</h3>
+        <p>Logs, telemetry, negative tests, operational checks, incident behavior, failure modes.</p>
+      </section>
+    </div>
+
+    <div class="good">
+      <strong>Sufficient verification heuristic:</strong>
+      <ul>
+        <li>You can state what the control is meant to stop.</li>
+        <li>You can point to where it is implemented.</li>
+        <li>You have tested both the expected path and a failure path.</li>
+        <li>You know how it fails under degradation or outage.</li>
+        <li>You know who would detect that failure.</li>
+      </ul>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Control Type</th>
+          <th>Minimum Verification</th>
+          <th>Stronger Verification</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Token validation</td>
+          <td>Show issuer, audience, expiry, signature, and scope checks exist.</td>
+          <td>Run negative tests with wrong issuer, expired token, wrong audience, revoked token.</td>
+        </tr>
+        <tr>
+          <td>Refresh-token rotation</td>
+          <td>Show rotation logic and reuse detection rules.</td>
+          <td>Demonstrate stolen-old-token replay causes invalidation and alerting.</td>
+        </tr>
+        <tr>
+          <td>Immediate revocation</td>
+          <td>Show the revocation channel and propagation design.</td>
+          <td>Measure revocation latency and fail behavior during auth-server outage.</td>
+        </tr>
+        <tr>
+          <td>Secure storage</td>
+          <td>Identify exact storage mechanism and access paths.</td>
+          <td>Show what a hostile script, extension, backup, debugger, or rooted device can and cannot access.</td>
+        </tr>
+        <tr>
+          <td>XSS mitigation</td>
+          <td>Show output encoding and CSP design.</td>
+          <td>Test realistic injection paths and verify token exfiltration is blocked.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>4. Ask Better Questions in Unfamiliar Domains</h2>
+    <p>When you review outside your home territory, do not pretend to be a domain expert. Borrow the domain’s verification standard and ask boundary-first questions.</p>
+
+    <div class="prompt">
+      <strong>Portable reviewer script:</strong>
+      <ol>
+        <li>What are the assets and trust boundaries in this platform?</li>
+        <li>Which standard defines “good enough” here?</li>
+        <li>Which controls are platform-native versus app-implemented?</li>
+        <li>What attacker capabilities are normal for this platform?</li>
+        <li>Which test guide gives me concrete checks?</li>
+      </ol>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>If you know web...</th>
+          <th>Ask in mobile...</th>
+          <th>Source</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Where are session tokens stored?</td>
+          <td>Which platform storage is used: Keychain, Keystore, encrypted shared prefs, custom store?</td>
+          <td><a href="https://mas.owasp.org/MASVS/">OWASP MASVS</a></td>
+        </tr>
+        <tr>
+          <td>How is input validated?</td>
+          <td>What deep-link, IPC, URL scheme, or WebView inputs exist?</td>
+          <td><a href="https://mas.owasp.org/MASTG/">OWASP MASTG</a></td>
+        </tr>
+        <tr>
+          <td>Do we rely on TLS?</td>
+          <td>Is TLS pinning used, and what is the fallback/failure behavior?</td>
+          <td><a href="https://mas.owasp.org/MASTG/">OWASP MASTG</a></td>
+        </tr>
+        <tr>
+          <td>Can scripts steal secrets?</td>
+          <td>Can WebViews, logs, screenshots, backups, rooted devices, or other apps reach secrets?</td>
+          <td><a href="https://owasp.org/www-project-mobile-app-security/">OWASP MAS Project</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>5. Recommended Review Flow</h2>
+    <ol>
+      <li>Draw the data flow and mark trust boundaries.</li>
+      <li>Write the top assumptions as explicit sentences.</li>
+      <li>Convert each assumption into a hostile question.</li>
+      <li>Map one or more controls to each high-risk boundary crossing.</li>
+      <li>Demand design, implementation, and runtime evidence.</li>
+      <li>Escalate unresolved unknowns to the platform standard: <a href="https://owasp.org/www-project-application-security-verification-standard/">OWASP ASVS</a> for web, <a href="https://mas.owasp.org/MASVS/">OWASP MASVS</a> and <a href="https://mas.owasp.org/MASTG/">OWASP MASTG</a> for mobile.</li>
+    </ol>
+
+    <p><strong>Use with:</strong> <a href="./glossary.html">Glossary</a> and Lesson 2.</p>
+  </main>
+</body>
+</html>
