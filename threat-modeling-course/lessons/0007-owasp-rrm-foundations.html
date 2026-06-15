@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson 7: OWASP Risk Rating Methodology Foundations</title>
+  <style>
+    :root {
+      --bg: #f7f4ed;
+      --paper: #fffdf8;
+      --ink: #1f2937;
+      --line: #d8cfbf;
+      --accent: #14532d;
+      --note: #eef4ff;
+      --warn: #fff7e8;
+      --ok: #eefaf2;
+    }
+    body { margin: 0; background: var(--bg); color: var(--ink); font-family: Georgia, 'Times New Roman', serif; line-height: 1.62; }
+    main { max-width: 980px; margin: 0 auto; padding: 30px 22px 48px; }
+    h1 { margin: 0 0 14px; font-size: 2.15rem; border-bottom: 4px solid var(--accent); padding-bottom: 10px; }
+    h2 { margin-top: 28px; margin-bottom: 8px; font-size: 1.3rem; }
+    p, li { font-size: 1.02rem; }
+    table { width: 100%; border-collapse: collapse; background: var(--paper); border: 1px solid var(--line); margin-top: 10px; }
+    th, td { text-align: left; vertical-align: top; padding: 10px; border-bottom: 1px solid var(--line); }
+    th { background: #efe9dc; }
+    .box { background: var(--paper); border-left: 5px solid var(--accent); padding: 14px 16px; margin: 14px 0; }
+    .note { background: var(--note); border-left-color: #1d4ed8; }
+    .warn { background: var(--warn); border-left-color: #a16207; }
+    .ok { background: var(--ok); border-left-color: #166534; }
+    code { background: #f2ede4; padding: 2px 4px; border-radius: 3px; font-family: 'Courier New', monospace; }
+    a { color: #0f4c81; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Lesson 7: OWASP Risk Rating Methodology Foundations</h1>
+    <p><strong>Goal:</strong> understand OWASP Risk Rating Methodology (RRM) from scratch, then apply it to your existing design-phase prioritization model.</p>
+
+    <div class="box note">
+      <strong>Primary source:</strong> <a href="https://owasp.org/www-community/OWASP_Risk_Rating_Methodology">OWASP Risk Rating Methodology</a>
+    </div>
+
+    <h2>1) What OWASP RRM Is</h2>
+    <p>OWASP RRM is a structured way to rate risk severity by combining:</p>
+    <ol>
+      <li><strong>Likelihood:</strong> how feasible exploitation is.</li>
+      <li><strong>Impact:</strong> how much technical and business damage exploitation causes.</li>
+    </ol>
+    <p>At a high level: <code>Risk = Likelihood x Impact</code>.</p>
+
+    <div class="box">
+      It is not a single universal truth model. OWASP explicitly expects teams to customize factor definitions and weighting to fit their organization.
+    </div>
+
+    <h2>2) The RRM Flow (Simplified)</h2>
+    <ol>
+      <li>Identify a risk scenario.</li>
+      <li>Estimate likelihood factors.</li>
+      <li>Estimate impact factors.</li>
+      <li>Combine them to determine severity.</li>
+      <li>Prioritize what to fix first.</li>
+      <li>Customize model for your context.</li>
+    </ol>
+
+    <h2>3) Likelihood Factors in RRM</h2>
+    <table>
+      <thead>
+        <tr><th>Group</th><th>Examples</th><th>Question it answers</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Threat agent factors</td>
+          <td>Skill level, motive, opportunity, attacker population size</td>
+          <td>How capable and motivated is the attacker set?</td>
+        </tr>
+        <tr>
+          <td>Vulnerability factors</td>
+          <td>Ease of discovery, ease of exploit, awareness, detection likelihood</td>
+          <td>How easy is this path to find and use?</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>4) Impact Factors in RRM</h2>
+    <table>
+      <thead>
+        <tr><th>Group</th><th>Examples</th><th>Question it answers</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Technical impact</td>
+          <td>Loss of confidentiality, integrity, availability, accountability</td>
+          <td>What happens to systems and data?</td>
+        </tr>
+        <tr>
+          <td>Business impact</td>
+          <td>Financial damage, reputation damage, non-compliance, privacy violation</td>
+          <td>What happens to business outcomes?</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="box ok">
+      <strong>Important:</strong> for prioritization decisions, business impact should dominate technical impact when business context is known.
+    </div>
+
+    <h2>5) Where RRM Fits in Your Current Framework</h2>
+    <p>Your current framework is already deterministic:</p>
+    <p><code>Priority Score = Likelihood (1-5) x Impact (1-5) x Confidence Modifier</code></p>
+
+    <p>Use RRM to enrich how you compute Likelihood and Impact, then map into your 1-5 scale.</p>
+
+    <table>
+      <thead>
+        <tr><th>RRM output</th><th>Your framework field</th><th>Why</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>RRM likelihood estimate</td><td>Likelihood (1-5)</td><td>Keeps deterministic scoring while preserving richer reasoning.</td></tr>
+        <tr><td>RRM impact estimate</td><td>Impact (1-5)</td><td>Preserves business consequence focus.</td></tr>
+        <tr><td>Evidence quality (not in core RRM formula)</td><td>Confidence Modifier</td><td>Handles design-phase uncertainty explicitly.</td></tr>
+      </tbody>
+    </table>
+
+    <h2>6) Minimal Worked Example</h2>
+    <div class="box">
+      <strong>Scenario:</strong> stolen refresh token replay in browser OAuth flow.
+      <ol>
+        <li>RRM likelihood factors suggest high feasibility (token persistence + weak replay detection).</li>
+        <li>RRM business impact suggests high damage (account takeover, potential regulatory exposure).</li>
+        <li>Map to your scale: Likelihood 4, Impact 5.</li>
+        <li>Confidence 1.2 due to incomplete revocation latency evidence.</li>
+        <li>Priority score: <code>4 x 5 x 1.2 = 24</code>, so P0.</li>
+      </ol>
+    </div>
+
+    <h2>7) Challenge This Method</h2>
+    <div class="box warn">
+      <ul>
+        <li>More factors can create false precision if not calibrated.</li>
+        <li>Design-phase estimates can be unstable with missing implementation details.</li>
+        <li>Different reviewers can score differently without periodic calibration sessions.</li>
+      </ul>
+    </div>
+
+    <p>Mitigation:</p>
+    <ol>
+      <li>Keep score anchors explicit.</li>
+      <li>Limit decimal precision.</li>
+      <li>Require short narrative rationale per score.</li>
+      <li>Run periodic calibration workshops.</li>
+    </ol>
+
+    <h2>8) What to Practice Next</h2>
+    <ol>
+      <li>Take one risk from your current design.</li>
+      <li>Score it once with your base model only.</li>
+      <li>Score it again using RRM-enriched factor thinking.</li>
+      <li>Compare decision quality and confidence.</li>
+    </ol>
+
+    <div class="box note">
+      <strong>Companion references:</strong>
+      <ul>
+        <li><a href="../reference/risk-scoring-framework-and-standards-crosswalk.html">Risk Scoring Framework and Standards Crosswalk</a></li>
+        <li><a href="../reference/risk-prioritization-rubric.html">Risk Prioritization Rubric</a></li>
+        <li><a href="./0006-practical-risk-prioritization-workshop.html">Lesson 6 Workshop</a></li>
+      </ul>
+    </div>
+
+    <p><strong>Ask follow-up:</strong> bring one real design risk and we can run full RRM-enriched scoring together, including narrative justification for review boards.</p>
+  </main>
+</body>
+</html>
