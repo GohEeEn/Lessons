@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Threat Modelling Glossary</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            line-height: 1.6;
+            color: #333;
+            background: #fafafa;
+        }
+        h1 {
+            border-bottom: 3px solid #d73c49;
+            padding-bottom: 0.5rem;
+            color: #24292e;
+        }
+        .term {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: white;
+            border-left: 4px solid #0366d6;
+            border-radius: 4px;
+        }
+        .term dt {
+            font-weight: 700;
+            color: #24292e;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        .term dd {
+            margin: 0;
+            color: #555;
+        }
+        .term .example {
+            margin-top: 0.75rem;
+            padding: 0.75rem;
+            background: #f6f8fa;
+            border-radius: 3px;
+            font-size: 0.95rem;
+            font-family: 'Monaco', 'Courier New', monospace;
+            color: #555;
+        }
+        .category {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #24292e;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e1e4e8;
+        }
+    </style>
+</head>
+<body>
+    <h1>Threat Modelling Glossary</h1>
+    <p><em>Core terms and concepts for threat identification and modelling.</em></p>
+
+    <div class="category">Threat Modelling Fundamentals</div>
+
+    <div class="term">
+        <dt>Threat Model</dt>
+        <dd>A systematic analysis of what could go wrong in a system, who could exploit it, how they might do it, and what the impact would be.</dd>
+    </div>
+
+    <div class="term">
+        <dt>Threat</dt>
+        <dd>A potential attack, exploit, or negative event that could harm a system. Example: "An attacker intercepts network traffic."</dd>
+    </div>
+
+    <div class="term">
+        <dt>Vulnerability</dt>
+        <dd>A weakness in a system that makes a threat possible. Example: "Unencrypted communication channel."</dd>
+    </div>
+
+    <div class="term">
+        <dt>Attack Vector</dt>
+        <dd>The path or method an attacker uses to exploit a vulnerability. Example: "Packet sniffing on an unsecured Wi-Fi network."</dd>
+    </div>
+
+    <div class="term">
+        <dt>Asset</dt>
+        <dd>Anything of value in the system that needs protection. Examples: data, users, reputation, availability, confidentiality.</dd>
+    </div>
+
+    <div class="term">
+        <dt>Actor / Threat Actor</dt>
+        <dd>A person or entity capable of executing a threat. Can range from script kiddies to nation-state adversaries.</dd>
+    </div>
+
+    <div class="category">Threat Modelling Frameworks</div>
+
+    <div class="term">
+        <dt>STRIDE</dt>
+        <dd>A taxonomy of threat types: <strong>S</strong>poofing, <strong>T</strong>ampering, <strong>R</strong>epudiation, <strong>I</strong>nformation Disclosure, <strong>D</strong>enial of Service, <strong>E</strong>levation of Privilege.</dd>
+        <div class="example">Spoofing identity → Attacker impersonates a trusted user</div>
+    </div>
+
+    <div class="term">
+        <dt>Data Flow Diagram (DFD)</dt>
+        <dd>A visual representation showing how data moves through a system, including processes, storage, and external entities.</dd>
+    </div>
+
+    <div class="category">Mindset & Judgment</div>
+
+    <div class="term">
+        <dt>Threat Identification Mindset</dt>
+        <dd>The trained ability to systematically think like an attacker: asking "where could this break?", "who would attack this?", "what would I target first?" Rather than relying on intuition alone, this is a disciplined, repeatable pattern of questioning.</dd>
+    </div>
+
+    <div class="term">
+        <dt>Attacker's Perspective</dt>
+        <dd>Deliberately reversing your normal "how do I build this securely?" question to "how would I break this?" This mental model is essential for uncovering non-obvious threats.</dd>
+    </div>
+
+    <div class="term">
+        <dt>Trust Boundary</dt>
+        <dd>A line in a diagram separating areas with different security levels. Threats often occur at trust boundaries where data crosses from trusted to untrusted zones.</dd>
+    </div>
+
+    <div class="category">AI-Assisted Threat Modelling</div>
+
+    <div class="term">
+        <dt>AI as Threat Partner</dt>
+        <dd>Using an AI (LLM) as a brainstorming and reasoning partner to surface threats you might miss alone. AI excels at recall and combination; human judgment validates and contextualizes.</dd>
+    </div>
+
+    <div class="term">
+        <dt>Human Judgment</dt>
+        <dd>The irreducible element of threat modelling: contextual reasoning, understanding business intent, recognizing what matters most, catching AI hallucinations and irrelevant suggestions.</dd>
+    </div>
+
+    <div class="term">
+        <dt>Prompt Engineering (for threats)</dt>
+        <dd>Structuring questions to an AI to elicit useful threat identification. Example: "Given this system boundary [description], what attack vectors might target the authentication layer?"</dd>
+    </div>
+
+    <hr style="margin: 3rem 0; border: none; border-top: 2px solid #e1e4e8;">
+    <p style="color: #666; font-size: 0.95rem;"><em>Glossary v1 • 2026-06-13</em></p>
+</body>
+</html>

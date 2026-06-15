@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 1: The Threat Identifier's Mindset</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            line-height: 1.75;
+            color: #333;
+            background: #fafafa;
+        }
+        h1 {
+            color: #24292e;
+            border-bottom: 4px solid #d73c49;
+            padding-bottom: 0.75rem;
+            font-size: 2rem;
+        }
+        h2 {
+            color: #24292e;
+            margin-top: 2rem;
+            font-size: 1.5rem;
+            border-left: 4px solid #0366d6;
+            padding-left: 1rem;
+        }
+        .intro {
+            background: #f6f8fa;
+            padding: 1.5rem;
+            border-radius: 6px;
+            border-left: 4px solid #28a745;
+            margin-bottom: 2rem;
+        }
+        .callout {
+            background: #fff8f0;
+            padding: 1.5rem;
+            border-left: 4px solid #fd7e14;
+            border-radius: 6px;
+            margin: 1.5rem 0;
+        }
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .comparison-item {
+            padding: 1.5rem;
+            background: white;
+            border-radius: 6px;
+            border: 2px solid #e1e4e8;
+        }
+        .comparison-item h4 {
+            margin-top: 0;
+            color: #24292e;
+        }
+        .comparison-item.vs-no {
+            border-left: 4px solid #cb2431;
+        }
+        .comparison-item.vs-yes {
+            border-left: 4px solid #28a745;
+        }
+        .example {
+            background: #fafbfc;
+            padding: 1rem;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            margin: 1rem 0;
+            border-left: 3px solid #0366d6;
+        }
+        .example strong {
+            color: #0366d6;
+        }
+        .interactive-prompt {
+            background: #f1f8ff;
+            padding: 1.5rem;
+            border-radius: 6px;
+            border-left: 4px solid #005cc5;
+            margin: 1.5rem 0;
+        }
+        .interactive-prompt h4 {
+            margin-top: 0;
+            color: #005cc5;
+        }
+        .key-insight {
+            background: #fffbea;
+            padding: 1.5rem;
+            border-radius: 6px;
+            border-left: 4px solid #d39e00;
+            margin: 1.5rem 0;
+        }
+        code {
+            font-family: 'Monaco', 'Courier New', monospace;
+            background: #f3f3f3;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            color: #555;
+        }
+        .footer {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #e1e4e8;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .next-steps {
+            background: #f0f9ff;
+            padding: 1.5rem;
+            border-radius: 6px;
+            border-left: 4px solid #0366d6;
+            margin-top: 2rem;
+        }
+        a {
+            color: #0366d6;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lesson 1: The Threat Identifier's Mindset</h1>
+
+    <div class="intro">
+        <strong>In this lesson:</strong> You'll learn what "threat identification mindset" actually means—not as abstract philosophy, but as a concrete, trainable pattern of thinking. By the end, you'll understand the mental moves that separate effective threat modellers from those who just apply checklists.
+    </div>
+
+    <h2>What Is Threat Identification Mindset?</h2>
+
+    <p>Here's what it is <em>not</em>: memorizing STRIDE categories, running through a checklist, or relying on vague intuition about "what could go wrong."</p>
+
+    <p>Here's what it <em>is</em>: a disciplined, reversible mode of thinking where you systematically ask <strong>"where is the friction between what this system should do and what an attacker could make it do?"</strong></p>
+
+    <p>This is the mindset of someone who thinks like an attacker, but does it <strong>on purpose</strong>, using a framework, rather than hoping they'll stumble on the right questions.</p>
+
+    <div class="key-insight">
+        <strong>Key Insight:</strong> The threat identifier's mindset is trained, not innate. You develop it by asking the same questions repeatedly, in the same order, until they become automatic. Like learning to play an instrument, the framework eventually becomes muscle memory.
+    </div>
+
+    <h2>The Three Mental Moves</h2>
+
+    <p>Effective threat identification relies on three core mental moves, performed in sequence:</p>
+
+    <div style="margin: 2rem 0;">
+        <div style="margin-bottom: 2rem; padding: 1.5rem; background: white; border-radius: 6px; border-left: 4px solid #0366d6;">
+            <strong style="color: #0366d6; font-size: 1.1rem;">1. Map the System Boundary</strong>
+            <p style="margin-bottom: 0;">Ask: "What are the entry and exit points? Where do trust boundaries exist? What assets flow where?"</p>
+            <p style="margin-top: 0.5rem; color: #666; font-size: 0.95rem;"><em>This sounds simple but is the hardest step. Most people skip it and jump to threats. That's why they miss things.</em></p>
+        </div>
+
+        <div style="margin-bottom: 2rem; padding: 1.5rem; background: white; border-radius: 6px; border-left: 4px solid #0366d6;">
+            <strong style="color: #0366d6; font-size: 1.1rem;">2. Identify Friction Points</strong>
+            <p style="margin-bottom: 0;">Ask: "Where does data cross a trust boundary? Where are credentials used? Where do systems make assumptions about each other?"</p>
+            <p style="margin-top: 0.5rem; color: #666; font-size: 0.95rem;"><em>Friction points are where attackers probe. They're the seams in the system.</em></p>
+        </div>
+
+        <div style="padding: 1.5rem; background: white; border-radius: 6px; border-left: 4px solid #0366d6;">
+            <strong style="color: #0366d6; font-size: 1.1rem;">3. Reason About Attack Chains</strong>
+            <p style="margin-bottom: 0;">Ask: "If I exploited this friction point, what becomes possible next? What cascades from there?"</p>
+            <p style="margin-top: 0.5rem; color: #666; font-size: 0.95rem;"><em>One threat often unlocks others. A good threat model shows the sequence.</em></p>
+        </div>
+    </div>
+
+    <h2>Human Intuition vs. Systematic Thinking</h2>
+
+    <div class="comparison">
+        <div class="comparison-item vs-no">
+            <h4>❌ Intuition Alone</h4>
+            <ul>
+                <li>Fast but inconsistent</li>
+                <li>Misses non-obvious threats</li>
+                <li>Hard to teach others</li>
+                <li>Gaps vary by day/context</li>
+                <li>Hard to scale across reviews</li>
+            </ul>
+        </div>
+        <div class="comparison-item vs-yes">
+            <h4>✅ Systematic Approach</h4>
+            <ul>
+                <li>Slower but thorough</li>
+                <li>Catches systematic gaps</li>
+                <li>Reproducible and teachable</li>
+                <li>Consistent across contexts</li>
+                <li>Scales to teams</li>
+            </ul>
+        </div>
+    </div>
+
+    <p><strong>The best threat identifiers do both:</strong> they use the framework to ensure completeness, then apply intuition and domain knowledge to prioritize what matters and catch AI hallucinations.</p>
+
+    <h2>Where AI Fits</h2>
+
+    <p>AI (like an LLM) is excellent at:</p>
+    <ul>
+        <li><strong>Recalling</strong> attack patterns you might forget</li>
+        <li><strong>Combining</strong> ideas in unexpected ways</li>
+        <li><strong>Brainstorming</strong> attack vectors once you've set the frame</li>
+        <li><strong>Generating</strong> STRIDE categories for a given threat</li>
+    </ul>
+
+    <p>AI is <strong>not</strong> good at:</p>
+    <ul>
+        <li>Understanding your specific business context and risk tolerance</li>
+        <li>Knowing what attacks matter most to <em>you</em></li>
+        <li>Catching when it's hallucinating or being irrelevant</li>
+        <li>Building the judgment that comes from lived experience</li>
+    </ul>
+
+    <div class="callout">
+        <strong>The key insight:</strong> AI augments the threat identifier's mindset. It doesn't replace it. Your job is to think systematically, brief the AI clearly, and use your judgment to validate what it suggests.
+    </div>
+
+    <h2>Practical Example: Web Application Auth</h2>
+
+    <p>Let's walk through the three mental moves on a simple system: a web app with user login.</p>
+
+    <div class="example">
+        <strong>Move 1: Map the System Boundary</strong><br>
+        Actors: Browser, Web Server, Database, Auth Service. Data flows: User credentials travel from browser to server, server validates against DB, session tokens returned to browser.
+    </div>
+
+    <div class="example">
+        <strong>Move 2: Identify Friction Points</strong><br>
+        Friction: Credentials in transit (browser→server), validation logic (server→DB), session tokens in browser storage, token use in requests (browser→server).
+    </div>
+
+    <div class="example">
+        <strong>Move 3: Reason About Attack Chains</strong><br>
+        If I intercept credentials in transit → I can impersonate the user → I can access their data and perform actions as them → I might escalate to admin if the user is an admin.
+    </div>
+
+    <h2>Building Your Mindset</h2>
+
+    <div class="interactive-prompt">
+        <h4>🤔 Reflection Question</h4>
+        <p>Think of a system you recently reviewed or built. Walk through the three mental moves <em>right now</em>:</p>
+        <ol>
+            <li>What were the entry/exit points and trust boundaries?</li>
+            <li>Where did you identify friction?</li>
+            <li>What attack chains followed?</li>
+        </ol>
+        <p style="color: #666; font-size: 0.9rem;"><em>The act of writing this down trains the pattern. Repeat this exercise after each lesson to deepen the habit.</em></p>
+    </div>
+
+    <div class="key-insight">
+        <strong>Storage Strength Tip:</strong> You build long-term retention by <em>spacing</em> and <em>retrieving</em>. The reflection question above strengthens storage. In future lessons, you'll practice on increasingly complex systems, which builds flexibility.
+    </div>
+
+    <h2>Common Pitfalls</h2>
+
+    <ul>
+        <li><strong>Jumping to Solutions:</strong> "We'll use TLS to encrypt." Stop—first understand the friction point. Then the mitigation is obvious.</li>
+        <li><strong>Forgetting Human Elements:</strong> Threats aren't just technical. Phishing, social engineering, and insider threats are attack vectors too.</li>
+        <li><strong>Treating AI Output as Gospel:</strong> An LLM might suggest threats that don't apply to your business. Your job is to filter.</li>
+        <li><strong>Skipping the System Map:</strong> If you don't know how data flows, you can't reason about where it breaks.</li>
+    </ul>
+
+    <h2>Recommended Reading</h2>
+
+    <p><strong>Primary Source:</strong> <a href="https://www.oreilly.com/library/view/threat-modeling-designing/9781491927930/">Threat Modeling: Designing for Security</a> by Adam Shostack. Read Chapter 1 ("What's the Worst That Could Happen?") for a deep dive into the mindset. Shostack's approach is systematic and judgment-based—exactly what you're building.</p>
+
+    <div class="next-steps">
+        <strong>Next in Your Learning Path:</strong>
+        <ul>
+            <li><strong>Immediately:</strong> Complete the reflection question above. Write down your answers.</li>
+            <li><strong>This Session:</strong> You'll move to Lesson 2, where you'll practice system mapping—the foundation for everything else.</li>
+            <li><strong>Reference:</strong> Keep the <a href="../reference/glossary.html">Glossary</a> open as you work. Consistent terminology matters.</li>
+        </ul>
+    </div>
+
+    <div style="margin-top: 3rem; padding: 1.5rem; background: #f0f9ff; border-radius: 6px; border-left: 4px solid #0366d6;">
+        <strong>Questions?</strong> Ask me anything—about mindset, about specific systems you're thinking through, about how to apply this to your reviews. I'm here to clarify.
+    </div>
+
+    <div class="footer">
+        <p><strong>Lesson 1: The Threat Identifier's Mindset</strong> • Foundations<br>
+        Part of: <a href="../MISSION.md">AI-Assisted Threat Modelling for Security Reviews</a> <br>
+        <em>Lesson created: 2026-06-13</em></p>
+    </div>
+
+</body>
+</html>
