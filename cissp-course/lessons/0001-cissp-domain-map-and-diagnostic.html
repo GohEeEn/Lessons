@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lesson 0001 — CISSP Domain Map &amp; Diagnostic</title>
+  <style>
+    :root {
+      --ink: #1a1a1a;
+      --muted: #555;
+      --accent: #0050c8;
+      --accent-light: #e8f0fe;
+      --danger: #c0392b;
+      --danger-bg: #fdecea;
+      --success: #1a7a4a;
+      --success-bg: #e6f4ea;
+      --warn-bg: #fffbea;
+      --warn-border: #f0c040;
+      --border: #ddd;
+      --bg: #fafafa;
+      font-size: 17px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.75;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 6rem;
+    }
+    h1 { font-size: 2rem; line-height: 1.2; margin-bottom: 0.25rem; }
+    h2 { font-size: 1.35rem; margin-top: 2.5rem; margin-bottom: 0.6rem; border-bottom: 1px solid var(--border); padding-bottom: 0.25rem; }
+    h3 { font-size: 1.1rem; margin-top: 1.5rem; margin-bottom: 0.4rem; }
+    p { margin-bottom: 1rem; }
+    ul, ol { margin-left: 1.5rem; margin-bottom: 1rem; }
+    li { margin-bottom: 0.3rem; }
+    a { color: var(--accent); }
+    .meta {
+      color: var(--muted);
+      font-family: system-ui, sans-serif;
+      font-size: 0.85rem;
+      margin-bottom: 2rem;
+    }
+    .meta span { margin-right: 1.5rem; }
+    .callout {
+      border-left: 4px solid var(--accent);
+      background: var(--accent-light);
+      padding: 0.8rem 1.1rem;
+      margin: 1.5rem 0;
+      border-radius: 0 4px 4px 0;
+    }
+    .callout.warn {
+      border-left-color: var(--warn-border);
+      background: var(--warn-bg);
+    }
+    .callout.key {
+      border-left-color: #7b2d8b;
+      background: #f9f0fc;
+    }
+    .mermaid {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.2rem 1.5rem;
+      margin: 1.5rem 0;
+      text-align: center;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.2rem 0;
+      font-family: system-ui, sans-serif;
+      font-size: 0.92rem;
+    }
+    th {
+      background: var(--accent-light);
+      text-align: left;
+      padding: 0.55rem 0.8rem;
+      border: 1px solid var(--border);
+    }
+    td { padding: 0.5rem 0.8rem; border: 1px solid var(--border); vertical-align: top; }
+    tr:nth-child(even) td { background: #f7f7f7; }
+    .progress-bar { height: 6px; background: #e0e0e0; border-radius: 3px; margin-bottom: 2rem; }
+    .progress-bar-fill { height: 100%; width: 2%; background: var(--accent); border-radius: 3px; }
+    .cite { font-size: 0.82rem; color: var(--muted); font-family: system-ui, sans-serif; }
+
+    /* ── Quiz ── */
+    .question {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.2rem 1.4rem;
+      margin-bottom: 1.4rem;
+    }
+    .q-domain-tag {
+      font-family: system-ui, sans-serif;
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    .question p { margin-bottom: 0.9rem; font-weight: bold; }
+    .options { list-style: none; margin: 0; }
+    .options li { margin-bottom: 0.4rem; }
+    .options label {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      cursor: pointer;
+      padding: 0.5rem 0.7rem;
+      border-radius: 4px;
+      border: 1px solid transparent;
+      transition: background 0.15s;
+      font-family: system-ui, sans-serif;
+      font-size: 0.95rem;
+    }
+    .options label:hover { background: var(--accent-light); border-color: #c0d4f8; }
+    .options input[type="radio"] { margin-top: 3px; flex-shrink: 0; }
+    .opt-correct label { background: var(--success-bg) !important; border-color: #a8d5b5 !important; }
+    .opt-wrong   label { background: var(--danger-bg)  !important; border-color: #f5b7b1 !important; }
+    .explanation {
+      margin-top: 0.8rem;
+      padding: 0.65rem 0.9rem;
+      background: #f4f4f4;
+      border-left: 3px solid #aaa;
+      border-radius: 0 4px 4px 0;
+      font-family: system-ui, sans-serif;
+      font-size: 0.9rem;
+      display: none;
+    }
+    .explanation.show { display: block; }
+    .submit-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 0.75rem 2rem;
+      font-size: 1rem;
+      cursor: pointer;
+      font-family: system-ui, sans-serif;
+      margin-top: 0.5rem;
+      transition: background 0.15s;
+    }
+    .submit-btn:hover { background: #003fa0; }
+    .submit-btn:disabled { background: #999; cursor: not-allowed; }
+
+    /* ── Results ── */
+    #results-summary { display: none; margin-top: 2.5rem; }
+    .score-banner {
+      text-align: center;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      font-family: system-ui, sans-serif;
+      border: 1px solid var(--border);
+    }
+    .score-number { font-size: 3rem; font-weight: 700; line-height: 1; }
+    .score-label { font-size: 1rem; color: var(--muted); margin-top: 0.3rem; }
+    .domain-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin: 1.2rem 0;
+    }
+    .domain-card {
+      padding: 0.8rem 1rem;
+      border-radius: 6px;
+      font-family: system-ui, sans-serif;
+      font-size: 0.88rem;
+      border: 1px solid var(--border);
+    }
+    .domain-card.pass { background: var(--success-bg); border-color: #a8d5b5; }
+    .domain-card.fail { background: var(--danger-bg);  border-color: #f5b7b1; }
+    .domain-card .d-icon  { font-size: 1.2rem; margin-bottom: 0.15rem; }
+    .domain-card .d-label { font-weight: 700; font-size: 0.82rem; }
+    .domain-card .d-name  { font-size: 0.8rem; color: var(--muted); }
+
+    /* ── Nav ── */
+    .nav-links {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-family: system-ui, sans-serif;
+      font-size: 0.9rem;
+      display: flex;
+      justify-content: space-between;
+    }
+    .ask-teacher {
+      margin-top: 2.5rem;
+      padding: 1rem 1.2rem;
+      background: #f0f7ff;
+      border: 1px solid #b3d4f5;
+      border-radius: 6px;
+      font-family: system-ui, sans-serif;
+      font-size: 0.9rem;
+    }
+    .ask-teacher strong { display: block; margin-bottom: 0.3rem; }
+  </style>
+</head>
+<body>
+
+  <div class="progress-bar"><div class="progress-bar-fill"></div></div>
+
+  <h1>CISSP Domain Map &amp; Diagnostic</h1>
+  <p style="font-size:1.15rem; color:var(--muted); font-family:system-ui,sans-serif; margin-bottom:0.5rem;">
+    Where are you now — before Phase 1 begins?
+  </p>
+  <div class="meta">
+    <span>🗺️ Phase 0 — Map</span>
+    <span>⏱ ~45 min</span>
+    <span>🗓 Lesson 0001</span>
+  </div>
+
+  <div class="callout">
+    <strong>Lesson goal:</strong> Build a mental map of the 8 CISSP domains and run a short diagnostic — one question per domain — to surface where you're already strong and where the real work lies. This shapes how you use the next 25 weeks.
+  </div>
+
+  <!-- ── 1. THE EIGHT DOMAINS ── -->
+  <h2>The Eight Domains</h2>
+
+  <p>The CISSP Common Body of Knowledge (CBK) is organised into <strong>eight domains</strong>. They are not a flat list — they form a layered system. Governance sets the rules; engineering builds the controls; identity manages who is trusted; assurance validates that everything works; and software security ensures what we build doesn't undo all of the above.</p>
+
+  <div class="mermaid">
+graph TD
+    GOV["🏛️ <b>Governance</b><br/>D1 · Security &amp; Risk Management · 16%<br/>D2 · Asset Security · 10%"]
+    ENG["⚙️ <b>Engineering</b><br/>D3 · Architecture &amp; Engineering · 13%<br/>D4 · Network Security · 13%"]
+    IDN["🔑 <b>Identity</b><br/>D5 · IAM · 13%"]
+    ASR["🔍 <b>Assurance</b><br/>D6 · Assessment &amp; Testing · 12%<br/>D7 · Security Operations · 13%"]
+    DEV["💻 <b>Development</b><br/>D8 · Software Dev Security · 10%"]
+
+    GOV -->|"informs design of"| ENG
+    GOV -->|"defines policy for"| IDN
+    ENG -->|"validated by"| ASR
+    IDN -->|"enforced through"| ASR
+    GOV -.->|"shapes requirements for"| DEV
+    ENG -.->|"provides models for"| DEV
+  </div>
+
+  <p class="cite">Domain weights from the <a href="https://www.isc2.org/certifications/cissp/cissp-cbk" target="_blank">ISC2 CISSP Exam Outline (2024 CBK)</a>. Solid arrows = direct dependency. Dashed arrows = indirect influence.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Domain</th>
+        <th>Exam weight</th>
+        <th>Study Guide</th>
+        <th>The architect's question</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>D1</strong> Security &amp; Risk Management</td>
+        <td>16%</td><td>Ch 1–4</td>
+        <td><em>What risk do we accept, reduce, or transfer — and why?</em></td>
+      </tr>
+      <tr>
+        <td><strong>D2</strong> Asset Security</td>
+        <td>10%</td><td>Ch 5</td>
+        <td><em>What exactly are we protecting, and who owns it?</em></td>
+      </tr>
+      <tr>
+        <td><strong>D3</strong> Security Architecture &amp; Engineering</td>
+        <td>13%</td><td>Ch 6–10</td>
+        <td><em>How do we build systems that resist attack by design?</em></td>
+      </tr>
+      <tr>
+        <td><strong>D4</strong> Communication &amp; Network Security</td>
+        <td>13%</td><td>Ch 11–12</td>
+        <td><em>How do we protect data moving across untrusted networks?</em></td>
+      </tr>
+      <tr>
+        <td><strong>D5</strong> Identity &amp; Access Management</td>
+        <td>13%</td><td>Ch 13–14</td>
+        <td><em>Who is allowed to access what, and how do we verify them?</em></td>
+      </tr>
+      <tr>
+        <td><strong>D6</strong> Security Assessment &amp; Testing</td>
+        <td>12%</td><td>Ch 15</td>
+        <td><em>How do we know our controls actually work?</em></td>
+      </tr>
+      <tr>
+        <td><strong>D7</strong> Security Operations</td>
+        <td>13%</td><td>Ch 16–19</td>
+        <td><em>How do we detect, respond, and recover when controls fail?</em></td>
+      </tr>
+      <tr>
+        <td><strong>D8</strong> Software Development Security</td>
+        <td>10%</td><td>Ch 20–21</td>
+        <td><em>How do we bake security into the code we ship?</em></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ── 2. MINDSET ── -->
+  <h2>The One Mindset Shift That Changes Everything</h2>
+
+  <p>CISSP is not a technical certification. It tests whether you can <strong>think like a senior security manager</strong> — someone who reasons about risk, business impact, and priorities, not someone who configures tools.</p>
+
+  <div class="callout warn">
+    <strong>⚠️ The most common CISSP exam mistake</strong> — choosing the most technically correct answer instead of the most <em>managerially appropriate</em> one.
+    <br/><br/>
+    When two answers look correct, apply this tiebreaker in order:
+    <ol style="margin-left:1.4rem; margin-top:0.5rem;">
+      <li>Protect <strong>people</strong> before systems or data.</li>
+      <li><strong>Prevent</strong> before detect, detect before respond.</li>
+      <li>Choose the action that <strong>addresses risk based on priority</strong> — not just severity.</li>
+      <li>When in doubt: the action that requires <strong>least disruption for highest risk reduction</strong> wins.</li>
+    </ol>
+  </div>
+
+  <!-- ── 3. DIAGNOSTIC ── -->
+  <h2>Diagnostic — Eight Questions, One per Domain</h2>
+
+  <p>Answer honestly. This is not graded and no one will see it. Its only purpose is to give you a signal — before you invest study time — about which domains already have a foundation and which are genuinely new territory.</p>
+  <p>Commit to each answer before moving on. Submit all eight at the end.</p>
+
+  <div id="quiz"></div>
+
+  <button class="submit-btn" id="submit-btn" onclick="submitDiagnostic()">See My Results →</button>
+
+  <div id="results-summary">
+    <h2>Your Diagnostic Results</h2>
+    <div class="score-banner" id="score-banner">
+      <div class="score-number" id="score-number">—</div>
+      <div class="score-label">correct out of 8 domains</div>
+    </div>
+    <div class="domain-grid" id="domain-grid"></div>
+    <div class="callout" id="recommendation" style="margin-top:1.2rem;"></div>
+  </div>
+
+  <!-- ── 4. LEARNING PATH ── -->
+  <h2>Your 26-Week Learning Path</h2>
+
+  <p>The course follows a deliberate order — governance first, because it provides the risk-management mental model that every other domain plugs into.</p>
+
+  <div class="mermaid">
+gantt
+    dateFormat  YYYY-MM-DD
+    axisFormat  %b %d
+    section Phase 0 · Map
+    Domain overview + diagnostic       :done, p0a, 2026-06-21, 1w
+    AI Security Primer                 :done, p0b, 2026-06-21, 1w
+    section Phase 1 · Governance
+    D1 · Security and Risk Mgmt        :p1a, 2026-06-28, 3w
+    D2 · Asset Security                :p1b, 2026-07-19, 1w
+    section Phase 2 · Engineering
+    D3 · Architecture and Engineering  :p2a, 2026-08-02, 3w
+    D4 · Network Security              :p2b, 2026-08-23, 2w
+    section Phase 3 · Identity + AppSec
+    D5 · IAM (fast-track)              :p3a, 2026-09-20, 1w
+    D8 · Software Dev Security         :p3b, 2026-09-27, 3w
+    section Phase 4 · Operations
+    D6 · Assessment and Testing        :p4a, 2026-10-18, 2w
+    D7 · Security Operations           :p4b, 2026-11-01, 3w
+    section Phase 5 · Review
+    4 full mock exams + retrieval      :p5, 2026-11-22, 4w
+  </div>
+
+  <p class="cite">Phase 3 (IAM) is deliberately short — your 4-year cloud/IAM background means this domain needs validation, not re-teaching. The Practice Tests domain chapter will confirm or correct that assumption.</p>
+
+  <div class="callout key">
+    <strong>📖 Primary source:</strong> <a href="https://www.isc2.org/certifications/cissp/cissp-cbk" target="_blank">ISC2 CISSP Exam Outline (2024 CBK)</a> — the authoritative domain definitions and weightings. Read the outline document once before starting Phase 1. It tells you exactly what the exam tests.
+  </div>
+
+  <div class="ask-teacher">
+    <strong>💬 Ask your teacher</strong>
+    If any domain description doesn't match your mental model, if a diagnostic question explanation was confusing, or if you want to adjust the pacing — ask Copilot. Your teacher can go deeper on any domain, adjust the plan, or run a follow-up diagnostic on a specific area.
+  </div>
+
+  <div class="nav-links">
+    <span style="color:var(--muted);">← No previous lesson</span>
+    <a href="0002-ai-security-primer.html">Next: AI Security Primer →</a>
+  </div>
+
+  <!-- ── QUIZ LOGIC ── -->
+  <script>
+  const questions = [
+    {
+      domain: "D1 · Security & Risk Management",
+      domainShort: "D1",
+      text: "A known vulnerability will cost $80,000 to remediate. The asset value is $200,000, the exposure factor is 20%, and the annualised rate of occurrence is 0.5. As the security manager, what is the MOST justified response?",
+      options: [
+        "Patch immediately — all known vulnerabilities must be remediated per policy",
+        "Accept the risk — the annual expected loss is less than the cost of the countermeasure",
+        "Transfer the risk by purchasing cyber insurance to cover the full asset value",
+        "Avoid the risk by decommissioning the asset and its associated business function"
+      ],
+      correct: 1,
+      explanation: "ALE = Asset Value × Exposure Factor × ARO = $200,000 × 0.20 × 0.5 = $20,000/year. The countermeasure costs $80,000 — four times the expected annual loss. Spending more than you save is not justified. Accepting and formally documenting the risk is the financially rational, CISSP-approved response. Risk transfer (C) would only make sense if the insurance cost were lower than the ALE."
+    },
+    {
+      domain: "D2 · Asset Security",
+      domainShort: "D2",
+      text: "A data owner classifies a dataset as Confidential and then leaves the organisation. Who is now responsible for the classification of that dataset?",
+      options: [
+        "The data custodian who manages the storage system where the dataset resides",
+        "The security administrator who enforces access controls on the dataset",
+        "A newly assigned data owner designated by management to replace the departing individual",
+        "Nobody — classification is automatically frozen until the next scheduled review cycle"
+      ],
+      correct: 2,
+      explanation: "Data ownership is a role, not a person. When the individual holding that role leaves, management assigns a new data owner — who inherits all classification and handling decisions. The custodian (A) implements controls dictated by the owner but does not set or change classification. Classification does not self-freeze (D); if no owner is assigned it becomes an unmanaged asset risk."
+    },
+    {
+      domain: "D3 · Security Architecture & Engineering",
+      domainShort: "D3",
+      text: "A system must ensure users can only read data at or below their clearance level AND cannot copy classified data down to a lower classification. Which security model DIRECTLY enforces both constraints?",
+      options: [
+        "Biba Integrity Model — enforces no-write-up and no-read-down to preserve data integrity",
+        "Bell-LaPadula Confidentiality Model — enforces no-read-up and no-write-down to preserve secrecy",
+        "Clark-Wilson Model — enforces separation of duties and well-formed transaction integrity",
+        "Brewer-Nash (Chinese Wall) Model — prevents access conflicts between competing organisations"
+      ],
+      correct: 1,
+      explanation: "Bell-LaPadula is the confidentiality model built for exactly this scenario. Its Simple Security Property ('no read up') prevents a subject from reading data above their clearance. Its *-Property ('no write down') prevents a subject from copying data to a lower classification. Together they enforce both constraints. Biba (A) is its integrity counterpart — it prevents contamination from below, not leakage downward."
+    },
+    {
+      domain: "D4 · Communication & Network Security",
+      domainShort: "D4",
+      text: "An attacker on the local network is broadcasting forged ARP replies to redirect traffic through their machine. Which control MOST directly mitigates this attack?",
+      options: [
+        "Deploy DNSSEC to cryptographically validate DNS responses and prevent cache poisoning",
+        "Enable Dynamic ARP Inspection on managed switches to validate ARP packets against known bindings",
+        "Apply ingress and egress filtering at the router to block packets with spoofed IP source addresses",
+        "Disable VLAN auto-negotiation on all trunk ports to prevent double-tagging attacks"
+      ],
+      correct: 1,
+      explanation: "ARP poisoning (ARP spoofing) manipulates the ARP cache on local hosts. Dynamic ARP Inspection (DAI) validates ARP packets against the switch's DHCP snooping binding table — dropping any ARP reply whose MAC-to-IP mapping doesn't match a known DHCP lease. Ingress filtering (C) addresses IP spoofing at layer 3, not layer-2 ARP. DNSSEC (A) addresses DNS, an entirely different protocol."
+    },
+    {
+      domain: "D5 · Identity & Access Management",
+      domainShort: "D5",
+      text: "A firm wants traders to access the trading system ONLY between 09:00–17:00 on weekdays AND only from workstations on the physical trading floor. Which access control concept enforces these time and location constraints?",
+      options: [
+        "Role-Based Access Control — assigns permissions based on the user's organisational role",
+        "Mandatory Access Control — uses security labels and clearances to govern access",
+        "Rule-Based Access Control — enforces administrator-defined rules including time and location",
+        "Discretionary Access Control — lets resource owners grant or revoke permissions individually"
+      ],
+      correct: 2,
+      explanation: "Rule-Based Access Control enforces access via static, admin-defined rules that can include time-of-day, day-of-week, source IP, and physical location. RBAC (A) is role-centric — it knows nothing about when or where you are connecting from. This distinction trips up experienced IAM engineers who conflate the two. The trading floor example is a classic Rule-Based AC scenario on the CISSP exam."
+    },
+    {
+      domain: "D6 · Security Assessment & Testing",
+      domainShort: "D6",
+      text: "A team is assessing a web application after being given full access to source code, architecture diagrams, and database schemas. What type of assessment is this, and what is its PRIMARY advantage?",
+      options: [
+        "Black-box test — realistic simulation of an external attacker with no prior knowledge",
+        "Gray-box test — partial knowledge balances realism with efficiency",
+        "White-box test — complete internal access enables thorough, efficient code-path coverage",
+        "Red team exercise — adversarial simulation specifically designed to test detection and response"
+      ],
+      correct: 2,
+      explanation: "White-box (crystal-box) testing provides full access to internals — source code, schemas, architecture. This enables complete code-path coverage and surfaces logic flaws invisible from outside. The trade-off is reduced realism compared to a black-box engagement. A red team exercise (D) is a broader adversarial simulation that includes physical and social engineering vectors, not just application testing."
+    },
+    {
+      domain: "D7 · Security Operations",
+      domainShort: "D7",
+      text: "A production server is confirmed compromised via a zero-day and is actively exfiltrating customer data. In what order should the incident response team proceed?",
+      options: [
+        "Eradicate the malware → Contain the server → Recover service → Document findings",
+        "Contain the server → Eradicate the threat → Recover service → Conduct lessons learned",
+        "Recover service immediately to minimise business impact → Eradicate → Contain → Document",
+        "Document all forensic evidence first → Contain → Eradicate → Recover"
+      ],
+      correct: 1,
+      explanation: "The CISSP incident response order: Detect → Contain → Eradicate → Recover → Lessons Learned. Containment comes first to stop active exfiltration — isolate before you try to clean. Eradicating before containment risks further spread. Recovering before eradicating risks immediate re-infection. Documentation is continuous throughout but does not delay containment action."
+    },
+    {
+      domain: "D8 · Software Development Security",
+      domainShort: "D8",
+      text: "A developer is hardening a login form against brute-force attacks. Which control provides the STRONGEST protection while causing the LEAST disruption to legitimate users who occasionally mistype?",
+      options: [
+        "Lock the account permanently after 3 consecutive failed login attempts",
+        "Present a CAPTCHA after 3 failures and apply exponential back-off between subsequent attempts",
+        "Require all users to create passwords of at least 20 random characters",
+        "Log all failed login attempts and send real-time alerts to the security operations team"
+      ],
+      correct: 1,
+      explanation: "CAPTCHA after failures plus exponential back-off frustrates automated tools without permanently locking out legitimate users who mistyped once. Permanent lockout (A) creates a denial-of-service weapon — an attacker can lock any known account with 3 fake attempts. Logging (D) is purely detective; it does not prevent the attack. Longer passwords (C) resist offline cracking but do nothing against online brute-force rate."
+    }
+  ];
+
+  // Render questions
+  const quizEl = document.getElementById('quiz');
+  questions.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.className = 'question';
+    div.id = `q${i}`;
+    div.innerHTML = `
+      <div class="q-domain-tag">${q.domain} &nbsp;·&nbsp; Question ${i + 1} of 8</div>
+      <p>${q.text}</p>
+      <ul class="options">
+        ${q.options.map((opt, j) => `
+          <li id="opt-${i}-${j}">
+            <label>
+              <input type="radio" name="q${i}" value="${j}" />
+              ${opt}
+            </label>
+          </li>
+        `).join('')}
+      </ul>
+      <div class="explanation" id="exp-${i}"><strong>Explanation:</strong> ${q.explanation}</div>
+    `;
+    quizEl.appendChild(div);
+  });
+
+  function submitDiagnostic() {
+    // Require all answered
+    for (let i = 0; i < questions.length; i++) {
+      if (!document.querySelector(`input[name="q${i}"]:checked`)) {
+        alert(`Please answer question ${i + 1} before submitting.`);
+        document.getElementById(`q${i}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+    }
+
+    document.getElementById('submit-btn').disabled = true;
+
+    let score = 0;
+    const results = [];
+
+    questions.forEach((q, i) => {
+      const selected = parseInt(document.querySelector(`input[name="q${i}"]:checked`).value);
+      const pass = selected === q.correct;
+      if (pass) score++;
+      results.push({ domain: q.domain, domainShort: q.domainShort, pass });
+
+      // Colour the options
+      for (let j = 0; j < q.options.length; j++) {
+        const li = document.getElementById(`opt-${i}-${j}`);
+        li.querySelector('input').disabled = true;
+        if (j === q.correct)               li.classList.add('opt-correct');
+        else if (j === selected && !pass)  li.classList.add('opt-wrong');
+      }
+      document.getElementById(`exp-${i}`).classList.add('show');
+    });
+
+    // Show summary section
+    const summary = document.getElementById('results-summary');
+    summary.style.display = 'block';
+
+    // Score banner
+    document.getElementById('score-number').textContent = `${score}/8`;
+    const banner = document.getElementById('score-banner');
+    if      (score >= 6) { banner.style.background = '#e6f4ea'; banner.style.borderColor = '#a8d5b5'; }
+    else if (score >= 4) { banner.style.background = '#fffbea'; banner.style.borderColor = '#f0c040'; }
+    else                 { banner.style.background = '#fdecea'; banner.style.borderColor = '#f5b7b1'; }
+
+    // Domain grid
+    const grid = document.getElementById('domain-grid');
+    results.forEach(r => {
+      const card = document.createElement('div');
+      card.className = `domain-card ${r.pass ? 'pass' : 'fail'}`;
+      card.innerHTML = `
+        <div class="d-icon">${r.pass ? '✅' : '❌'}</div>
+        <div class="d-label">${r.domainShort}</div>
+        <div class="d-name">${r.domain.split('·')[1].trim()}</div>
+      `;
+      grid.appendChild(card);
+    });
+
+    // Recommendation
+    const fails = results.filter(r => !r.pass).map(r => r.domainShort);
+    const rec = document.getElementById('recommendation');
+    if (score >= 6) {
+      rec.innerHTML = `<strong>Strong starting point (${score}/8).</strong> ${fails.length ? `Gaps identified in: <strong>${fails.join(', ')}</strong>. Pay extra attention during those phases.` : 'No gaps identified — validate depth with the Practice Tests at the end of each phase.'} Proceed through the plan at normal pace.`;
+    } else if (score >= 4) {
+      rec.innerHTML = `<strong>Solid base to build on (${score}/8).</strong> Focus areas: <strong>${fails.join(', ')}</strong>. The phased plan has you covered — don't skip the phase-end retrieval practice.`;
+    } else {
+      rec.innerHTML = `<strong>Lots of new ground ahead (${score}/8)</strong> — that is exactly what this course is for. Gaps across: <strong>${fails.join(', ')}</strong>. Stick to the phased plan and give the governance lessons (Phase 1) your full attention. They are the mental model every other domain hangs off.`;
+    }
+
+    summary.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  </script>
+
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: true,
+      securityLevel: 'loose',
+      theme: 'base',
+      themeVariables: {
+        primaryColor: '#e8f0fe',
+        primaryBorderColor: '#0050c8',
+        lineColor: '#555',
+        fontFamily: 'system-ui, sans-serif',
+        fontSize: '14px'
+      }
+    });
+  </script>
+
+</body>
+</html>
