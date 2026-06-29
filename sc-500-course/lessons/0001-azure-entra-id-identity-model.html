@@ -192,7 +192,7 @@
   </p>
   <div class="meta">
     <span>📚 Track 1: Identity, Access &amp; Governance</span>
-    <span>⏱ ~35 min</span>
+    <span>⏱ ~65 min</span>
     <span>🗓 Lesson 0001</span>
   </div>
 
@@ -274,6 +274,7 @@ graph TD
   <p>Not all identities are humans. Entra ID recognises three principal types you'll secure in the exam:</p>
 
   <table>
+
     <thead>
       <tr><th>Principal</th><th>What it is</th><th>SC-500 relevance</th></tr>
     </thead>
@@ -296,9 +297,53 @@ graph TD
     </tbody>
   </table>
 
-  <div class="callout key">
-    <strong>Security mindset link:</strong> From your threat modelling work, think of each principal type as a <em>trust boundary crossing point</em>. Every time a principal gains access to a resource, that's a potential lateral movement vector. Managed identities reduce this risk by removing long-lived credentials.
+  <h3>Authentication flow: how each principal gets access</h3>
+  <p>Every principal type follows the same token-based pattern — the difference is <em>how credentials are presented</em> to Entra ID at step 1:</p>
+
+  <div class="mermaid">
+graph LR
+  U["👤 User\npassword + MFA"]
+  SP["⚙️ Service Principal\nclient secret or certificate"]
+  MI["🤖 Managed Identity\nno credentials — Azure platform manages"]
+  EID(["Microsoft Entra ID\nauthenticates &amp; issues tokens"])
+  TOK["Access Token\n(JWT, short-lived)"]
+  RES[("Azure Resource\nKey Vault · Storage · API")]
+
+  U -->|"authenticate"| EID
+  SP -->|"authenticate"| EID
+  MI -->|"IMDS request — no secret"| EID
+  EID --> TOK
+  TOK --> RES
   </div>
+
+  <div class="callout key">
+    <strong>Security mindset link:</strong> From your threat modelling work, think of each principal type as a <em>trust boundary crossing point</em>. The credential on the left-hand arrow is the attack surface — managed identities eliminate it entirely by removing long-lived secrets from the picture.
+  </div>
+
+  <h3>System-assigned vs User-assigned Managed Identities</h3>
+  <p>Managed identities come in two flavours — the difference matters in access design:</p>
+  <table>
+    <thead>
+      <tr><th></th><th>System-assigned</th><th>User-assigned</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Lifecycle</strong></td>
+        <td>Tied to the resource — automatically deleted when the resource is deleted</td>
+        <td>Independent Azure resource — survives deletion of any attached resource</td>
+      </tr>
+      <tr>
+        <td><strong>Sharing</strong></td>
+        <td>Bound 1:1 to a single resource</td>
+        <td>Can be assigned to multiple resources simultaneously</td>
+      </tr>
+      <tr>
+        <td><strong>Use when</strong></td>
+        <td>One resource needs its own identity (e.g. single VM reading Key Vault secrets)</td>
+        <td>Multiple resources share identical RBAC (e.g. a VM scale set or fleet of App Services)</td>
+      </tr>
+    </tbody>
+  </table>
 
   <!-- ── Section 5 ── -->
   <h2>5. RBAC: Who Can Do What, Where</h2>
@@ -315,9 +360,94 @@ graph TD
   </p>
   <p class="cite">[<a href="https://learn.microsoft.com/en-us/azure/role-based-access-control/overview" target="_blank">What is Azure RBAC? — Microsoft Learn</a>]</p>
 
+  <!-- ── Section 6 ── -->
+  <h2>6. Entra ID Directory Roles vs Azure RBAC</h2>
+  <p>
+    This is one of the most frequently tested distinctions in SC-500: Microsoft's cloud has <strong>two separate role planes</strong> that control completely different things and do not automatically inherit from each other.
+  </p>
+
+  <div class="mermaid">
+graph TD
+  subgraph EntraPlane["Entra ID Directory Roles — controls the DIRECTORY"]
+    GA["🔑 Global Administrator"]
+    SecA["🛡 Security Administrator"]
+    UAd["👤 User Administrator"]
+  end
+  subgraph AzurePlane["Azure RBAC Roles — controls RESOURCES"]
+    OW["⚡ Owner"]
+    CO["🔧 Contributor"]
+    RE["👁 Reader"]
+  end
+  EntraPlane -- "manages" --> DIR["Directory objects\n(Users, Groups, Apps, Policies)"]
+  AzurePlane -- "manages" --> RES["Azure Resources\n(VMs, Storage, Databases)"]
+  EntraPlane -. "NOT inherited →\nassign separately" .-> AzurePlane
+  </div>
+
+  <table>
+    <thead>
+      <tr><th></th><th>Entra ID Directory Roles</th><th>Azure RBAC Roles</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Controls</strong></td>
+        <td>Entra directory objects (users, groups, apps, policies)</td>
+        <td>Azure resource operations (VMs, storage, networking)</td>
+      </tr>
+      <tr>
+        <td><strong>Assigned in</strong></td>
+        <td>Entra ID → Roles &amp; admins</td>
+        <td>Azure Portal → IAM blade on a resource/scope</td>
+      </tr>
+      <tr>
+        <td><strong>Scope</strong></td>
+        <td>Tenant-wide (or Administrative Unit)</td>
+        <td>Management group → subscription → resource group → resource</td>
+      </tr>
+      <tr>
+        <td><strong>Example roles</strong></td>
+        <td>Global Admin, Security Admin, User Admin, Privileged Role Admin</td>
+        <td>Owner, Contributor, Reader, Key Vault Secrets Officer</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout warn">
+    <strong>Critical exam trap:</strong> A user with <strong>Global Administrator</strong> in Entra ID has no automatic rights over Azure resources (VMs, storage, etc.). Conversely, an Azure <strong>Owner</strong> cannot manage Entra users or policies. The two planes must be granted independently.
+    <br><br>
+    Exception: A Global Admin can <em>elevate</em> themselves to <code>User Access Administrator</code> at the root management group — but this is a deliberate, audited action, not a default.
+  </div>
+
+  <h3>Administrative Units — scoping directory roles</h3>
+  <p>
+    By default, Entra ID directory roles apply <strong>tenant-wide</strong>. An <strong>Administrative Unit (AU)</strong> is a container inside the tenant that lets you restrict a role to a defined subset of users, groups, or devices — implementing least-privilege for admins.
+  </p>
+
+  <div class="mermaid">
+graph TD
+  T["🏢 Tenant — contoso.com"]
+  T --> AU1["🗂️ AU: Sales Division"]
+  T --> AU2["🗂️ AU: Finance Division"]
+  T --> GU["👥 Unscoped objects\n(no AU)"]
+  AU1 -->|"User Admin\nscoped here only"| S["Sales users &amp; groups"]
+  AU2 -->|"Helpdesk Admin\nscoped here only"| F["Finance users &amp; groups"]
+  </div>
+
+  <ul>
+    <li>A <strong>User Administrator</strong> scoped to the Sales AU can only reset passwords for Sales users — not Finance or anyone else.</li>
+    <li>Without an AU, that same role would apply across the entire tenant.</li>
+    <li>AUs support users, groups, and devices as members.</li>
+  </ul>
+
+  <div class="callout">
+    <strong>Least-privilege pattern:</strong> Use AUs to delegate day-to-day admin tasks (password reset, licence assignment, group management) to local IT without granting tenant-wide power. This is a direct implementation of the <em>principle of least privilege</em> at the directory layer.
+  </div>
+  <p class="cite">[<a href="https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/administrative-units" target="_blank">Administrative units in Entra ID — Microsoft Learn</a>]</p>
+
+  <p class="cite">[<a href="https://learn.microsoft.com/en-us/azure/active-directory/roles/concept-understand-roles" target="_blank">Understand Entra ID roles — Microsoft Learn</a>]</p>
+
   <!-- ── Quiz ── -->
-  <h2>6. Retrieval Practice</h2>
-  <p>Close your notes and answer from memory. Each answer is four words.</p>
+  <h2>7. Retrieval Practice</h2>
+  <p>Close your notes and answer from memory.</p>
 
   <div class="quiz">
 
@@ -373,10 +503,49 @@ graph TD
       <div class="feedback" id="q4-fb"></div>
     </div>
 
+    <!-- Q5 -->
+    <div class="question" id="q5">
+      <p>A user is assigned the Global Administrator role in Entra ID. What Azure resource permissions do they automatically have?</p>
+      <ul class="options">
+        <li><label><input type="radio" name="q5" value="a"> Full Owner rights on all subscriptions</label></li>
+        <li><label><input type="radio" name="q5" value="b"> Contributor rights on the root management group</label></li>
+        <li><label><input type="radio" name="q5" value="c"> None — the two role planes are independent</label></li>
+        <li><label><input type="radio" name="q5" value="d"> Reader rights on all resource groups</label></li>
+      </ul>
+      <button class="check-btn" onclick="check('q5','c','Global Admin controls the Entra directory only. Azure resource rights must be assigned separately via Azure RBAC.')">Check answer</button>
+      <div class="feedback" id="q5-fb"></div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="question" id="q6">
+      <p>You have 50 App Services that all need identical read access to the same Key Vault. Which managed identity type is most appropriate?</p>
+      <ul class="options">
+        <li><label><input type="radio" name="q6" value="a"> System-assigned — one per App Service</label></li>
+        <li><label><input type="radio" name="q6" value="b"> User-assigned — one shared identity for all 50</label></li>
+        <li><label><input type="radio" name="q6" value="c"> A service principal with a client secret</label></li>
+        <li><label><input type="radio" name="q6" value="d"> A shared user account with Key Vault access</label></li>
+      </ul>
+      <button class="check-btn" onclick="check('q6','b','User-assigned managed identity — create one identity, assign it to all 50 App Services, and grant Key Vault access once.')">Check answer</button>
+      <div class="feedback" id="q6-fb"></div>
+    </div>
+
+    <!-- Q7 -->
+    <div class="question" id="q7">
+      <p>A regional IT admin should be able to reset passwords for users in the "APAC" division only — not anyone else in the tenant. What is the correct approach?</p>
+      <ul class="options">
+        <li><label><input type="radio" name="q7" value="a"> Assign them Global Administrator tenant-wide</label></li>
+        <li><label><input type="radio" name="q7" value="b"> Assign them User Administrator scoped to an APAC Administrative Unit</label></li>
+        <li><label><input type="radio" name="q7" value="c"> Assign them Owner on the APAC Azure subscription</label></li>
+        <li><label><input type="radio" name="q7" value="d"> Create a separate Entra ID tenant for APAC</label></li>
+      </ul>
+      <button class="check-btn" onclick="check('q7','b','Administrative Unit — scope the User Administrator role to the APAC AU so the admin can only manage APAC users, not the whole tenant.')">Check answer</button>
+      <div class="feedback" id="q7-fb"></div>
+    </div>
+
   </div>
 
   <!-- ── Lab ── -->
-  <h2>7. Hands-On Lab</h2>
+  <h2>8. Hands-On Lab</h2>
   <p>Complete this free Microsoft Learn module — it uses a sandbox (no Azure subscription needed):</p>
   <ul>
     <li>
@@ -389,7 +558,7 @@ graph TD
   <p>After the lab, come back and try to draw the tenant → subscription → resource group hierarchy from memory.</p>
 
   <!-- ── Primary Source ── -->
-  <h2>8. Primary Source</h2>
+  <h2>9. Primary Source</h2>
   <p>
     <a href="https://learn.microsoft.com/en-us/azure/active-directory/fundamentals/active-directory-whatis" target="_blank">
       <strong>What is Microsoft Entra ID? — Microsoft Learn</strong>
@@ -406,6 +575,21 @@ graph TD
       <li><em>"When would I use multiple tenants instead of one?"</em></li>
       <li><em>"How does Entra ID relate to Active Directory Domain Services?"</em></li>
     </ul>
+  </div>
+
+  <!-- ── Capstone Connection ── -->
+  <h2>10. Capstone Connection</h2>
+  <div class="callout" style="border-left-color:#1a7a4a; background:#e6f4ea;">
+    <strong>🔨 SecureAI API — Track 1</strong><br>
+    Everything in this lesson is the identity boundary of your capstone project.
+    The App Service you'll deploy lives in your Entra ID tenant, under your Azure subscription —
+    the exact hierarchy you've mapped here. The managed identity assigned to that App Service is a
+    <em>service principal</em> in your tenant, and RBAC scoped to the Key Vault resource group is how
+    it earns the right to read secrets. Before you write a single line of application code,
+    you'll define this boundary in Bicep.
+    <br><br>
+    → <a href="../capstone/capstone-overview.html">Capstone Overview: SecureAI API project</a><br>
+    → <a href="../capstone/capstone-track-1.html">Capstone Track 1: Identity, Key Vault &amp; Bicep Scaffold</a>
   </div>
 
   <!-- ── Nav ── -->
