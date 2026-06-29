@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lesson 0002 — Privileged Identity Management (PIM)</title>
+  <style>
+    :root {
+      --ink: #1a1a1a;
+      --muted: #555;
+      --accent: #0050c8;
+      --accent-light: #e8f0fe;
+      --danger: #c0392b;
+      --success: #1a7a4a;
+      --warn-bg: #fffbea;
+      --warn-border: #f0c040;
+      --border: #ddd;
+      --bg: #fafafa;
+      --code-bg: #f4f4f4;
+      font-size: 17px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.75;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 6rem;
+    }
+    h1 { font-size: 2rem; line-height: 1.2; margin-bottom: 0.25rem; }
+    h2 { font-size: 1.35rem; margin-top: 2.5rem; margin-bottom: 0.6rem; border-bottom: 1px solid var(--border); padding-bottom: 0.25rem; }
+    h3 { font-size: 1.1rem; margin-top: 1.5rem; margin-bottom: 0.4rem; }
+    p { margin-bottom: 1rem; }
+    ul, ol { margin-left: 1.5rem; margin-bottom: 1rem; }
+    li { margin-bottom: 0.3rem; }
+    a { color: var(--accent); }
+    code {
+      font-family: 'Courier New', monospace;
+      background: var(--code-bg);
+      padding: 0.1em 0.35em;
+      border-radius: 3px;
+      font-size: 0.9em;
+    }
+    .meta {
+      color: var(--muted);
+      font-family: system-ui, sans-serif;
+      font-size: 0.85rem;
+      margin-bottom: 2rem;
+    }
+    .meta span { margin-right: 1.5rem; }
+    .callout {
+      border-left: 4px solid var(--accent);
+      background: var(--accent-light);
+      padding: 0.8rem 1.1rem;
+      margin: 1.5rem 0;
+      border-radius: 0 4px 4px 0;
+    }
+    .callout.warn {
+      border-left-color: var(--warn-border);
+      background: var(--warn-bg);
+    }
+    .callout.key {
+      border-left-color: #7b2d8b;
+      background: #f9f0fc;
+    }
+    .quiz { margin: 2rem 0; }
+    .question {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.2rem 1.4rem;
+      margin-bottom: 1.2rem;
+    }
+    .question p { margin-bottom: 0.8rem; font-weight: bold; }
+    .options { list-style: none; margin: 0; }
+    .options li { margin-bottom: 0.4rem; }
+    .options label {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      cursor: pointer;
+      padding: 0.45rem 0.6rem;
+      border-radius: 4px;
+      border: 1px solid transparent;
+      transition: background 0.15s;
+      font-family: system-ui, sans-serif;
+      font-size: 0.95rem;
+    }
+    .options label:hover { background: var(--accent-light); }
+    .options input[type="radio"] { margin-top: 3px; flex-shrink: 0; }
+    .check-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 0.5rem 1.2rem;
+      font-size: 0.95rem;
+      cursor: pointer;
+      margin-top: 0.6rem;
+      font-family: system-ui, sans-serif;
+    }
+    .check-btn:hover { background: #003fa0; }
+    .feedback {
+      margin-top: 0.7rem;
+      padding: 0.6rem 0.9rem;
+      border-radius: 4px;
+      font-family: system-ui, sans-serif;
+      font-size: 0.9rem;
+      display: none;
+    }
+    .feedback.correct { background: #e6f4ea; color: var(--success); border: 1px solid #a8d5b5; }
+    .feedback.incorrect { background: #fdecea; color: var(--danger); border: 1px solid #f5b7b1; }
+    .nav-links {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-family: system-ui, sans-serif;
+      font-size: 0.9rem;
+      display: flex;
+      gap: 2rem;
+    }
+    .ask-teacher {
+      margin-top: 2.5rem;
+      padding: 1rem 1.2rem;
+      background: #f0f7ff;
+      border: 1px solid #b3d4f5;
+      border-radius: 6px;
+      font-family: system-ui, sans-serif;
+      font-size: 0.9rem;
+    }
+    .ask-teacher strong { display: block; margin-bottom: 0.3rem; }
+    .cite {
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-family: system-ui, sans-serif;
+    }
+    .mermaid {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.2rem 1.5rem;
+      margin: 1.5rem 0;
+      text-align: center;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.2rem 0;
+      font-family: system-ui, sans-serif;
+      font-size: 0.92rem;
+    }
+    th {
+      background: var(--accent-light);
+      text-align: left;
+      padding: 0.55rem 0.8rem;
+      border: 1px solid var(--border);
+    }
+    td {
+      padding: 0.5rem 0.8rem;
+      border: 1px solid var(--border);
+      vertical-align: top;
+    }
+    tr:nth-child(even) td { background: #f7f7f7; }
+    .progress-bar {
+      height: 6px;
+      background: #e0e0e0;
+      border-radius: 3px;
+      margin-bottom: 2rem;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 14%;
+      background: var(--accent);
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Progress -->
+  <div class="progress-bar"><div class="progress-bar-fill"></div></div>
+
+  <h1>Privileged Identity Management</h1>
+  <p style="font-size:1.15rem; color:var(--muted); font-family:system-ui,sans-serif; margin-bottom:0.5rem;">
+    Just-in-Time Access, Eligible Assignments &amp; Access Reviews
+  </p>
+  <div class="meta">
+    <span>📚 Track 1: Identity, Access &amp; Governance</span>
+    <span>⏱ ~45 min</span>
+    <span>🗓 Lesson 0002</span>
+  </div>
+
+  <div class="callout">
+    <strong>Lesson goal:</strong> Understand how PIM eliminates standing privilege — the difference between eligible and active assignments, how the activation workflow operates, what settings control it, and how access reviews keep entitlements clean over time.
+  </div>
+
+  <!-- ── Section 1 ── -->
+  <h2>1. The Standing Privilege Problem</h2>
+  <p>
+    Before PIM, privileged roles were assigned permanently — a user given <code>Global Administrator</code> held it 24 hours a day, 7 days a week, whether or not they were actively doing admin work. This creates a disproportionate blast radius:
+  </p>
+
+  <ul>
+    <li>A phished Global Admin credential grants an attacker <strong>full tenant control</strong>, immediately, at any hour.</li>
+    <li>Admins accumulate roles over time and rarely give them back — role sprawl grows silently.</li>
+    <li>There is no audit trail of <em>when</em> someone used their privilege, only that they had it.</li>
+  </ul>
+
+  <div class="callout key">
+    <strong>Threat modelling link:</strong> In STRIDE terms, standing privilege is an <em>Elevation of Privilege</em> pre-condition gift to an attacker. PIM removes it by making privilege time-bound and request-justified — the attacker's stolen credential becomes nearly useless outside an active window.
+  </div>
+
+  <p>
+    <strong>Microsoft Entra PIM</strong> (Privileged Identity Management) enforces <strong>just-in-time (JIT) access</strong>: a principal is <em>eligible</em> for a role but must explicitly activate it, proving identity and providing justification, for a limited time window.
+  </p>
+
+  <!-- ── Section 2 ── -->
+  <h2>2. Eligible vs Active Assignments</h2>
+  <p>PIM introduces a distinction the standard RBAC model does not have:</p>
+
+  <table>
+    <thead>
+      <tr><th></th><th>Active assignment</th><th>Eligible assignment</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Status</strong></td>
+        <td>Role is always effective — no action needed</td>
+        <td>Role is assigned but <em>not active</em> until the user activates it</td>
+      </tr>
+      <tr>
+        <td><strong>Use case</strong></td>
+        <td>Break-glass accounts; roles that must always be available (e.g., a service account)</td>
+        <td>Human admins who need elevated access occasionally (the default PIM pattern)</td>
+      </tr>
+      <tr>
+        <td><strong>Attack surface</strong></td>
+        <td>High — stolen credential = immediate privilege</td>
+        <td>Low — stolen credential alone is not enough; activation requires MFA + justification</td>
+      </tr>
+      <tr>
+        <td><strong>Can be time-limited?</strong></td>
+        <td>Yes — set an end date on the assignment itself</td>
+        <td>Yes — both the assignment and each activation window can be time-limited</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="mermaid">
+graph LR
+  E["🔒 Eligible\n(assigned, not active)"]
+  R["📋 Activating\n(MFA · justification · approval)"]
+  A["✅ Active\n(time-bound window)"]
+  X["⏱ Expired\n(auto-revoked)"]
+
+  E -->|"user requests activation"| R
+  R -->|"requirements met"| A
+  A -->|"timer expires"| X
+  X -->|"next request"| R
+  </div>
+
+  <!-- ── Section 3 ── -->
+  <h2>3. The Activation Workflow</h2>
+  <p>
+    When a user needs to use an eligible role, they trigger the PIM activation flow. The exact steps depend on what the role administrator has configured, but the canonical sequence is:
+  </p>
+
+  <div class="mermaid">
+sequenceDiagram
+  actor User
+  participant PIM as Microsoft Entra PIM
+  participant Approver
+  participant EntraID as Entra ID
+
+  User->>PIM: Request activation (role + duration + justification)
+  PIM->>User: Prompt: complete MFA
+  User->>PIM: MFA satisfied
+  PIM->>Approver: Send approval request (email + portal notification)
+  Approver->>PIM: Approve request
+  PIM->>EntraID: Grant role assignment (time-limited)
+  EntraID-->>User: Role active — access granted
+  Note over EntraID: Timer runs (max 8 h in this example)
+  EntraID->>PIM: Activation window expires
+  PIM->>EntraID: Revoke role assignment automatically
+  EntraID-->>User: Role removed — back to Eligible
+  </div>
+
+  <p>
+    If <strong>approval is not required</strong> for a role, PIM grants the role immediately after MFA. If the user does not activate before the end of their eligible assignment period, the eligible assignment itself may also expire and require renewal.
+  </p>
+
+  <!-- ── Section 4 ── -->
+  <h2>4. PIM Role Settings</h2>
+  <p>
+    Each role in PIM has its own settings page. Role administrators (typically <code>Privileged Role Administrator</code> or <code>Global Administrator</code>) control these per-role:
+  </p>
+
+  <table>
+    <thead>
+      <tr><th>Setting</th><th>What it controls</th><th>Recommended for high-privilege roles</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Maximum activation duration</strong></td>
+        <td>How long a single activation can last (1 min – 24 h)</td>
+        <td>8 h or less for Global Admin / Owner</td>
+      </tr>
+      <tr>
+        <td><strong>Require MFA on activation</strong></td>
+        <td>Forces an MFA challenge before the role activates</td>
+        <td>Always enable for privileged roles</td>
+      </tr>
+      <tr>
+        <td><strong>Require justification</strong></td>
+        <td>User must enter a business reason before activation</td>
+        <td>Enable — creates an audit trail per activation</td>
+      </tr>
+      <tr>
+        <td><strong>Require approval</strong></td>
+        <td>A designated approver must approve before the role activates</td>
+        <td>Enable for Global Admin, Security Admin, Privileged Role Admin</td>
+      </tr>
+      <tr>
+        <td><strong>Require ticket information</strong></td>
+        <td>User must provide a change-control or ITSM ticket number</td>
+        <td>Enable where a change management process exists</td>
+      </tr>
+      <tr>
+        <td><strong>Notify on activation</strong></td>
+        <td>Email alert to the role administrator when someone activates</td>
+        <td>Always enable — real-time visibility of privilege use</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout warn">
+    <strong>Exam scenario pattern:</strong> You will often see a question phrased as: "Ensure no one holds Global Administrator permanently, activations require a reason and a second approver, and the security team is alerted." The answer is: set maximum activation duration, enable justification, enable approval (with approver), enable notifications — all in PIM role settings.
+  </div>
+
+  <!-- ── Section 5 ── -->
+  <h2>5. PIM Scope: Entra Roles, Azure RBAC &amp; Privileged Access Groups</h2>
+  <p>
+    PIM operates across three surfaces. Understanding which surface you're working in matters for exam scenarios:
+  </p>
+
+  <div class="mermaid">
+graph TD
+  PIM["Microsoft Entra PIM"]
+  PIM --> ER["Entra ID Directory Roles\ne.g. Global Admin, Security Admin"]
+  PIM --> AR["Azure RBAC Roles\ne.g. Owner, Contributor on subscriptions"]
+  PIM --> PAG["Privileged Access Groups\n(PIM manages group membership)"]
+  AR --> SUB["Scoped to: management group\n→ subscription → resource group → resource"]
+  PAG --> GROLE["Group is assigned a role\nor used as a permission boundary"]
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>PIM surface</th><th>What it protects</th><th>Typical use</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Entra ID roles</strong></td>
+        <td>Directory admin roles (Global Admin, Security Admin, etc.)</td>
+        <td>JIT access for tenant-level administration</td>
+      </tr>
+      <tr>
+        <td><strong>Azure RBAC roles</strong></td>
+        <td>Resource-level roles (Owner, Contributor) on any Azure scope</td>
+        <td>JIT access for subscription / resource group deployments</td>
+      </tr>
+      <tr>
+        <td><strong>Privileged Access Groups</strong></td>
+        <td>Membership of an Entra group that has been PIM-enabled</td>
+        <td>When a group is itself assigned to a role or used as an access boundary — control membership just-in-time</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ── Section 6 ── -->
+  <h2>6. Access Reviews</h2>
+  <p>
+    JIT solves the <em>duration</em> problem. Access reviews solve the <em>accumulation</em> problem: even eligible assignments pile up if no one periodically asks "does this person still need this role?"
+  </p>
+
+  <p>
+    An <strong>access review</strong> in PIM is a scheduled recertification campaign:
+  </p>
+
+  <ol>
+    <li>A review is created for a role (e.g., "recertify all Global Admin eligible assignments every 90 days").</li>
+    <li>Reviewers are notified — this can be <strong>self-review</strong>, <strong>manager review</strong>, or a <strong>designated reviewer</strong>.</li>
+    <li>Reviewers approve (keep) or deny (remove) each assignment.</li>
+    <li>When the review period closes, PIM auto-applies the decision — including <strong>auto-removing</strong> assignments where no response was given (configurable).</li>
+  </ol>
+
+  <div class="callout">
+    <strong>Why it matters:</strong> Access reviews are the mechanism that prevents JIT from becoming a graveyard of forgotten eligible assignments. The exam will test your understanding of who can create reviews, what happens to non-responders, and what the auto-apply action is.
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>Review setting</th><th>Options</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Reviewer type</strong></td>
+        <td>Self (user reviews their own access) · Manager · Selected reviewers · Role owners</td>
+      </tr>
+      <tr>
+        <td><strong>Frequency</strong></td>
+        <td>Weekly · Monthly · Quarterly · Semi-annual · Annual · One-time</td>
+      </tr>
+      <tr>
+        <td><strong>On no response</strong></td>
+        <td>No change · Remove access · Approve access · Take recommendations</td>
+      </tr>
+      <tr>
+        <td><strong>Auto-apply results</strong></td>
+        <td>If enabled, decisions are applied automatically at review close; otherwise, a reviewer must manually apply</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="cite">[<a href="https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-how-to-start-security-review" target="_blank">Start an access review for Entra roles in PIM — Microsoft Learn</a>]</p>
+
+  <!-- ── Section 7 ── -->
+  <h2>7. PIM Audit Logs &amp; Alerts</h2>
+  <p>PIM records every event — assignment changes, activations, approvals, denials — in the <strong>Entra ID audit log</strong>. Key operational points:</p>
+
+  <ul>
+    <li><strong>Audit history</strong>: filter by role, user, or date range to see exactly who activated what and when, with their justification text.</li>
+    <li><strong>Built-in alerts</strong>: PIM ships pre-configured alerts for high-risk patterns — e.g., <em>"Roles are being activated too frequently"</em>, <em>"Too many Global Administrators"</em>, <em>"Roles are assigned outside of PIM"</em>.</li>
+    <li><strong>Roles assigned outside PIM</strong>: if someone bypasses PIM and assigns a privileged role directly (via standard RBAC), PIM raises an alert. This is a critical signal of misconfiguration or shadow IT.</li>
+  </ul>
+
+  <div class="callout warn">
+    <strong>Exam trap:</strong> PIM alerts on <em>"Roles are assigned outside of PIM"</em> do not automatically block the assignment — they surface it for remediation. To enforce that PIM is the only path to privileged roles, you use Azure Policy to deny direct privileged role assignments.
+  </div>
+
+  <!-- ── Quiz ── -->
+  <h2>8. Retrieval Practice</h2>
+  <p>Close your notes and answer from memory.</p>
+
+  <div class="quiz">
+
+    <!-- Q1 -->
+    <div class="question" id="q1">
+      <p>A user has an "eligible" assignment to the Security Administrator role. Can they currently manage Conditional Access policies?</p>
+      <ul class="options">
+        <li><label><input type="radio" name="q1" value="a"> Yes — eligible means the role is active</label></li>
+        <li><label><input type="radio" name="q1" value="b"> No — they must activate the role first</label></li>
+        <li><label><input type="radio" name="q1" value="c"> Yes — but only in read-only mode</label></li>
+        <li><label><input type="radio" name="q1" value="d"> No — eligible assignments cannot be activated for directory roles</label></li>
+      </ul>
+      <button class="check-btn" onclick="check('q1','b','Eligible means the role is assigned but dormant. The user must trigger activation (MFA + justification) before the role takes effect.')">Check answer</button>
+      <div class="feedback" id="q1-fb"></div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="question" id="q2">
+      <p>Which PIM setting should you enable to ensure every Global Admin activation is visible to the security team in real time?</p>
+      <ul class="options">
+        <li><label><input type="radio" name="q2" value="a"> Require approval</label></li>
+        <li><label><input type="radio" name="q2" value="b"> Require justification</label></li>
+        <li><label><input type="radio" name="q2" value="c"> Notify on activation</label></li>
+        <li><label><input type="radio" name="q2" value="d"> Maximum activation duration</label></li>
+      </ul>
+      <button class="check-btn" onclick="check('q2','c','Notify on activation sends an email alert to designated recipients (e.g. the security team) every time the role is activated.')">Check answer</button>
+      <div class="feedback" id="q2-fb"></div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question" id="q3">
+      <p>A PIM activation was approved and granted for 6 hours. The user finishes their work after 2 hours. What happens to the role at hour 7?</p>
+      <ul class="options">
+        <li><label><input type="radio" name="q3" value="a"> The role remains active until the user manually deactivates it</label></li>
+        <li><label><input type="radio" name="q3" value="b"> PIM automatically revokes the role when the activation window expires</label></li>
+        <li><label><input type="radio" name="q3" value="c"> The role converts to a permanent active assignment</label></li>
+        <li><label><input type="radio" name="q3" value="d"> The approver must manually remove the role</label></li>
+      </ul>
+      <button class="check-btn" onclick="check('q3','b','PIM auto-revokes time-bound activations — no manual action needed. The user returns to their eligible state and must re-activate next time.')">Check answer</button>
+      <div class="feedback" id="q3-fb"></div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="question" id="q4">
+      <p>Which PIM feature periodically asks reviewers to confirm whether users should retain their eligible role assignments?</p>
+      <ul class="options">
+        <li><label><input type="radio" name="q4" value="a"> PIM alerts</label></li>
+        <li><label><input type="radio" name="q4" value="b"> Role activation audit log</label></li>
+        <li><label><input type="radio" name="q4" value="c"> Access reviews</label></li>
+        <li><label><input type="radio" name="q4" value="d"> Conditional Access policy</label></li>
+      </ul>
+      <button class="check-btn" onclick="check('q4','c','Access reviews recertify existing assignments on a schedule — the mechanism that prevents role sprawl accumulating over time.')">Check answer</button>
+      <div class="feedback" id="q4-fb"></div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="question" id="q5">
+      <p>A developer needs temporary Owner rights on a production subscription to perform a scheduled deployment. What is the correct PIM approach?</p>
+      <ul class="options">
+        <li><label><input type="radio" name="q5" value="a"> Grant a permanent active Owner assignment, remove it manually after deployment</label></li>
+        <li><label><input type="radio" name="q5" value="b"> Create an eligible Owner assignment (Azure RBAC via PIM); developer activates for the deployment window</label></li>
+        <li><label><input type="radio" name="q5" value="c"> Add the developer to a group that already has Owner and remove later</label></li>
+        <li><label><input type="radio" name="q5" value="d"> Use a managed identity with Owner rights for the duration</label></li>
+      </ul>
+      <button class="check-btn" onclick="check('q5','b','PIM for Azure RBAC: create an eligible Owner assignment at subscription scope. Developer activates for the deployment window with justification and approval, then the role auto-expires.')">Check answer</button>
+      <div class="feedback" id="q5-fb"></div>
+    </div>
+
+    <!-- Q6 -->
+    <div class="question" id="q6">
+      <p>PIM raises a "Roles are assigned outside of PIM" alert. What does this mean operationally?</p>
+      <ul class="options">
+        <li><label><input type="radio" name="q6" value="a"> PIM automatically removed the out-of-band assignment</label></li>
+        <li><label><input type="radio" name="q6" value="b"> A privileged role was assigned directly via RBAC, bypassing PIM controls — requires manual remediation</label></li>
+        <li><label><input type="radio" name="q6" value="c"> The activation duration exceeded the maximum set in PIM settings</label></li>
+        <li><label><input type="radio" name="q6" value="d"> An access review found a stale eligible assignment</label></li>
+      </ul>
+      <button class="check-btn" onclick="check('q6','b','PIM surfaces the bypass as an alert but does not auto-block it. Remediation: remove the direct assignment and re-create it as a PIM eligible assignment. Use Azure Policy to prevent recurrence.')">Check answer</button>
+      <div class="feedback" id="q6-fb"></div>
+    </div>
+
+  </div>
+
+  <!-- ── Lab ── -->
+  <h2>9. Hands-On Lab</h2>
+  <p>Complete these Microsoft Learn modules — both use sandboxes (no Azure subscription needed):</p>
+  <ul>
+    <li>
+      <a href="https://learn.microsoft.com/en-us/training/modules/explore-privileged-identity-management/" target="_blank">
+        <strong>Explore Privileged Identity Management</strong>
+      </a>
+      — Microsoft Learn (free sandbox, ~30 min). Assigns and activates an eligible role end-to-end.
+    </li>
+    <li>
+      <a href="https://learn.microsoft.com/en-us/training/modules/manage-azure-active-directory-privileged-identity-management/" target="_blank">
+        <strong>Manage Entra ID PIM</strong>
+      </a>
+      — Microsoft Learn (free sandbox, ~40 min). Covers role settings, approval workflows, and access reviews.
+    </li>
+  </ul>
+  <p>
+    After the lab, sketch the full activation flow from memory: request → MFA → approval → active → expiry. Then write down the six PIM settings you'd enable for Global Administrator.
+  </p>
+
+  <!-- ── Primary Source ── -->
+  <h2>10. Primary Sources</h2>
+  <p>
+    <a href="https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-configure" target="_blank">
+      <strong>What is Privileged Identity Management? — Microsoft Learn</strong>
+    </a><br>
+    <span class="cite">Official documentation. Read "How PIM works" and "License requirements" before the lab.</span>
+  </p>
+  <p>
+    <a href="https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-resource-roles-configure-role-settings" target="_blank">
+      <strong>Configure Entra role settings in PIM — Microsoft Learn</strong>
+    </a><br>
+    <span class="cite">Step-by-step for each PIM setting covered in section 4.</span>
+  </p>
+
+  <!-- ── Ask Teacher ── -->
+  <div class="ask-teacher">
+    <strong>💬 Ask your teacher</strong>
+    <ul style="margin-top:0.4rem; margin-left:1.2rem;">
+      <li><em>"What's the difference between PIM for Entra roles and PIM for Azure RBAC — same settings?"</em></li>
+      <li><em>"Can a user approve their own PIM activation request?"</em></li>
+      <li><em>"How do Privileged Access Groups differ from just assigning a role directly to a group?"</em></li>
+      <li><em>"What's the minimum licence required for PIM?"</em></li>
+    </ul>
+  </div>
+
+  <!-- ── Capstone Connection ── -->
+  <h2>11. Capstone Connection</h2>
+  <div class="callout" style="border-left-color:#1a7a4a; background:#e6f4ea;">
+    <strong>🔨 SecureAI API — Track 1</strong><br>
+    In your capstone project, the Key Vault <code>Secrets Officer</code> role on the production key vault is an Azure RBAC role. Rather than granting it permanently to your deployment identity, you'll create a PIM eligible assignment for it — so access is only active during a deliberate deployment window. This is the same pattern used in real-world regulated environments.
+    <br><br>
+    → <a href="../capstone/capstone-track-1.html">Capstone Track 1: Identity, Key Vault &amp; Bicep Scaffold</a>
+  </div>
+
+  <!-- ── Nav ── -->
+  <div class="nav-links">
+    <span>← <a href="0001-azure-entra-id-identity-model.html">Lesson 0001: The Azure Identity Model</a></span>
+    <span>Next → <a href="0003-conditional-access.html">Lesson 0003: Conditional Access &amp; Device Identity</a></span>
+  </div>
+
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+  </script>
+
+  <script>
+    function check(qId, correct, explanation) {
+      const selected = document.querySelector(`input[name="${qId}"]:checked`);
+      const fb = document.getElementById(`${qId}-fb`);
+      if (!selected) { fb.style.display='block'; fb.className='feedback incorrect'; fb.textContent='Select an answer first.'; return; }
+      if (selected.value === correct) {
+        fb.className = 'feedback correct';
+        fb.innerHTML = '✅ Correct. ' + explanation;
+      } else {
+        fb.className = 'feedback incorrect';
+        fb.innerHTML = '❌ Not quite. ' + explanation;
+      }
+      fb.style.display = 'block';
+    }
+  </script>
+
+</body>
+</html>
