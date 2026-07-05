@@ -21,6 +21,21 @@ This repo contains self-contained teaching workspaces. Each has:
 - `reference/*.html` — cheat sheets and glossaries
 - `learning-records/*.md` — key insights, numbered `0001-...`
 
+## CISSP Domain Grouping
+`cissp-course/lessons/` is organized by the 8 official CISSP domains, not flat:
+- Domain-specific lessons live in `lessons/domain-N-<official-domain-name>/` (kebab-case, e.g. `domain-1-security-and-risk-management/`). Only create a domain folder once it has its first lesson.
+- Cross-domain lessons (covering all 8 domains, e.g. the diagnostic and AI primer) stay directly in `lessons/` root, not inside any domain folder.
+- Lesson numbers stay globally sequential across the whole course regardless of which folder they land in — numbers reflect creation order, not position within a domain.
+- Each populated domain folder **must** have its own `index.html` containing a Mermaid diagram that maps how that domain's lesson concepts relate to and build on each other, plus a linked list of the domain's lessons.
+- Concept maps are **full-skeleton, not lesson-scoped**: show every chapter/sub-topic from the study guide's table of contents for that domain (see `RESOURCES.md`/`MISSION.md` for the chapter range per domain), not just what's been taught. Render covered topics as solid/colored/clickable nodes linking to their lesson; render not-yet-covered topics as dashed/grey, unlinked nodes. This keeps the map an honest picture of true exam scope instead of silently looking complete. Hardcode the skeleton directly into the domain's `index.html` — no separate manifest file.
+
+## Doc-Sync Enforcement
+`README.md` and root `index.html` must always list every lesson across all three courses (cissp-course, sc-500-course, threat-modeling-course). This is **not** left to manual discipline — it's enforced deterministically:
+- `scripts/check-course-docs.js` (Node) scans lesson files vs. links in `README.md`/`index.html` and fails on any missing, stale, or broken entry; also validates every populated CISSP domain folder has an `index.html` with a Mermaid diagram, linked from the root `index.html`, and that the diagram mentions every chapter number in that domain's MISSION.md-declared chapter range (catches an incomplete/out-of-scope concept map).
+- `.github/workflows/check-course-docs.yml` runs this script on every push/PR — the authoritative, edit-source-agnostic gate.
+- `.github/hooks/course-docs-check.json` reruns the same script after Copilot CLI tool calls for fast in-session feedback (non-blocking).
+- When adding/moving a lesson, run `node scripts/check-course-docs.js` locally before considering the change complete.
+
 ## Lesson Linking
 Every lesson HTML file **must** include a `<div class="nav-links">` footer with previous and next links.
 

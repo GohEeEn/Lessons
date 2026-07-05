@@ -340,7 +340,7 @@ graph LR
   <p class="cite">Framework synthesised from NIST SP 800-37 (RMF) and ISO/IEC 27005:2022 (information security risk management).</p>
 
   <div class="callout key">
-    <strong>The key insight:</strong> <a href="../reference/glossary.html#risk-management-lifecycle" class="g" data-tip="Continuous, cyclical programme: Identify → Assess → Treat → Monitor → repeat. Never stops.">Security risk management</a> is the <em>whole loop</em> — a continuous, cyclical process. A <a href="../reference/glossary.html#security-assessment" class="g" data-tip="A structured, time-bounded evaluation of whether controls are present and effective. Point-in-time activity.">security assessment</a> is a <em>point-in-time activity</em> that re-enters the Assess step. Confusing the two is one of the most common CISSP exam traps in Domain 1.
+    <strong>The key insight:</strong> <a href="../../reference/glossary.html#risk-management-lifecycle" class="g" data-tip="Continuous, cyclical programme: Identify → Assess → Treat → Monitor → repeat. Never stops.">Security risk management</a> is the <em>whole loop</em> — a continuous, cyclical process. A <a href="../../reference/glossary.html#security-assessment" class="g" data-tip="A structured, time-bounded evaluation of whether controls are present and effective. Point-in-time activity.">security assessment</a> is a <em>point-in-time activity</em> that re-enters the Assess step. Confusing the two is one of the most common CISSP exam traps in Domain 1.
   </div>
 
   <!-- ─────────────────────────────────────────────────
@@ -358,28 +358,100 @@ graph LR
     </thead>
     <tbody>
       <tr>
-        <td><strong><a href="../reference/glossary.html#nist-rmf" class="g" data-tip="Six steps: Categorize → Select → Implement → Assess → Authorize → Monitor. The Authorize step produces an ATO.">NIST RMF</a></strong><br/><small>SP 800-37 Rev. 2</small></td>
+        <td><strong><a href="../../reference/glossary.html#nist-rmf" class="g" data-tip="Seven steps: Prepare → Categorize → Select → Implement → Assess → Authorize → Monitor. The Authorize step produces an ATO.">NIST RMF</a></strong><br/><small>SP 800-37 Rev. 2</small></td>
         <td>US NIST (2018)</td>
-        <td>Six-step lifecycle for federal systems: Categorize → Select → Implement → Assess → Authorize → Monitor. The Authorize step (<a href="../reference/glossary.html#ato" class="g" data-tip="Authority to Operate — formal management decision accepting residual risk and granting a system permission to operate.">ATO</a> — Authority to Operate) is exam-relevant: leadership formally accepts <a href="../reference/glossary.html#residual-risk" class="g" data-tip="Risk remaining after controls have been applied. Must be formally accepted by senior leadership.">residual risk</a>.</td>
+        <td>Seven-step lifecycle for federal systems: Prepare → Categorize → Select → Implement → Assess → Authorize → Monitor. The Authorize step (<a href="../../reference/glossary.html#ato" class="g" data-tip="Authority to Operate — formal management decision accepting residual risk and granting a system permission to operate.">ATO</a> — Authority to Operate) is exam-relevant: leadership formally accepts <a href="../../reference/glossary.html#residual-risk" class="g" data-tip="Risk remaining after controls have been applied. Must be formally accepted by senior leadership.">residual risk</a>.</td>
       </tr>
       <tr>
-        <td><strong><a href="../reference/glossary.html#iso-27005" class="g" data-tip="International standard for information security risk management. Aligns with ISO 27001. Vendor-neutral lifecycle guidance.">ISO/IEC 27005</a></strong></td>
+        <td><strong><a href="../../reference/glossary.html#iso-27005" class="g" data-tip="International standard for information security risk management. Aligns with ISO 27001. Vendor-neutral lifecycle guidance.">ISO/IEC 27005</a></strong></td>
         <td>ISO (2022)</td>
         <td>Vendor-neutral, international standard for information security risk management. Maps cleanly onto ISO 27001 and is the framework most referenced outside US federal contexts.</td>
       </tr>
     </tbody>
   </table>
 
+  <!-- ─────────────────────────────────────────────────
+       NIST RMF Phase-by-Phase
+  ───────────────────────────────────────────────── -->
+  <h3>NIST RMF — Phase by Phase (SP 800-37 Rev. 2)</h3>
+
+  <p>Rev. 2 (2018) added <strong>Prepare</strong> as a formal first step — before it, the framework started at Categorize. All seven steps are exam-relevant; the exam sometimes tests whether you know Prepare comes first.</p>
+
+  <div class="mermaid" id="nist-rmf-phases">
+graph LR
+    P0["🧭 Prepare<br/><small>Risk mgmt roles ·<br/>strategy · risk tolerance</small>"]
+    P1["🏷️ Categorize<br/><small>FIPS 199 impact levels<br/>(C·I·A)</small>"]
+    P2["📋 Select<br/><small>Choose SP 800-53<br/>control baseline</small>"]
+    P3["🔨 Implement<br/><small>Deploy &amp; document<br/>controls in SSP</small>"]
+    P4["🔬 Assess<br/><small>Test control<br/>effectiveness</small>"]
+    P5["✅ Authorize<br/><small>Senior official accepts<br/>residual risk → ATO</small>"]
+    P6["👁️ Monitor<br/><small>Continuous assessment ·<br/>config management</small>"]
+
+    P0 --> P1 --> P2 --> P3 --> P4 --> P5 --> P6
+    P6 -.->|"triggers re-authorization<br/>or feeds back to"| P0
+
+    classDef authorize fill:#fffbea,stroke:#f0c040,color:#1a1a1a,font-weight:bold
+    class P5 authorize
+  </div>
+
+  <table>
+    <thead>
+      <tr><th>Step</th><th>Purpose</th><th>Key output</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>1. Prepare</strong></td>
+        <td>Set the strategic context: establish risk management roles, strategy, and risk tolerance before any system-level work begins.</td>
+        <td>Organisational risk strategy, assigned roles</td>
+      </tr>
+      <tr>
+        <td><strong>2. Categorize</strong></td>
+        <td>Categorize the system and its data by impact level using <a href="../../reference/glossary.html#fips-199" class="g" data-tip="Federal standard defining Low/Moderate/High impact levels for Confidentiality, Integrity, and Availability.">FIPS 199</a> (Confidentiality, Integrity, Availability).</td>
+        <td>Security categorization (Low/Mod/High)</td>
+      </tr>
+      <tr>
+        <td><strong>3. Select</strong></td>
+        <td>Select and tailor a control baseline from NIST SP 800-53 matching the categorization.</td>
+        <td>Documented control set (System Security Plan)</td>
+      </tr>
+      <tr>
+        <td><strong>4. Implement</strong></td>
+        <td>Deploy the selected controls and document exactly how each is configured.</td>
+        <td>Controls in production, updated SSP</td>
+      </tr>
+      <tr>
+        <td><strong>5. Assess</strong></td>
+        <td>Independently test whether controls are implemented correctly and operating as intended.</td>
+        <td>Security assessment report, findings</td>
+      </tr>
+      <tr>
+        <td><strong>6. Authorize</strong></td>
+        <td>A senior official reviews residual risk and findings, then formally decides to accept operation.</td>
+        <td><a href="../../reference/glossary.html#ato" class="g" data-tip="Authority to Operate — formal management decision accepting residual risk and granting a system permission to operate.">ATO</a> (Authority to Operate)</td>
+      </tr>
+      <tr>
+        <td><strong>7. Monitor</strong></td>
+        <td>Continuously monitor controls and the environment for changes; re-authorize when risk posture shifts materially.</td>
+        <td>Ongoing risk posture, re-authorization triggers</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <strong>⚠️ Exam trap:</strong> The two back-to-back "A" steps are the most commonly confused pair — <strong>Assess</strong> asks "do the controls actually work?" (a technical test), while <strong>Authorize</strong> asks "do we accept the risk and formally approve operation?" (a management decision). Assess produces evidence; Authorize is the decision that consumes it.
+  </div>
+
   <div class="callout">
     <strong>Architect's lens:</strong> As a security architect, you are responsible for the <em>design</em> of the risk management programme — defining the risk register structure, selecting the risk methodology (qualitative vs. quantitative), and ensuring the lifecycle is embedded in SDLC governance, not bolted on at the end.
   </div>
+
 
   <!-- ─────────────────────────────────────────────────
        SECTION 3: What is a Security Assessment?
   ───────────────────────────────────────────────── -->
   <h2>3. Security Assessment — The Point-in-Time Activity</h2>
 
-  <p>A security assessment is a <strong>structured, time-bounded evaluation</strong> of whether <a href="../reference/glossary.html#control" class="g" data-tip="A safeguard that reduces the likelihood or impact of a risk. Types: preventive, detective, corrective, deterrent, recovery, compensating.">controls</a> are present, effective, and appropriately implemented against a defined standard or threat model. It produces a snapshot — a report of findings, gaps, and recommendations at a moment in time.</p>
+  <p>A security assessment is a <strong>structured, time-bounded evaluation</strong> of whether <a href="../../reference/glossary.html#control" class="g" data-tip="A safeguard that reduces the likelihood or impact of a risk. Types: preventive, detective, corrective, deterrent, recovery, compensating.">controls</a> are present, effective, and appropriately implemented against a defined standard or threat model. It produces a snapshot — a report of findings, gaps, and recommendations at a moment in time.</p>
 
   <p>Security assessments come in several forms. All of them are <em>inputs</em> to the Assess step of the risk management lifecycle:</p>
 
@@ -389,12 +461,12 @@ graph LR
     </thead>
     <tbody>
       <tr>
-        <td><strong><a href="../reference/glossary.html#vulnerability-assessment" class="g" data-tip="Automated scan identifying known weaknesses. Output is a prioritised list with CVSS scores.">Vulnerability Assessment</a></strong></td>
+        <td><strong><a href="../../reference/glossary.html#vulnerability-assessment" class="g" data-tip="Automated scan identifying known weaknesses. Output is a prioritised list with CVSS scores.">Vulnerability Assessment</a></strong></td>
         <td>Known weaknesses in systems, applications, or configurations (automated scanning)</td>
         <td>Prioritised list of vulnerabilities with CVSS scores</td>
       </tr>
       <tr>
-        <td><strong><a href="../reference/glossary.html#pen-test" class="g" data-tip="Authorised adversarial simulation testing whether vulnerabilities are exploitable. Produces attack narrative and PoC exploits.">Penetration Test</a></strong></td>
+        <td><strong><a href="../../reference/glossary.html#pen-test" class="g" data-tip="Authorised adversarial simulation testing whether vulnerabilities are exploitable. Produces attack narrative and PoC exploits.">Penetration Test</a></strong></td>
         <td>Exploitability of vulnerabilities in a controlled, adversarial simulation</td>
         <td>Attack narrative, proof-of-concept exploits, remediation guidance</td>
       </tr>
@@ -404,9 +476,9 @@ graph LR
         <td>Findings report, compliance gap analysis</td>
       </tr>
       <tr>
-        <td><strong><a href="../reference/glossary.html#risk-assessment" class="g" data-tip="Formal evaluation of likelihood × impact of identified threats. Feeds the Assess step and updates the risk register.">Risk Assessment</a></strong></td>
+        <td><strong><a href="../../reference/glossary.html#risk-assessment" class="g" data-tip="Formal evaluation of likelihood × impact of identified threats. Feeds the Assess step and updates the risk register.">Risk Assessment</a></strong></td>
         <td>Likelihood and impact of identified threats against assets; often the formal deliverable within a risk management programme</td>
-        <td><a href="../reference/glossary.html#risk-register" class="g" data-tip="Living document recording all identified risks with ratings, owners, treatment decisions, and current status.">Risk register</a> update, risk ratings, treatment recommendations</td>
+        <td><a href="../../reference/glossary.html#risk-register" class="g" data-tip="Living document recording all identified risks with ratings, owners, treatment decisions, and current status.">Risk register</a> update, risk ratings, treatment recommendations</td>
       </tr>
     </tbody>
   </table>
@@ -519,7 +591,7 @@ graph TD
   </div>
 
   <div class="callout">
-    <strong>Residual risk:</strong> After treatment, some risk always remains. This is called <a href="../reference/glossary.html#residual-risk" class="g" data-tip="Risk remaining after controls have been applied. Must be formally accepted by senior leadership — not the security team.">residual risk</a>. The CISSP exam expects you to know that residual risk must be <em>formally accepted</em> by senior leadership — not the security team, not the system owner, but the executive or board with the authority to make business risk decisions.
+    <strong>Residual risk:</strong> After treatment, some risk always remains. This is called <a href="../../reference/glossary.html#residual-risk" class="g" data-tip="Risk remaining after controls have been applied. Must be formally accepted by senior leadership — not the security team.">residual risk</a>. The CISSP exam expects you to know that residual risk must be <em>formally accepted</em> by senior leadership — not the security team, not the system owner, but the executive or board with the authority to make business risk decisions.
   </div>
 
   <!-- ─────────────────────────────────────────────────
@@ -532,17 +604,17 @@ graph TD
   <div class="vocab-grid">
     <div class="vocab-card">
       <div class="v-label">Vulnerability</div>
-      <div class="v-def">A <a href="../reference/glossary.html#vulnerability" class="g" data-tip="A weakness in a system or process that could be exploited by a threat. Alone it does not constitute risk.">weakness</a> in a system, process, or control that <em>could be exploited</em>.</div>
+      <div class="v-def">A <a href="../../reference/glossary.html#vulnerability" class="g" data-tip="A weakness in a system or process that could be exploited by a threat. Alone it does not constitute risk.">weakness</a> in a system, process, or control that <em>could be exploited</em>.</div>
       <div class="v-example">"The web server is running an unpatched version of OpenSSL."</div>
     </div>
     <div class="vocab-card">
       <div class="v-label">Threat</div>
-      <div class="v-def">Any circumstance or event with the <em>potential</em> to exploit a <a href="../reference/glossary.html#vulnerability" class="g" data-tip="A weakness in a system or process that could be exploited.">vulnerability</a> and cause harm.</div>
+      <div class="v-def">Any circumstance or event with the <em>potential</em> to exploit a <a href="../../reference/glossary.html#vulnerability" class="g" data-tip="A weakness in a system or process that could be exploited.">vulnerability</a> and cause harm.</div>
       <div class="v-example">"A nation-state actor is actively scanning for this OpenSSL CVE."</div>
     </div>
     <div class="vocab-card">
       <div class="v-label">Risk</div>
-      <div class="v-def">The <em>probability</em> that a <a href="../reference/glossary.html#threat" class="g" data-tip="Any circumstance or event with potential to exploit a vulnerability and cause harm.">threat</a> exploits a <a href="../reference/glossary.html#vulnerability" class="g" data-tip="A weakness in a system that could be exploited.">vulnerability</a>, <em>multiplied by</em> the impact if it does.</div>
+      <div class="v-def">The <em>probability</em> that a <a href="../../reference/glossary.html#threat" class="g" data-tip="Any circumstance or event with potential to exploit a vulnerability and cause harm.">threat</a> exploits a <a href="../../reference/glossary.html#vulnerability" class="g" data-tip="A weakness in a system that could be exploited.">vulnerability</a>, <em>multiplied by</em> the impact if it does.</div>
       <div class="v-example">"If exploited, we lose customer PII — risk is HIGH."</div>
     </div>
   </div>
@@ -571,11 +643,11 @@ graph LR
   ───────────────────────────────────────────────── -->
   <h2>7. ⚠️ AI in Domain 1 — Governance and Risk Tier Classification</h2>
 
-  <p>Domain 1 carries the highest AI exam weight of all 8 domains. The two frameworks from <a href="0002-ai-security-primer.html">Lesson 0002</a> connect directly to risk management:</p>
+  <p>Domain 1 carries the highest AI exam weight of all 8 domains. The two frameworks from <a href="../0002-ai-security-primer.html">Lesson 0002</a> connect directly to risk management:</p>
 
   <div class="callout ai">
     <strong>🤖 NIST AI RMF → Classical NIST RMF</strong><br/>
-    The <a href="../reference/glossary.html#nist-ai-rmf" class="g" data-tip="Four functions: Govern → Map → Measure → Manage. The AI analogue of NIST SP 800-37 for managing AI risk.">NIST AI RMF</a> (Govern → Map → Measure → Manage) is a specialised application of the classical risk management lifecycle to AI systems. When you deploy an AI system, it is an <em>asset</em> — it goes into the <a href="../reference/glossary.html#risk-register" class="g" data-tip="Living document recording all identified risks with ratings, owners, treatment decisions, and current status.">risk register</a>. Its training data is an asset. Its model weights are IP. The AI RMF gives you the vocabulary to run the same Identify → Assess → Treat → Monitor loop over that new class of asset.
+    The <a href="../../reference/glossary.html#nist-ai-rmf" class="g" data-tip="Four functions: Govern → Map → Measure → Manage. The AI analogue of NIST SP 800-37 for managing AI risk.">NIST AI RMF</a> (Govern → Map → Measure → Manage) is a specialised application of the classical risk management lifecycle to AI systems. When you deploy an AI system, it is an <em>asset</em> — it goes into the <a href="../../reference/glossary.html#risk-register" class="g" data-tip="Living document recording all identified risks with ratings, owners, treatment decisions, and current status.">risk register</a>. Its training data is an asset. Its model weights are IP. The AI RMF gives you the vocabulary to run the same Identify → Assess → Treat → Monitor loop over that new class of asset.
   </div>
 
   <div class="callout ai">
@@ -583,7 +655,7 @@ graph LR
     The EU AI Act imposes risk-tiered obligations on AI systems (Unacceptable / High / Limited / Minimal). From a risk management perspective, this is <em>regulatory risk treatment</em>: the regulator has pre-classified the risk and mandated the minimum treatment (conformity assessment, documentation, human oversight for High-risk systems). A security architect operating in the EU must classify any AI system under the Act as part of the Identify and Assess steps — before controls are designed.
   </div>
 
-  <p class="cite">See <a href="0002-ai-security-primer.html">Lesson 0002 — AI Security Primer</a> for the full AI RMF and EU AI Act breakdowns. D1 AI exam heat: 🔴🔴 High.</p>
+  <p class="cite">See <a href="../0002-ai-security-primer.html">Lesson 0002 — AI Security Primer</a> for the full AI RMF and EU AI Act breakdowns. D1 AI exam heat: 🔴🔴 High.</p>
 
   <!-- ─────────────────────────────────────────────────
        SECTION 8: Architect Lens
@@ -690,9 +762,9 @@ graph LR
 
   <!-- ── Nav ── -->
   <div class="nav-links">
-    <a href="0002-ai-security-primer.html">← Lesson 0002: AI Security Primer</a>
+    <a href="../0002-ai-security-primer.html">← Lesson 0002: AI Security Primer</a>
     <span>
-      <a href="../reference/glossary.html">📖 Glossary</a>
+      <a href="../../reference/glossary.html">📖 Glossary</a>
       &nbsp;·&nbsp;
       <a href="#">Lesson 0004: D1 — Security Governance &amp; Policy →</a>
     </span>

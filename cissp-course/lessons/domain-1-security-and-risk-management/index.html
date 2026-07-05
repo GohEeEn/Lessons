@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CISSP Domain 1 — Security &amp; Risk Management</title>
+  <style>
+    :root {
+      --ink: #1a1a1a;
+      --muted: #555;
+      --accent: #7b2d8b;
+      --accent-light: #f3f0ff;
+      --border: #ddd;
+      --bg: #fafafa;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.75;
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 6rem;
+    }
+    h1 { font-size: 1.9rem; line-height: 1.2; margin-bottom: 0.4rem; }
+    p.lede { color: var(--muted); font-family: system-ui, sans-serif; font-size: 0.95rem; margin-bottom: 2rem; }
+    h2 { font-size: 1.2rem; margin-top: 2.5rem; margin-bottom: 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.25rem; color: var(--accent); }
+    .diagram {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      overflow-x: auto;
+    }
+    .lesson-list { list-style: none; margin-bottom: 1rem; }
+    .lesson-list li {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 0.98rem;
+    }
+    .lesson-list li:last-child { border-bottom: none; }
+    .lesson-number {
+      font-family: 'Courier New', monospace;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent);
+      min-width: 2.8rem;
+      flex-shrink: 0;
+    }
+    a { color: var(--accent); }
+    .nav-links {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      font-family: system-ui, sans-serif;
+      font-size: 0.85rem;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Domain 1 — Security &amp; Risk Management</h1>
+  <p class="lede">Full exam scope for this domain (Ch 1–4 of the official study guide), showing what's covered by an existing lesson vs. what's still a gap — plus a deep-dive on the concepts within the one lesson written so far.</p>
+
+  <h2>Domain Skeleton — Full Scope (Ch 1–4)</h2>
+  <p class="lede" style="margin-bottom:1rem;">Solid, colored, clickable nodes are covered by an existing lesson. Dashed, grey nodes are in-scope for this domain but not yet taught — this map always reflects the true exam scope, not just what's been written so far.</p>
+  <div class="diagram">
+    <div class="mermaid" id="domain1-skeleton-map">
+graph TD
+    D1["🏛️ Domain 1<br/>Security &amp; Risk Management"]
+
+    subgraph CH1["Ch 1 · Security Governance Through Principles &amp; Policies"]
+        C1A["Security 101"]
+        C1B["Understand &amp; Apply Security Concepts"]
+        C1C["Security Boundaries"]
+        C1D["Evaluate &amp; Apply Security<br/>Governance Principles"]
+        C1E["Manage the Security Function"]
+        C1F["Security Policy, Standards,<br/>Procedures &amp; Guidelines"]
+        C1G["Threat Modeling"]
+        C1H["Supply Chain Risk Management"]
+    end
+
+    subgraph CH2["Ch 2 · Personnel Security &amp; Risk Management Concepts"]
+        C2A["Personnel Security<br/>Policies &amp; Procedures"]
+        C2B["✅ Understand &amp; Apply Risk<br/>Management Concepts<br/><small>Lesson 0003</small>"]
+        C2C["Social Engineering"]
+        C2D["Security Awareness, Education<br/>&amp; Training Program"]
+    end
+
+    subgraph CH3["Ch 3 · Business Continuity Planning"]
+        C3A["Planning for Business Continuity"]
+        C3B["Project Scope and Planning"]
+        C3C["Business Impact Analysis"]
+        C3D["Continuity Planning"]
+        C3E["Plan Approval and Implementation"]
+    end
+
+    subgraph CH4["Ch 4 · Laws, Regulations, and Compliance"]
+        C4A["Categories of Laws"]
+        C4B["Laws"]
+        C4C["State Privacy Laws"]
+        C4D["Compliance"]
+        C4E["Contracting and Procurement"]
+    end
+
+    D1 --> CH1
+    D1 --> CH2
+    D1 --> CH3
+    D1 --> CH4
+
+    classDef covered fill:#f3f0ff,stroke:#7b2d8b,color:#1a1a1a,font-weight:bold
+    classDef pending fill:#fafafa,stroke:#bbb,color:#888,stroke-dasharray: 4 3
+
+    class C2B covered
+    class C1A,C1B,C1C,C1D,C1E,C1F,C1G,C1H,C2A,C2C,C2D,C3A,C3B,C3C,C3D,C3E,C4A,C4B,C4C,C4D,C4E pending
+
+    click C2B "0003-risk-management-foundations.html" "Lesson 0003: Risk Management Foundations"
+    </div>
+  </div>
+  <p class="cite" style="font-family:system-ui,sans-serif;font-size:0.82rem;color:var(--muted);margin-bottom:2rem;">
+    Chapter and sub-topic titles sourced from the <em>ISC2 CISSP Official Study Guide, 10th Edition</em> table of contents (Ch 1–4), the primary source for this domain per <code>RESOURCES.md</code>.
+  </p>
+
+  <h2>Lesson 0003 Deep-Dive — Risk Management Concepts</h2>
+  <p class="lede" style="margin-bottom:1rem;">How the concepts <em>within</em> Lesson 0003 relate to each other.</p>
+  <div class="diagram">
+    <div class="mermaid" id="domain1-lesson-0003-map">
+graph TD
+    RML["🛡️ Risk Management Lifecycle<br/><small>Identify → Assess → Treat → Monitor</small>"]
+    NISTRMF["📘 NIST RMF (SP 800-37)<br/><small>Prepare → Categorize → Select →<br/>Implement → Assess → Authorize → Monitor</small>"]
+    ISO["📗 ISO/IEC 27005<br/><small>Vendor-neutral lifecycle standard</small>"]
+    ATO["✅ Authority to Operate (ATO)<br/><small>Leadership accepts residual risk</small>"]
+    RESIDUAL["⚖️ Residual Risk<br/><small>What remains after treatment</small>"]
+    ASSESS["🔬 Security Assessment<br/><small>Point-in-time evaluation</small>"]
+    VA["🔎 Vulnerability Assessment"]
+    PT["🗡️ Penetration Test"]
+    CR["📋 Controls Review / Audit"]
+    RA["📊 Risk Assessment"]
+    TVR["🧮 Threat × Vulnerability = Risk"]
+    REGISTER["📓 Risk Register"]
+
+    RML -->|"formalised by"| NISTRMF
+    RML -->|"formalised by"| ISO
+    NISTRMF -->|"Authorize step produces"| ATO
+    ATO -->|"formally accepts"| RESIDUAL
+    RML -->|"Treat step produces"| RESIDUAL
+    ASSESS -->|"feeds findings into"| RML
+    ASSESS --> VA
+    ASSESS --> PT
+    ASSESS --> CR
+    ASSESS --> RA
+    RA -->|"quantifies"| TVR
+    RA -->|"updates"| REGISTER
+    RML -->|"Identify step populates"| REGISTER
+
+    classDef fw fill:#f3f0ff,stroke:#7b2d8b,color:#1a1a1a
+    class NISTRMF,ISO fw
+    </div>
+  </div>
+
+  <h2>Lessons in this Domain</h2>
+  <ul class="lesson-list">
+    <li>
+      <span class="lesson-number">0003</span>
+      <a href="0003-risk-management-foundations.html">Risk Management Foundations — D1, Ch 1–2</a>
+    </li>
+  </ul>
+
+  <div class="nav-links">
+    <a href="../../../index.html">← Back to Security Lessons</a>
+    <a href="../../reference/glossary.html">📖 Glossary</a>
+  </div>
+
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: true,
+      securityLevel: 'loose',
+      theme: 'base',
+      themeVariables: {
+        primaryColor: '#f3f0ff',
+        primaryTextColor: '#1a1a1a',
+        primaryBorderColor: '#7b2d8b',
+        lineColor: '#7b2d8b',
+        secondaryColor: '#e8f0fe',
+        tertiaryColor: '#fafafa'
+      }
+    });
+  </script>
+
+</body>
+</html>
