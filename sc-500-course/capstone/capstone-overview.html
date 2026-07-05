@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Capstone — SecureAI API: Project Overview</title>
+  <style>
+    :root {
+      --ink: #1a1a1a;
+      --muted: #555;
+      --accent: #0050c8;
+      --accent-light: #e8f0fe;
+      --danger: #c0392b;
+      --success: #1a7a4a;
+      --success-bg: #e6f4ea;
+      --warn-bg: #fffbea;
+      --warn-border: #f0c040;
+      --border: #ddd;
+      --bg: #fafafa;
+      --code-bg: #f4f4f4;
+      font-size: 17px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.75;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 6rem;
+    }
+    h1 { font-size: 2rem; line-height: 1.2; margin-bottom: 0.25rem; }
+    h2 { font-size: 1.35rem; margin-top: 2.5rem; margin-bottom: 0.6rem; border-bottom: 1px solid var(--border); padding-bottom: 0.25rem; }
+    h3 { font-size: 1.1rem; margin-top: 1.5rem; margin-bottom: 0.4rem; }
+    p { margin-bottom: 1rem; }
+    ul, ol { margin-left: 1.5rem; margin-bottom: 1rem; }
+    li { margin-bottom: 0.3rem; }
+    a { color: var(--accent); }
+    code {
+      font-family: 'Courier New', monospace;
+      background: var(--code-bg);
+      padding: 0.1em 0.35em;
+      border-radius: 3px;
+      font-size: 0.9em;
+    }
+    pre {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      font-family: 'Courier New', monospace;
+      font-size: 0.88rem;
+      line-height: 1.6;
+      padding: 1.2rem 1.4rem;
+      border-radius: 6px;
+      margin: 1.2rem 0;
+      overflow-x: auto;
+    }
+    pre code { background: none; padding: 0; color: inherit; font-size: inherit; }
+    .meta {
+      color: var(--muted);
+      font-family: system-ui, sans-serif;
+      font-size: 0.85rem;
+      margin-bottom: 2rem;
+    }
+    .meta span { margin-right: 1.5rem; }
+    .callout {
+      border-left: 4px solid var(--accent);
+      background: var(--accent-light);
+      padding: 0.8rem 1.1rem;
+      margin: 1.5rem 0;
+      border-radius: 0 4px 4px 0;
+    }
+    .callout.success {
+      border-left-color: var(--success);
+      background: var(--success-bg);
+    }
+    .callout.warn {
+      border-left-color: var(--warn-border);
+      background: var(--warn-bg);
+    }
+    .mermaid {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.2rem 1.5rem;
+      margin: 1.5rem 0;
+      text-align: center;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.2rem 0;
+      font-family: system-ui, sans-serif;
+      font-size: 0.92rem;
+    }
+    th {
+      background: var(--accent-light);
+      text-align: left;
+      padding: 0.55rem 0.8rem;
+      border: 1px solid var(--border);
+    }
+    td {
+      padding: 0.5rem 0.8rem;
+      border: 1px solid var(--border);
+      vertical-align: top;
+    }
+    tr:nth-child(even) td { background: #f7f7f7; }
+    .badge {
+      display: inline-block;
+      background: var(--success);
+      color: #fff;
+      font-family: system-ui, sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.2em 0.6em;
+      border-radius: 3px;
+      letter-spacing: 0.03em;
+      margin-right: 0.5rem;
+    }
+    .step-list { list-style: none; margin-left: 0; counter-reset: steps; }
+    .step-list > li {
+      counter-increment: steps;
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 0.8rem;
+      align-items: flex-start;
+    }
+    .step-list > li::before {
+      content: counter(steps);
+      background: var(--accent);
+      color: #fff;
+      font-family: system-ui, sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      min-width: 1.6rem;
+      height: 1.6rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 0.15rem;
+    }
+    .nav-links {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-family: system-ui, sans-serif;
+      font-size: 0.9rem;
+      display: flex;
+      gap: 2rem;
+    }
+    .cite {
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-family: system-ui, sans-serif;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>SecureAI API</h1>
+  <p style="font-size:1.15rem; color:var(--muted); font-family:system-ui,sans-serif; margin-bottom:0.5rem;">
+    Capstone Project Overview
+  </p>
+  <div class="meta">
+    <span><span class="badge">🔨 CAPSTONE</span></span>
+    <span>⏱ All 5 tracks — 15 weeks</span>
+    <span>🧱 IaC: Bicep</span>
+  </div>
+
+  <div class="callout success">
+    <strong>What this is:</strong> A real Azure project you build progressively across all five SC-500 tracks.
+    Every security control you learn in a theory lesson has an immediate home here. By week 13, you have a
+    fully hardened, deployable AI-powered web API — built with Bicep, secured layer by layer, deployable in minutes.
+  </div>
+
+  <!-- ── Section 1 ── -->
+  <h2>1. The Project: SecureAI API</h2>
+  <p>
+    <strong>SecureAI API</strong> is a small Python FastAPI application that calls Azure OpenAI to answer questions.
+    It is deliberately simple as an <em>application</em> — the complexity lives in the <em>security controls</em>
+    you layer onto it. The goal is not to build a polished product; it is to give every Azure security
+    control a concrete reason to exist.
+  </p>
+  <p>At the end of the course, the project includes:</p>
+  <ul>
+    <li><strong>Azure App Service</strong> — compute, HTTPS-only, system-assigned managed identity</li>
+    <li><strong>Azure Key Vault</strong> — secrets (API keys, connection strings), RBAC mode, private endpoint</li>
+    <li><strong>Azure SQL Database</strong> — application data, TDE, firewall, Defender for SQL</li>
+    <li><strong>Azure OpenAI</strong> — AI endpoint called by the app via managed identity</li>
+    <li><strong>Azure Virtual Network</strong> — private subnet, NSGs, private endpoints to PaaS services</li>
+    <li><strong>Defender for Cloud</strong> — CSPM, workload protection plans across all resources</li>
+    <li><strong>Microsoft Sentinel</strong> — log ingestion, analytics rules, automated response</li>
+  </ul>
+
+  <!-- ── Section 2 ── -->
+  <h2>2. Full Architecture</h2>
+  <p>This is where the project ends up after all five tracks. Each track adds a layer of security:</p>
+
+  <div class="mermaid">
+graph TD
+  subgraph ENTRA["Entra ID Tenant"]
+    MI["System-Assigned MI<br/>(App Service)"]
+    PIM["PIM — JIT<br/>Deployment Identity"]
+    CA["Conditional Access<br/>(Admin MFA)"]
+  end
+
+  subgraph RG["Resource Group: rg-secureai-dev"]
+    subgraph VNET["VNet: vnet-secureai"]
+      APP["App Service<br/>FastAPI · HTTPS-only"]
+      PE_KV["Private Endpoint<br/>→ Key Vault"]
+      PE_SQL["Private Endpoint<br/>→ Azure SQL"]
+      PE_OAI["Private Endpoint<br/>→ Azure OpenAI"]
+    end
+    KV["Azure Key Vault<br/>RBAC mode · soft-delete"]
+    SQL["Azure SQL Database<br/>TDE · auditing"]
+    OAI["Azure OpenAI<br/>gpt-4o endpoint"]
+  end
+
+  subgraph SEC["Security &amp; Monitoring"]
+    DFC["Defender for Cloud<br/>CSPM + plans"]
+    SENT["Microsoft Sentinel<br/>analytics rules"]
+    POL["Azure Policy<br/>guardrails"]
+  end
+
+  APP -->|"MI token"| MI
+  MI -->|"RBAC: Secrets User"| KV
+  APP --> PE_KV --> KV
+  APP --> PE_SQL --> SQL
+  APP --> PE_OAI --> OAI
+  DFC -.->|"monitors"| RG
+  SENT -.->|"ingests logs"| RG
+  POL -.->|"enforces"| RG
+  </div>
+  <p class="cite">Dashed lines = security services observing/controlling the resource group. Each arrow you see is a security decision you will implement.</p>
+
+  <!-- ── Section 3 ── -->
+  <h2>3. The Deploy-Test-Destroy Principle</h2>
+  <p>
+    This project has <strong>no persistent infrastructure</strong>. You deploy from Bicep, apply and verify
+    the security controls for that track, then tear it all down. The Bicep code <em>is</em> the artefact —
+    not the live Azure resources. This keeps costs near zero and teaches the real-world practice of
+    <strong>infrastructure as code as the source of truth</strong>.
+  </p>
+
+  <div class="callout warn">
+    <strong>Estimated cost per session:</strong> A full Track 1 deploy (App Service B1 + Key Vault standard)
+    running for 2–3 hours costs under $1. Always run <code>deploy.ps1 -Destroy</code> at the end of
+    each session. Track 2+ adds SQL and VNet, which cost slightly more — still under $3/session if torn down promptly.
+  </div>
+
+  <p>The workflow for every track capstone session:</p>
+  <ol class="step-list">
+    <li>Pull the latest Bicep code from the project repo.</li>
+    <li>Run <code>.\deploy.ps1</code> — creates resource group and deploys all modules.</li>
+    <li>Follow the verification steps in the track capstone guide.</li>
+    <li>Apply any manual portal steps (e.g. PIM configuration, Conditional Access).</li>
+    <li>Run <code>.\deploy.ps1 -Destroy</code> — deletes the resource group and all resources.</li>
+  </ol>
+
+  <pre><code># Deploy
+.\capstone\scripts\deploy.ps1
+
+# Verify (track-specific)
+.\capstone\scripts\verify-identity.ps1
+
+# Destroy
+.\capstone\scripts\deploy.ps1 -Destroy</code></pre>
+
+  <!-- ── Section 4 ── -->
+  <h2>4. IaC Repo Structure</h2>
+  <p>
+    The capstone Bicep code lives in a <code>capstone/</code> folder within this workspace
+    (or in its own git repo if you prefer). The structure grows as you add tracks:
+  </p>
+
+  <pre><code>capstone/
+  main.bicep              ← top-level orchestration; calls all modules
+  params.json             ← environment-specific values (not committed if it contains IPs)
+  modules/
+    app-service.bicep     ← App Service plan + site, system-assigned MI  [Track 1]
+    key-vault.bicep       ← Key Vault, RBAC mode, soft-delete, firewall  [Track 1]
+    rbac.bicep            ← RBAC assignments (MI → KV Secrets User)      [Track 1]
+    policy.bicep          ← Azure Policy assignment on RG                [Track 1]
+    networking.bicep      ← VNet, subnets, NSGs, private endpoints        [Track 2]
+    sql.bicep             ← Azure SQL, firewall, TDE, auditing            [Track 2]
+    storage.bicep         ← Storage account, firewall, Defender           [Track 2]
+    openai.bicep          ← Azure OpenAI endpoint, network rules          [Track 4]
+    defender.bicep        ← Defender for Cloud plans                      [Track 5]
+    sentinel.bicep        ← Sentinel workspace, data connectors           [Track 5]
+  scripts/
+    deploy.ps1            ← deploy-test-destroy wrapper
+    verify-identity.ps1   ← Test MI can read Key Vault secret             [Track 1]
+    verify-network.ps1    ← Test private endpoint connectivity            [Track 2]</code></pre>
+
+  <!-- ── Section 5 ── -->
+  <h2>5. Track Progression</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Track</th>
+        <th>Weeks</th>
+        <th>What gets added to the project</th>
+        <th>Capstone guide</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Track 1</strong><br/>Identity &amp; Governance</td>
+        <td>1–3</td>
+        <td>App Service + Managed Identity + Key Vault + RBAC + PIM + Azure Policy</td>
+        <td><a href="capstone-track-1.html">capstone-track-1.html</a></td>
+      </tr>
+      <tr>
+        <td><strong>Track 2</strong><br/>Networking &amp; Storage</td>
+        <td>4–6</td>
+        <td>VNet + subnets + NSGs + Private Endpoints + Azure SQL + Storage hardening</td>
+        <td><em>Coming in Track 2</em></td>
+      </tr>
+      <tr>
+        <td><strong>Track 3</strong><br/>Compute Security</td>
+        <td>7–9</td>
+        <td>App Service hardening (auth, deployment slots, TLS), Defender for App Service</td>
+        <td><em>Coming in Track 3</em></td>
+      </tr>
+      <tr>
+        <td><strong>Track 4</strong><br/>AI Security</td>
+        <td>10–11</td>
+        <td>Azure OpenAI integration + Entra Agent ID + Defender for AI guardrails</td>
+        <td><em>Coming in Track 4</em></td>
+      </tr>
+      <tr>
+        <td><strong>Track 5</strong><br/>Posture &amp; Sentinel</td>
+        <td>12–13</td>
+        <td>Defender for Cloud plans across all resources + Sentinel workspace + analytics rules</td>
+        <td><em>Coming in Track 5</em></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ── Section 6 ── -->
+  <h2>6. Prerequisites</h2>
+  <p>Before starting Track 1, confirm you have the following installed and configured:</p>
+
+  <ul>
+    <li>
+      <strong>Azure CLI</strong> — <a href="https://learn.microsoft.com/en-us/cli/azure/install-azure-cli" target="_blank">Install guide</a>.
+      Run <code>az login</code> and <code>az account show</code> to verify.
+    </li>
+    <li>
+      <strong>Bicep CLI</strong> — installed automatically with Azure CLI 2.20+.
+      Verify with <code>az bicep version</code>.
+    </li>
+    <li>
+      <strong>Azure subscription</strong> — your $100/month subscription (not MS Learn sandbox — resources must persist for the session).
+      Run <code>az account set --subscription "&lt;your-subscription-id&gt;"</code>.
+    </li>
+    <li>
+      <strong>PowerShell 7+</strong> — for the deploy/verify scripts. Verify with <code>$PSVersionTable</code>.
+    </li>
+  </ul>
+
+  <div class="callout">
+    <strong>Cost guard:</strong> Set a budget alert in the Azure portal under <strong>Cost Management → Budgets</strong>.
+    Set a $30/month alert threshold to catch any runaway resources before they consume your credits.
+  </div>
+
+  <!-- ── Nav ── -->
+  <div class="nav-links">
+    <span>← <a href="../lessons/0001-azure-entra-id-identity-model.html">Lesson 0001: Azure Identity Model</a></span>
+    <span>Start building → <a href="capstone-track-1.html">Capstone Track 1: Identity &amp; Key Vault</a></span>
+  </div>
+
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+  </script>
+
+</body>
+</html>

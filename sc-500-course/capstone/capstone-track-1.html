@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Capstone Track 1 — Identity, Key Vault &amp; Bicep Scaffold</title>
+  <style>
+    :root {
+      --ink: #1a1a1a;
+      --muted: #555;
+      --accent: #0050c8;
+      --accent-light: #e8f0fe;
+      --danger: #c0392b;
+      --success: #1a7a4a;
+      --success-bg: #e6f4ea;
+      --warn-bg: #fffbea;
+      --warn-border: #f0c040;
+      --border: #ddd;
+      --bg: #fafafa;
+      --code-bg: #f4f4f4;
+      font-size: 17px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.75;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 6rem;
+    }
+    h1 { font-size: 2rem; line-height: 1.2; margin-bottom: 0.25rem; }
+    h2 { font-size: 1.35rem; margin-top: 2.5rem; margin-bottom: 0.6rem; border-bottom: 1px solid var(--border); padding-bottom: 0.25rem; }
+    h3 { font-size: 1.1rem; margin-top: 1.5rem; margin-bottom: 0.4rem; }
+    p { margin-bottom: 1rem; }
+    ul, ol { margin-left: 1.5rem; margin-bottom: 1rem; }
+    li { margin-bottom: 0.3rem; }
+    a { color: var(--accent); }
+    code {
+      font-family: 'Courier New', monospace;
+      background: var(--code-bg);
+      padding: 0.1em 0.35em;
+      border-radius: 3px;
+      font-size: 0.9em;
+    }
+    pre {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      font-family: 'Courier New', monospace;
+      font-size: 0.86rem;
+      line-height: 1.65;
+      padding: 1.1rem 1.3rem;
+      border-radius: 6px;
+      margin: 1rem 0;
+      overflow-x: auto;
+    }
+    pre code { background: none; padding: 0; color: inherit; font-size: inherit; }
+    pre .comment { color: #6a9955; }
+    pre .keyword { color: #569cd6; }
+    pre .string { color: #ce9178; }
+    pre .prop { color: #9cdcfe; }
+    .meta {
+      color: var(--muted);
+      font-family: system-ui, sans-serif;
+      font-size: 0.85rem;
+      margin-bottom: 2rem;
+    }
+    .meta span { margin-right: 1.5rem; }
+    .callout {
+      border-left: 4px solid var(--accent);
+      background: var(--accent-light);
+      padding: 0.8rem 1.1rem;
+      margin: 1.5rem 0;
+      border-radius: 0 4px 4px 0;
+    }
+    .callout.success {
+      border-left-color: var(--success);
+      background: var(--success-bg);
+    }
+    .callout.warn {
+      border-left-color: var(--warn-border);
+      background: var(--warn-bg);
+    }
+    .callout.key {
+      border-left-color: #7b2d8b;
+      background: #f9f0fc;
+    }
+    .mermaid {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.2rem 1.5rem;
+      margin: 1.5rem 0;
+      text-align: center;
+    }
+    .badge {
+      display: inline-block;
+      background: var(--success);
+      color: #fff;
+      font-family: system-ui, sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.2em 0.6em;
+      border-radius: 3px;
+      letter-spacing: 0.03em;
+      margin-right: 0.5rem;
+    }
+    .step {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.2rem 1.4rem;
+      margin: 1.5rem 0;
+    }
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin-bottom: 0.8rem;
+    }
+    .step-num {
+      background: var(--accent);
+      color: #fff;
+      font-family: system-ui, sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      min-width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .step-title {
+      font-family: system-ui, sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    .checklist { list-style: none; margin-left: 0; }
+    .checklist li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      padding: 0.3rem 0;
+      font-family: system-ui, sans-serif;
+      font-size: 0.95rem;
+    }
+    .checklist li::before {
+      content: "☐";
+      color: var(--success);
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.2rem 0;
+      font-family: system-ui, sans-serif;
+      font-size: 0.92rem;
+    }
+    th {
+      background: var(--accent-light);
+      text-align: left;
+      padding: 0.55rem 0.8rem;
+      border: 1px solid var(--border);
+    }
+    td {
+      padding: 0.5rem 0.8rem;
+      border: 1px solid var(--border);
+      vertical-align: top;
+    }
+    tr:nth-child(even) td { background: #f7f7f7; }
+    .nav-links {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-family: system-ui, sans-serif;
+      font-size: 0.9rem;
+      display: flex;
+      gap: 2rem;
+    }
+    .cite {
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-family: system-ui, sans-serif;
+    }
+    .progress-bar { height: 6px; background: #e0e0e0; border-radius: 3px; margin-bottom: 2rem; }
+    .progress-bar-fill { height: 100%; width: 20%; background: var(--success); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+  <div class="progress-bar"><div class="progress-bar-fill"></div></div>
+
+  <h1>Identity, Key Vault &amp; Bicep Scaffold</h1>
+  <p style="font-size:1.15rem; color:var(--muted); font-family:system-ui,sans-serif; margin-bottom:0.5rem;">
+    Capstone Track 1 — Weeks 1–3
+  </p>
+  <div class="meta">
+    <span><span class="badge">🔨 CAPSTONE</span></span>
+    <span>⏱ ~90 min</span>
+    <span>💳 Est. cost: &lt;$1 per session</span>
+    <span>🧱 Bicep + Azure CLI</span>
+  </div>
+
+  <div class="callout success">
+    <strong>What you'll build:</strong> The identity and secrets foundation of the SecureAI API.
+    By the end of this session you will have deployed an App Service with a system-assigned managed identity
+    that reads a secret from Key Vault — <em>without a single hardcoded credential</em> — all provisioned
+    from Bicep and torn down cleanly when you're done.
+  </div>
+
+  <!-- ── Section 1: Architecture ── -->
+  <h2>1. Track 1 Architecture</h2>
+  <p>
+    Track 1 establishes the <strong>identity backbone</strong>. Every resource deployed here is reused and
+    hardened in later tracks. The key security pattern is: <em>Managed Identity → RBAC → Key Vault</em>.
+    No passwords. No connection strings in code.
+  </p>
+
+  <div class="mermaid">
+sequenceDiagram
+  participant DEV as 👤 You (PIM JIT)
+  participant BICEP as Bicep Deployment
+  participant ENTRA as Entra ID
+  participant APP as App Service
+  participant KV as Key Vault
+
+  DEV->>ENTRA: Activate PIM role (JIT, 1hr)
+  ENTRA-->>DEV: Contributor role active
+  DEV->>BICEP: az deployment group create
+  BICEP->>APP: Deploy App Service + enable System MI
+  BICEP->>ENTRA: Entra registers System MI automatically
+  BICEP->>KV: Deploy Key Vault (RBAC mode, firewall on)
+  BICEP->>ENTRA: Assign KV Secrets User role → MI
+  Note over APP,KV: ✅ No credentials in code — MI auth only
+  APP->>ENTRA: Request token for vault.azure.net
+  ENTRA-->>APP: Bearer token (short-lived)
+  APP->>KV: GET /secrets/db-password (Bearer token)
+  KV-->>APP: Secret value ✅
+  DEV->>BICEP: az group delete (destroy)
+  </div>
+
+  <!-- ── Section 2: Prerequisites ── -->
+  <h2>2. Prerequisites Check</h2>
+  <p>Run these in PowerShell before starting. All must succeed:</p>
+  <pre><code><span class="comment"># Azure CLI — must be 2.50+</span>
+az --version
+
+<span class="comment"># Bicep — bundled with az CLI 2.20+</span>
+az bicep version
+
+<span class="comment"># Log in (device-code avoids the Windows Hello passkey prompt)</span>
+az login --use-device-code
+az account set --subscription "&lt;your-subscription-id&gt;"
+az account show --query "{name:name, id:id}" -o table
+
+<span class="comment"># Confirm your own role assignments — you should NOT be Owner</span>
+$me = az ad signed-in-user show --query id -o tsv
+az role assignment list --assignee $me --all -o table
+
+<span class="comment"># PowerShell 7+</span>
+$PSVersionTable.PSVersion</code></pre>
+
+  <div class="callout warn">
+    <strong>Use your real Azure subscription</strong>, not an MS Learn sandbox. MS Learn sandboxes are
+    destroyed after the session — you need resources to persist while you work through this guide.
+    Destroy them yourself at the end using the script provided.
+  </div>
+
+  <!-- ── Section 3: Bootstrap the repo ── -->
+  <h2>3. Bootstrap the Project Repo</h2>
+  <p>
+    Create a folder for the capstone IaC. This folder will grow with each track. You can version-control it
+    with git and tag each track's checkpoint.
+  </p>
+  <pre><code><span class="comment"># Create the project folder</span>
+New-Item -ItemType Directory -Path "C:\Projects\secureai-api" -Force
+Set-Location "C:\Projects\secureai-api"
+
+<span class="comment"># Initialise git and tag tracks as you complete them</span>
+git init
+git commit --allow-empty -m "Initial: SecureAI API capstone"</code></pre>
+
+  <p>Create the folder structure:</p>
+  <pre><code>New-Item -ItemType Directory -Path "modules", "scripts" -Force</code></pre>
+
+  <!-- ── Section 4: main.bicep ── -->
+  <h2>4. <code>main.bicep</code> — The Orchestrator</h2>
+  <p>
+    <code>main.bicep</code> is the entry point. It declares parameters, names resources consistently,
+    and calls each module. The modules do the actual resource deployment.
+  </p>
+
+  <pre><code><span class="comment">// main.bicep — SecureAI API: Track 1 scaffold</span>
+<span class="comment">// Deploy: az deployment group create --resource-group rg-secureai-dev --template-file main.bicep --parameters @params.json adminPublicIp=$myIp</span>
+
+@description('Environment suffix for resource naming (dev | staging | prod)')
+<span class="keyword">param</span> <span class="prop">environment</span> string = 'dev'
+
+@description('Azure region for all resources')
+<span class="keyword">param</span> <span class="prop">location</span> string = resourceGroup().location
+
+@description('Your public IP — granted Key Vault firewall access for admin work')
+<span class="keyword">param</span> <span class="prop">adminPublicIp</span> string
+
+<span class="keyword">var</span> <span class="prop">appName</span> = <span class="string">'secureai-${environment}'</span>
+<span class="keyword">var</span> <span class="prop">kvName</span>  = <span class="string">'kv-secureai-${environment}'</span>
+
+<span class="comment">// ── Modules ────────────────────────────────────────────────────────────────</span>
+
+module appService <span class="string">'modules/app-service.bicep'</span> = {
+  name: <span class="string">'appServiceDeploy'</span>
+  params: { appName: appName, location: location }
+}
+
+module keyVault <span class="string">'modules/key-vault.bicep'</span> = {
+  name: <span class="string">'keyVaultDeploy'</span>
+  params: { kvName: kvName, location: location, adminPublicIp: adminPublicIp }
+}
+
+module rbac <span class="string">'modules/rbac.bicep'</span> = {
+  name: <span class="string">'rbacDeploy'</span>
+  params: {
+    kvName: kvName
+    appServicePrincipalId: appService.outputs.principalId
+  }
+  dependsOn: [keyVault]    <span class="comment">// KV must exist before role assignment</span>
+}
+
+module policy <span class="string">'modules/policy.bicep'</span> = {
+  name: <span class="string">'policyDeploy'</span>
+  params: { resourceGroupName: resourceGroup().name }
+}
+
+<span class="comment">// ── Outputs ─────────────────────────────────────────────────────────────────</span>
+
+output appServiceName     string = appService.outputs.appServiceName
+output keyVaultUri        string = keyVault.outputs.keyVaultUri
+output appManagedIdentity string = appService.outputs.principalId</code></pre>
+
+  <div class="callout key">
+    <strong>Security point — <code>dependsOn</code>:</strong> The RBAC module explicitly depends on the Key Vault module.
+    Without this, Bicep may attempt the role assignment before the vault exists, causing a deployment failure.
+    Explicit dependencies make execution order predictable and auditable — the same principle applies to
+    policy assignments and role definitions in large IaC repos.
+  </div>
+
+  <!-- ── Section 5: app-service.bicep ── -->
+  <h2>5. <code>modules/app-service.bicep</code></h2>
+  <p>
+    Creates an App Service Plan (Linux B1) and an App Service site.
+    The critical security line is <code>identity: { type: 'SystemAssigned' }</code> — this is what tells
+    Azure to create a managed identity for this app automatically.
+  </p>
+
+  <pre><code><span class="comment">// modules/app-service.bicep</span>
+<span class="keyword">param</span> <span class="prop">appName</span> string
+<span class="keyword">param</span> <span class="prop">location</span> string
+
+resource appServicePlan 'Microsoft.Web/serverfarms@2023-01-01' = {
+  name: <span class="string">'asp-${appName}'</span>
+  location: location
+  sku: { name: <span class="string">'B1'</span>, tier: <span class="string">'Basic'</span> }
+  kind: <span class="string">'linux'</span>
+  properties: { reserved: true }
+}
+
+resource appService 'Microsoft.Web/sites@2023-01-01' = {
+  name: appName
+  location: location
+  identity: {
+    type: <span class="string">'SystemAssigned'</span>    <span class="comment">// ← the managed identity declaration</span>
+  }
+  properties: {
+    serverFarmId: appServicePlan.id
+    httpsOnly: true              <span class="comment">// ← enforce TLS — plain HTTP is rejected</span>
+    siteConfig: {
+      linuxFxVersion: <span class="string">'PYTHON|3.12'</span>
+      minTlsVersion: <span class="string">'1.2'</span>        <span class="comment">// ← TLS 1.0/1.1 disabled</span>
+      ftpsState: <span class="string">'Disabled'</span>       <span class="comment">// ← FTP credentials attack surface removed</span>
+    }
+  }
+}
+
+output appServiceName string = appService.name
+output principalId    string = appService.identity.principalId</code></pre>
+
+  <div class="callout">
+    <strong>Why <code>httpsOnly: true</code> and <code>ftpsState: 'Disabled'</code> matter:</strong>
+    These are two of the most-flagged issues in Defender for Cloud's App Service recommendations.
+    Setting them in Bicep means they are <em>enforced by infrastructure</em>, not reliant on portal configuration
+    that could drift. The Azure Policy module (Step 8) will also enforce HTTPS at policy scope.
+  </div>
+
+  <!-- ── Section 6: key-vault.bicep ── -->
+  <h2>6. <code>modules/key-vault.bicep</code></h2>
+  <p>
+    Creates a Key Vault with RBAC-based access control (not legacy access policies),
+    soft-delete, purge protection, and a network firewall that denies all traffic by default
+    except from your public IP.
+  </p>
+
+  <pre><code><span class="comment">// modules/key-vault.bicep</span>
+<span class="keyword">param</span> <span class="prop">kvName</span>         string
+<span class="keyword">param</span> <span class="prop">location</span>       string
+<span class="keyword">param</span> <span class="prop">adminPublicIp</span>  string
+
+resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
+  name: kvName
+  location: location
+  properties: {
+    sku: { family: <span class="string">'A'</span>, name: <span class="string">'standard'</span> }
+    tenantId: tenant().tenantId
+    enableRbacAuthorization: true     <span class="comment">// ← RBAC mode; access policies are disabled</span>
+    enableSoftDelete: true
+    softDeleteRetentionInDays: 7      <span class="comment">// ← minimum for dev; use 90 in production</span>
+    enablePurgeProtection: true       <span class="comment">// ← once set, cannot be disabled without waiting</span>
+    networkAcls: {
+      defaultAction: <span class="string">'Deny'</span>           <span class="comment">// ← deny all traffic by default</span>
+      bypass: <span class="string">'AzureServices'</span>         <span class="comment">// ← allow trusted Azure services (Defender, etc.)</span>
+      ipRules: [
+        { value: <span class="string">'${adminPublicIp}/32'</span> }  <span class="comment">// ← your IP only (portal + CLI access)</span>
+      ]
+    }
+  }
+}
+
+output keyVaultUri string = keyVault.properties.vaultUri
+output keyVaultId  string = keyVault.id</code></pre>
+
+  <div class="callout warn">
+    <strong>Purge protection caveat:</strong> Once <code>enablePurgeProtection: true</code> is set on a vault,
+    it <em>cannot be turned off</em> and the vault cannot be immediately purged after deletion — it must wait
+    out the soft-delete retention window. This is intentional (ransomware protection), but it means if you
+    redeploy with the same <code>kvName</code> before the retention period expires, the deployment will fail.
+    Use a unique name suffix or wait 7 days. For speed in dev, you can omit purge protection — but leave it
+    enabled in any environment that matters.
+  </div>
+
+  <!-- ── Section 7: rbac.bicep ── -->
+  <h2>7. <code>modules/rbac.bicep</code></h2>
+  <p>
+    Grants the App Service's managed identity the <strong>Key Vault Secrets User</strong> built-in role
+    scoped to the Key Vault resource. This is the minimum permission needed to read secrets — the MI
+    cannot create, update, or delete secrets.
+  </p>
+
+  <pre><code><span class="comment">// modules/rbac.bicep</span>
+<span class="keyword">param</span> <span class="prop">kvName</span>                  string
+<span class="keyword">param</span> <span class="prop">appServicePrincipalId</span>    string
+
+<span class="comment">// Built-in role: Key Vault Secrets User</span>
+<span class="comment">// https://learn.microsoft.com/en-us/azure/key-vault/general/rbac-guide</span>
+<span class="keyword">var</span> <span class="prop">kvSecretsUserRoleId</span> = <span class="string">'4633458b-17de-408a-b874-0445c86b69e6'</span>
+
+resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
+  name: kvName
+}
+
+resource miSecretsUser 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(keyVault.id, appServicePrincipalId, kvSecretsUserRoleId)
+  scope: keyVault
+  properties: {
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      kvSecretsUserRoleId
+    )
+    principalId:   appServicePrincipalId
+    principalType: <span class="string">'ServicePrincipal'</span>
+  }
+}</code></pre>
+
+  <div class="callout key">
+    <strong>Why <code>guid()</code> for the role assignment name?</strong>
+    Role assignment names must be GUIDs and must be <em>idempotent</em> — the same assignment on the same
+    resource must produce the same GUID, otherwise re-running the deployment creates a duplicate.
+    Using <code>guid(resourceId, principalId, roleId)</code> as a deterministic hash guarantees idempotency.
+    This is a Bicep best practice for all role assignments.
+  </div>
+
+  <!-- ── Section 8: policy.bicep ── -->
+  <h2>8. <code>modules/policy.bicep</code></h2>
+  <p>
+    Assigns a built-in Azure Policy to the resource group that <strong>enforces HTTPS-only</strong> on App Service.
+    Even though we set <code>httpsOnly: true</code> in the Bicep, this policy provides a governance guardrail
+    — it will flag (and optionally block) any App Service that tries to drift from that setting.
+  </p>
+
+  <pre><code><span class="comment">// modules/policy.bicep</span>
+<span class="keyword">param</span> <span class="prop">resourceGroupName</span> string
+
+<span class="comment">// Built-in policy: App Service apps should only be accessible over HTTPS</span>
+<span class="comment">// Definition ID: a4af4a39-4135-47fb-b175-47fbdf85311d</span>
+<span class="keyword">var</span> <span class="prop">httpsOnlyPolicyId</span> = <span class="string">'/providers/Microsoft.Authorization/policyDefinitions/a4af4a39-4135-47fb-b175-47fbdf85311d'</span>
+
+resource httpsPolicy 'Microsoft.Authorization/policyAssignments@2022-06-01' = {
+  name: <span class="string">'enforce-https-${resourceGroupName}'</span>
+  properties: {
+    displayName: <span class="string">'Enforce HTTPS only on App Service'</span>
+    policyDefinitionId: httpsOnlyPolicyId
+    enforcementMode: <span class="string">'Default'</span>     <span class="comment">// 'Default' = enforce | 'DoNotEnforce' = audit only</span>
+  }
+}</code></pre>
+
+  <!-- ── Section 9: params.json ── -->
+  <h2>9. <code>params.json</code></h2>
+  <p>
+    Do not hardcode your IP address in Bicep — pass it as a parameter. The <code>deploy.ps1</code>
+    script fetches your current public IP automatically.
+  </p>
+
+  <pre><code>{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environment": {
+      "value": "dev"
+    },
+    "adminPublicIp": {
+      "value": "PLACEHOLDER"
+    }
+  }
+}</code></pre>
+
+  <div class="callout warn">
+    <strong>Do not commit <code>params.json</code> to git</strong> if it contains IP addresses or other
+    environment-specific values. Add it to <code>.gitignore</code>. The Bicep template itself is safe to commit.
+  </div>
+
+  <!-- ── Section 10: Deploy ── -->
+  <h2>10. Deploy</h2>
+  <p>Save this as <code>scripts/deploy.ps1</code> and run it from the project root:</p>
+
+  <pre><code><span class="comment"># scripts/deploy.ps1</span>
+param(
+  [string]$ResourceGroupName = <span class="string">"rg-secureai-dev"</span>,
+  [string]$Location          = <span class="string">"eastus"</span>,
+  [switch]$Destroy
+)
+
+<span class="keyword">if</span> ($Destroy) {
+  Write-Host <span class="string">"🗑️  Destroying $ResourceGroupName ..."</span>
+  az group delete --name $ResourceGroupName --yes --no-wait
+  Write-Host <span class="string">"Deletion queued. Resources are removed within a few minutes."</span>
+  exit 0
+}
+
+<span class="comment"># Fetch your current public IP for Key Vault firewall</span>
+$myIp = (Invoke-WebRequest -Uri <span class="string">"https://api.ipify.org"</span> -UseBasicParsing).Content.Trim()
+Write-Host <span class="string">"Your public IP: $myIp"</span>
+
+<span class="comment"># Ensure resource group exists</span>
+az group create --name $ResourceGroupName --location $Location --output none
+
+<span class="comment"># Deploy</span>
+az deployment group create `
+  --resource-group $ResourceGroupName `
+  --template-file main.bicep `
+  --parameters <span class="string">"@params.json"</span> adminPublicIp=$myIp `
+  --output table
+
+Write-Host <span class="string">""</span>
+Write-Host <span class="string">"✅ Deployment complete."</span>
+Write-Host <span class="string">"   Run: .\scripts\verify-identity.ps1 -ResourceGroupName $ResourceGroupName"</span>
+Write-Host <span class="string">"   Destroy when done: .\scripts\deploy.ps1 -Destroy"</span></code></pre>
+
+  <div class="step">
+    <div class="step-header">
+      <div class="step-num">▶</div>
+      <div class="step-title">Run the deployment</div>
+    </div>
+    <pre style="margin:0"><code>Set-Location "C:\Projects\secureai-api"
+.\scripts\deploy.ps1</code></pre>
+    <p style="margin-top:0.8rem; margin-bottom:0">
+      The deployment takes 2–4 minutes. Watch for <code>Succeeded</code> in the output table.
+      Note the <code>appServiceName</code>, <code>keyVaultUri</code>, and <code>appManagedIdentity</code>
+      outputs — you'll use them in the verification step.
+    </p>
+  </div>
+
+  <!-- ── Section 11: Verify ── -->
+  <h2>11. Verify — Managed Identity Reads a Secret</h2>
+  <p>
+    Before moving on, confirm the security controls actually work. Save this as
+    <code>scripts/verify-identity.ps1</code>:
+  </p>
+
+  <pre><code><span class="comment"># scripts/verify-identity.ps1</span>
+param(
+  [string]$ResourceGroupName = <span class="string">"rg-secureai-dev"</span>
+)
+
+$kvName  = az keyvault list --resource-group $ResourceGroupName --query <span class="string">"[0].name"</span> -o tsv
+$appName = az webapp list  --resource-group $ResourceGroupName --query <span class="string">"[0].name"</span> -o tsv
+
+<span class="comment"># 1. Store a test secret via CLI (your IP is in the KV firewall)</span>
+az keyvault secret set --vault-name $kvName --name <span class="string">"test-secret"</span> --value <span class="string">"hello-from-managed-identity"</span>
+Write-Host <span class="string">"✅ Secret stored in $kvName"</span>
+
+<span class="comment"># 2. Open the App Service SSH console (via portal) and run this to test MI token acquisition</span>
+Write-Host <span class="string">""</span>
+Write-Host <span class="string">"To verify the managed identity end-to-end, open the App Service SSH console in the Azure portal:"</span>
+Write-Host <span class="string">"  https://portal.azure.com → App Services → $appName → SSH"</span>
+Write-Host <span class="string">""</span>
+Write-Host <span class="string">"Then paste this into the SSH shell:"</span>
+Write-Host <span class="string">"  TOKEN=\$(curl -s 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https://vault.azure.net' -H 'Metadata: true' | python3 -c 'import sys,json; print(json.load(sys.stdin)[\"access_token\"])')"</span>
+Write-Host <span class="string">"  curl -s \"https://$kvName.vault.azure.net/secrets/test-secret?api-version=7.4\" -H \"Authorization: Bearer \$TOKEN\""</span>
+Write-Host <span class="string">""</span>
+Write-Host <span class="string">"Expected: {\"value\":\"hello-from-managed-identity\", ...}"</span></code></pre>
+
+  <div class="callout success">
+    <strong>What success looks like:</strong> The <code>curl</code> command in the App Service SSH console
+    returns <code>"value":"hello-from-managed-identity"</code> with no credentials anywhere in the call.
+    The managed identity obtained a short-lived token from Entra ID (via the instance metadata endpoint at
+    <code>169.254.169.254</code>) and Key Vault accepted it because the MI has the <em>Key Vault Secrets User</em>
+    RBAC role. This is the zero-credential pattern you'll use for all subsequent tracks.
+  </div>
+
+  <!-- ── Section 12: Deployment auth ── -->
+  <h2>12. Authenticate the Deployment Identity — No Owner, No Windows Hello</h2>
+  <p>
+    Before configuring PIM, get the <em>baseline</em> right: how you sign in and what role you deploy with.
+    Two least-privilege habits matter here — never develop as <strong>Owner</strong>, and sign in without
+    relying on the Windows Hello passkey prompt so the CLI flow is repeatable and scriptable.
+  </p>
+
+  <h3>Sign in without Windows Hello</h3>
+  <p>
+    Interactive <code>az login</code> opens a browser that may force a Windows Hello passkey. Use device-code
+    flow to sign in with username/password instead — useful when the target account differs from your Windows
+    session account:
+  </p>
+  <pre><code>az login --use-device-code
+az account show --query "{name:name, id:id}" -o table</code></pre>
+
+  <h3>Don't deploy as Owner</h3>
+  <p>
+    Owner grants <code>Microsoft.Authorization/*</code> — the right to hand out access — which IaC almost never
+    needs. Deploy as <strong>Contributor scoped to the dev resource group</strong>. Only the <code>rbac.bicep</code>
+    role-assignment step needs more, so pair it with <strong>User Access Administrator</strong> on that RG — never
+    fall back to Owner.
+  </p>
+  <table>
+    <thead><tr><th>Role</th><th>Grants</th><th>Use for this capstone</th></tr></thead>
+    <tbody>
+      <tr><td>Contributor</td><td>Create/manage resources, no access-granting</td><td>App Service, Key Vault, SQL deploys</td></tr>
+      <tr><td>User Access Administrator</td><td>Assign roles, no resource mgmt</td><td>The <code>rbac.bicep</code> module only</td></tr>
+      <tr><td>Owner</td><td>Both of the above</td><td>Avoid — over-privileged for IaC</td></tr>
+    </tbody>
+  </table>
+  <pre><code><span class="comment"># Contributor + ability to assign RBAC, scoped to the dev RG only</span>
+az role assignment create --assignee &lt;you&gt; --role Contributor --scope /subscriptions/&lt;sub&gt;/resourceGroups/rg-secureai-dev
+az role assignment create --assignee &lt;you&gt; --role "User Access Administrator" --scope /subscriptions/&lt;sub&gt;/resourceGroups/rg-secureai-dev</code></pre>
+  <div class="callout key">
+    <strong>Why scope to the RG, not the subscription:</strong> the entire capstone lives in one resource group
+    and is destroyed each session. A subscription-wide grant outlives the resources and breaks least privilege.
+    Verify with <code>az role assignment list --assignee $me --all -o table</code> — confirm Contributor, not Owner.
+  </div>
+
+  <!-- ── Section 13: PIM ── -->
+  <h2>13. Configure PIM for Your Deployment Identity</h2>
+  <p>
+    Now elevate that Contributor role just-in-time. The <code>az deployment group create</code> command runs under
+    your personal account — instead of a permanent Contributor role, make it <strong>PIM-eligible</strong>.
+    Track 1 theory (Lesson 0002) teaches PIM; here's where you apply it.
+  </p>
+
+  <ol>
+    <li>Go to <strong>Microsoft Entra ID → Privileged Identity Management → Azure resources</strong>.</li>
+    <li>Find your subscription and click <strong>Roles → Contributor</strong>.</li>
+    <li>Click <strong>Add assignments → Eligible</strong> and add your account.</li>
+    <li>Remove any existing <em>active</em> Contributor assignment on your account at subscription scope.</li>
+    <li>Next time you need to deploy: activate the Contributor role in PIM (JIT, 1-hour window), then run <code>deploy.ps1</code>.</li>
+  </ol>
+
+  <div class="callout warn">
+    <strong>Keep at minimum one Owner assignment</strong> (ideally a break-glass account) to avoid locking
+    yourself out if PIM is misconfigured. Do not remove all active privileged assignments before confirming
+    PIM activation works.
+  </div>
+
+  <!-- ── Section 14: Destroy ── -->
+  <h2>14. Destroy</h2>
+  <p>
+    When you're done with the session, tear everything down. The Bicep files are your persistent artefact —
+    the Azure resources are ephemeral.
+  </p>
+  <pre><code>.\scripts\deploy.ps1 -Destroy</code></pre>
+
+  <p>
+    Verify deletion: wait 2–3 minutes, then run <code>az group show --name rg-secureai-dev</code>.
+    It should return an error: <code>ResourceGroupNotFound</code>. Check the Azure portal cost dashboard
+    to confirm no unexpected charges.
+  </p>
+
+  <div class="callout warn">
+    <strong>Key Vault soft-delete:</strong> Even after deleting the resource group, the Key Vault enters
+    a soft-deleted state and is retained for 7 days. If you redeploy with the same <code>kvName</code>
+    within that window, the deployment will fail with a name conflict. Either use a unique name (append
+    a date suffix) or purge the deleted vault first:
+    <code>az keyvault purge --name kv-secureai-dev</code>.
+    Note: purge protection on the vault must NOT be set to true if you want to purge immediately — see Step 6.
+  </div>
+
+  <!-- ── Section 15: Tag and commit ── -->
+  <h2>15. Tag the Track 1 Checkpoint</h2>
+  <pre><code>git add .
+git commit -m "Track 1: identity + Key Vault Bicep scaffold"
+git tag checkpoint/track-1</code></pre>
+
+  <!-- ── Section 16: Security controls checklist ── -->
+  <h2>16. Track 1 Security Controls Checklist</h2>
+  <p>Verify each control is in place before moving to Track 2:</p>
+
+  <ul class="checklist">
+    <li>App Service deployed with <strong>system-assigned managed identity</strong> (no credentials in code)</li>
+    <li>App Service enforces <strong>HTTPS-only</strong> and <strong>TLS 1.2 minimum</strong></li>
+    <li>App Service has <strong>FTP disabled</strong></li>
+    <li>Key Vault uses <strong>RBAC authorisation</strong> (not legacy access policies)</li>
+    <li>Key Vault has <strong>soft-delete</strong> enabled</li>
+    <li>Key Vault has <strong>purge protection</strong> enabled</li>
+    <li>Key Vault firewall <strong>defaults to Deny</strong>; only your IP is allowed</li>
+    <li>Managed identity has <strong>Key Vault Secrets User</strong> role only (least privilege)</li>
+    <li>You deploy as <strong>Contributor</strong> (not Owner), scoped to the dev resource group</li>
+    <li>CLI sign-in uses <strong>device-code</strong> flow (no Windows Hello dependency)</li>
+    <li>Azure Policy enforcing <strong>HTTPS on App Service</strong> assigned to resource group</li>
+    <li>Your deployment identity configured as <strong>PIM-eligible</strong> (JIT only)</li>
+    <li>Resources <strong>destroyed</strong> after session; cost dashboard confirmed clear</li>
+  </ul>
+
+  <!-- ── Section 17: What's next ── -->
+  <h2>17. What's Next — Track 2 Preview</h2>
+  <p>
+    In Track 2 (Weeks 4–6) you'll add <strong>network isolation</strong> to this same project:
+  </p>
+  <ul>
+    <li>A Virtual Network with an <code>app-subnet</code> and a <code>data-subnet</code></li>
+    <li>VNet integration for App Service (outbound traffic through the VNet)</li>
+    <li>Private endpoints for Key Vault and Azure SQL (removing the IP-based firewall exception)</li>
+    <li>NSGs restricting subnet-to-subnet traffic</li>
+    <li>Azure SQL with TDE, auditing, and a private endpoint replacing the public firewall rule</li>
+  </ul>
+  <p>
+    The Track 1 Bicep modules stay intact. Track 2 adds <code>modules/networking.bicep</code> and
+    <code>modules/sql.bicep</code> and updates the Key Vault module to remove the IP firewall rule
+    in favour of a VNet rule.
+  </p>
+
+  <!-- ── Nav ── -->
+  <div class="nav-links">
+    <span>← <a href="capstone-overview.html">Capstone Overview</a></span>
+    <span>Track 2 → <em>Coming in Weeks 4–6</em></span>
+  </div>
+
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+  </script>
+
+</body>
+</html>
