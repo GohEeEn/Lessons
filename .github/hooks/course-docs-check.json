@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "hooks": {
+    "postToolUse": [
+      {
+        "type": "command",
+        "bash": "node scripts/check-course-docs.js || true",
+        "powershell": "node scripts/check-course-docs.js; exit 0",
+        "cwd": ".",
+        "timeoutSec": 15
+      }
+    ]
+  }
+}
