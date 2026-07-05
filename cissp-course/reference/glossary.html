@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CISSP Glossary</title>
+  <style>
+    :root {
+      --ink: #1a1a1a;
+      --muted: #555;
+      --accent: #0050c8;
+      --accent-light: #e8f0fe;
+      --border: #ddd;
+      --bg: #fafafa;
+      --purple: #7b2d8b;
+      --purple-light: #f3f0ff;
+      font-size: 17px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.75;
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 6rem;
+    }
+    h1 { font-size: 2rem; line-height: 1.2; margin-bottom: 0.25rem; }
+    p { margin-bottom: 1rem; }
+    a { color: var(--accent); }
+
+    .meta {
+      color: var(--muted);
+      font-family: system-ui, sans-serif;
+      font-size: 0.85rem;
+      margin-bottom: 2rem;
+    }
+    .meta span { margin-right: 1.5rem; }
+
+    /* ── Filter bar ── */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1.5rem 0 2rem;
+      font-family: system-ui, sans-serif;
+    }
+    .filter-btn {
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 4px;
+      padding: 0.3rem 0.75rem;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+      color: var(--ink);
+    }
+    .filter-btn:hover { background: var(--accent-light); border-color: #aac4f8; }
+    .filter-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* ── Search ── */
+    .search-wrap {
+      margin-bottom: 1.5rem;
+      font-family: system-ui, sans-serif;
+    }
+    .search-wrap input {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.55rem 0.9rem;
+      font-size: 0.95rem;
+      font-family: system-ui, sans-serif;
+      background: #fff;
+      color: var(--ink);
+    }
+    .search-wrap input:focus { outline: 2px solid var(--accent); border-color: var(--accent); }
+
+    /* ── Alpha index ── */
+    .alpha-index {
+      font-family: system-ui, sans-serif;
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+    }
+    .alpha-index a {
+      color: var(--muted);
+      text-decoration: none;
+      padding: 0.1em 0.35em;
+      border-radius: 3px;
+    }
+    .alpha-index a:hover { background: var(--accent-light); color: var(--accent); }
+
+    /* ── Alphabet section header ── */
+    .alpha-header {
+      font-family: system-ui, sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--muted);
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 0.2rem;
+      margin: 2rem 0 1rem;
+    }
+
+    /* ── Entry ── */
+    .entry {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1rem 1.2rem;
+      margin-bottom: 0.9rem;
+    }
+    .entry:target { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,80,200,0.12); }
+    .entry-header {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.4rem;
+    }
+    .entry-term {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--ink);
+    }
+    .entry-def {
+      font-family: system-ui, sans-serif;
+      font-size: 0.92rem;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+    .entry-footer {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      font-family: system-ui, sans-serif;
+      font-size: 0.8rem;
+      margin-top: 0.5rem;
+    }
+    .entry-lesson {
+      color: var(--muted);
+      text-decoration: none;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 0.1em 0.5em;
+      background: var(--bg);
+    }
+    .entry-lesson:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── Domain badges ── */
+    .badge {
+      display: inline-block;
+      padding: 0.1em 0.5em;
+      border-radius: 3px;
+      font-family: system-ui, sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .d1  { background: #e8f0fe; color: #0050c8; }
+    .d2  { background: #e6f4ea; color: #1a7a4a; }
+    .d3  { background: #fdecea; color: #c0392b; }
+    .d4  { background: #fff3cd; color: #856404; }
+    .d5  { background: #f3f0ff; color: #7b2d8b; }
+    .d6  { background: #e0f7fa; color: #006064; }
+    .d7  { background: #fce4ec; color: #880e4f; }
+    .d8  { background: #f3e5f5; color: #4a148c; }
+
+    /* ── Empty state ── */
+    #empty-state {
+      display: none;
+      text-align: center;
+      color: var(--muted);
+      font-family: system-ui, sans-serif;
+      padding: 3rem 0;
+    }
+
+    /* ── Count ── */
+    #entry-count {
+      font-family: system-ui, sans-serif;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    /* ── Nav ── */
+    .nav-links {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-family: system-ui, sans-serif;
+      font-size: 0.9rem;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>CISSP Glossary</h1>
+  <p style="font-size:1.05rem; color:var(--muted); font-family:system-ui,sans-serif; margin-bottom:0.5rem;">
+    Terms encountered across the course — with domain context and lesson source.
+  </p>
+  <div class="meta">
+    <span>🛡️ CISSP Course</span>
+    <span>📖 Reference</span>
+    <span>Updated: Lesson 0003</span>
+  </div>
+
+  <!-- Filter bar -->
+  <div class="filter-bar" id="filter-bar">
+    <button class="filter-btn active" data-filter="all" onclick="setFilter('all', this)">All domains</button>
+    <button class="filter-btn" data-filter="D1" onclick="setFilter('D1', this)">D1 · Risk Management</button>
+    <button class="filter-btn" data-filter="D2" onclick="setFilter('D2', this)">D2 · Asset Security</button>
+    <button class="filter-btn" data-filter="D3" onclick="setFilter('D3', this)">D3 · Architecture</button>
+    <button class="filter-btn" data-filter="D4" onclick="setFilter('D4', this)">D4 · Network Security</button>
+    <button class="filter-btn" data-filter="D5" onclick="setFilter('D5', this)">D5 · IAM</button>
+    <button class="filter-btn" data-filter="D6" onclick="setFilter('D6', this)">D6 · Assessment &amp; Testing</button>
+    <button class="filter-btn" data-filter="D7" onclick="setFilter('D7', this)">D7 · Operations</button>
+    <button class="filter-btn" data-filter="D8" onclick="setFilter('D8', this)">D8 · Software Security</button>
+  </div>
+
+  <!-- Search -->
+  <div class="search-wrap">
+    <input type="search" id="search-input" placeholder="Search terms…" oninput="applyFilters()" />
+  </div>
+
+  <div id="entry-count"></div>
+
+  <!-- Alpha index -->
+  <div class="alpha-index" id="alpha-index"></div>
+
+  <!-- Glossary entries -->
+  <div id="glossary-body"></div>
+  <div id="empty-state">No terms match your filter.</div>
+
+  <!-- Nav -->
+  <div class="nav-links">
+    <a href="../lessons/0003-risk-management-foundations.html">← Lesson 0003: Risk Management Foundations</a>
+    <a href="../../index.html">↑ Course Hub</a>
+  </div>
+
+  <script>
+    // ─── Term data ───────────────────────────────────────────────────────────
+    const terms = [
+      // A
+      { id: 'ale', term: 'Annual Loss Expectancy (ALE)', def: 'The expected monetary loss from a risk in one year. Calculated as: Asset Value × Exposure Factor × Annual Rate of Occurrence. Used to justify the cost of a countermeasure.', domains: ['D1'], lesson: '0001', lessonTitle: '0001: Domain Map & Diagnostic', lessonFile: '../lessons/0001-cissp-domain-map-and-diagnostic.html' },
+      { id: 'aro', term: 'Annual Rate of Occurrence (ARO)', def: 'The estimated frequency with which a threat event will occur in a given year. A value of 0.5 means once every two years.', domains: ['D1'], lesson: '0001', lessonTitle: '0001: Domain Map & Diagnostic', lessonFile: '../lessons/0001-cissp-domain-map-and-diagnostic.html' },
+      { id: 'arp-poisoning', term: 'ARP Poisoning (ARP Spoofing)', def: 'A layer-2 attack where forged ARP replies link an attacker\'s MAC address to a legitimate IP, redirecting traffic through the attacker\'s machine.', domains: ['D4'], lesson: '0001', lessonTitle: '0001: Domain Map & Diagnostic', lessonFile: '../lessons/0001-cissp-domain-map-and-diagnostic.html' },
+      { id: 'asset-value', term: 'Asset Value', def: 'The monetary or strategic worth of an asset to the organisation. A key input to quantitative risk calculations (ALE, SLE).', domains: ['D1', 'D2'], lesson: '0001', lessonTitle: '0001: Domain Map & Diagnostic', lessonFile: '../lessons/0001-cissp-domain-map-and-diagnostic.html' },
+      { id: 'ato', term: 'ATO (Authority to Operate)', def: 'A formal management decision — in the NIST RMF — granting authorisation for a system to operate based on accepted residual risk. Issued by a senior official, not the security team.', domains: ['D1'], lesson: '0003', lessonTitle: '0003: Risk Management Foundations', lessonFile: '../lessons/0003-risk-management-foundations.html' },
+      // B
+      { id: 'bell-lapadula', term: 'Bell-LaPadula Model', def: 'A confidentiality model with two core rules: Simple Security Property (no read up — a subject cannot read above their clearance) and *-Property (no write down — a subject cannot copy data to a lower classification).', domains: ['D3'], lesson: '0001', lessonTitle: '0001: Domain Map & Diagnostic', lessonFile: '../lessons/0001-cissp-domain-map-and-diagnostic.html' },
+      { id: 'biba', term: 'Biba Integrity Model', def: 'The integrity counterpart to Bell-LaPadula. Enforces no-write-up (a subject cannot write to a higher integrity level) and no-read-down (a subject cannot read from a lower integrity level), preventing corruption from below.', domains: ['D3'], lesson: '0001', lessonTitle: '0001: Domain Map & Diagnostic', lessonFile: '../lessons/0001-cissp-domain-map-and-diagnostic.html' },
+      { id: 'black-box', term: 'Black-box Test', def: 'An assessment where the tester has no prior knowledge of the target system. Simulates an external attacker\'s perspective. Highest realism; lowest efficiency for finding all vulnerabilities.', domains: ['D6'], lesson: '0001', lessonTitle: '0001: Domain Map & Diagnostic', lessonFile: '../lessons/0001-cissp-domain-map-and-diagnostic.html' },
+      { id: 'brewer-nash', term: 'Brewer-Nash (Chinese Wall) Model', def: 'A security model that prevents a user who has accessed information from one company from accessing information from a competing company, preventing conflicts of interest.', domains: ['D3'], lesson: '0001', lessonTitle: '0001: Domain Map & Diagnostic', lessonFile: '../lessons/0001-cissp-domain-map-and-diagnostic.html' },
+      // C
+      { id: 'clark-wilson', term: 'Clark-Wilson Model', def: 'An integrity model for commercial systems that enforces well-formed transactions and separation of duties. Subjects can only act on objects via constrained interfaces (programs), not directly.', domains: ['D3'], lesson: '0001', lessonTitle: '0001: Domain Map & Diagnostic', lessonFile: '../lessons/0001-cissp-domain-map-and-diagnostic.html' },
+      { id: 'control', term: 'Control', def: 'A safeguard or countermeasure that reduces the likelihood or impact of a risk. Controls can be preventive, detective, corrective, deterrent, recovery, or compensating.', domains: ['D1'], lesson: '0003', lessonTitle: '0003: Risk Management Foundations', lessonFile: '../lessons/0003-risk-management-foundations.html' },
+      // D
+      { id: 'dac', term: 'Discretionary Access Control (DAC)', def: 'An access control model where resource owners decide who can access their resources. Flexible but inconsistent — individual owners may set policies that conflict with organisational intent.', domains: ['D5'], lesson: '0001', lessonTitle: '0001: Domain Map & Diagnostic', lessonFile: '../lessons/0001-cissp-domain-map-and-diagnostic.html' },
+      { id: 'dai', term: 'Dynamic ARP Inspection (DAI)', def: 'A security feature on managed switches that validates ARP packets against a DHCP snooping binding table. Drops ARP replies whose MAC-to-IP mapping is not a known legitimate lease, preventing ARP poisoning.', domains: ['D4'], lesson: '0001', lessonTitle: '0001: Domain Map & Diagnostic', lessonFile: '../lessons/0001-cissp-domain-map-and-diagnostic.html' },
+      { id: 'data-custodian', term: 'Data Custodian', def: 'The role responsible for the technical management and storage of data — implementing the controls defined by the data owner. Does not set classification or handling policy.', domains: ['D2'], lesson: '0001', lessonTitle: '0001: Domain Map & Diagnostic', lessonFile: '../lessons/0001-cissp-domain-map-and-diagnostic.html' },
+      { id: 'data-owner', term: 'Data Owner', def: 'The person (or role) accountable for a dataset — responsible for its classification, handling requirements, and access decisions. A role, not a person: when someone leaves, management assigns a new data owner.', domains: ['D2'], lesson: '0001', lessonTitle: '0001: Domain Map & Diagnostic', lessonFile: '../lessons/0001-cissp-domain-map-and-diagnostic.html' },
+      { id: 'data-poisoning', term: 'Data Poisoning', def: 'An AI training-phase attack where an adversary corrupts training data to cause a model to learn incorrect patterns — embedding a backdoor or degrading accuracy from the start.', domains: ['D2', 'D3', 'D8'], lesson: '0002', lessonTitle: '0002: AI Security Primer', lessonFile: '../lessons/0002-ai-security-primer.html' },
+      { id: 'differential-privacy', term: 'Differential Privacy', def: 'A mathematical technique that adds calibrated statistical noise to query outputs so that the presence of any individual record cannot be determined — a defence against model inversion and membership inference attacks.', domains: ['D3', 'D6'], lesson: '0002', lessonTitle: '0002: AI Security Primer', lessonFile: '../lessons/0002-ai-security-primer.html' },
+      { id: 'dnssec', term: 'DNSSEC', def: 'DNS Security Extensions — a suite of protocols that cryptographically signs DNS records, allowing resolvers to verify authenticity and detect cache poisoning.', domains: ['D4'], lesson: '0001', lessonTitle: '0001: Domain Map & Diagnostic', lessonFile: '../lessons/0001-cissp-domain-map-and-diagnostic.html' },
+      // E
+      { id: 'eu-ai-act', term: 'EU AI Act', def: 'The world\'s first binding horizontal AI regulation (in force August 2024). Classifies AI systems into risk tiers: Unacceptable (prohibited), High (heavy obligations), Limited (transparency), and Minimal (voluntary codes).', domains: ['D1'], lesson: '0002', lessonTitle: '0002: AI Security Primer', lessonFile: '../lessons/0002-ai-security-primer.html' },
+      { id: 'evasion-attack', term: 'Evasion Attack (Adversarial Examples)', def: 'A deployment-phase AI attack where crafted inputs are designed to fool a trained model into misclassification, without triggering its detection. Classic example: imperceptibly altered images.', domains: ['D3', 'D6', 'D7'], lesson: '0002', lessonTitle: '0002: AI Security Primer', lessonFile: '../lessons/0002-ai-security-primer.html' },
+      { id: 'exposure-factor', term: 'Exposure Factor (EF)', def: 'The percentage of asset value that would be lost if a specific threat event occurs. Used in quantitative risk analysis: EF × Asset Value = Single Loss Expectancy (SLE).', domains: ['D1'], lesson: '0001', lessonTitle: '0001: Domain Map & Diagnostic', lessonFile: '../lessons/0001-cissp-domain-map-and-diagnostic.html' },
+      { id: 'xai', term: 'Explainable AI (XAI)', def: 'AI system designs or techniques that make model decisions interpretable to humans. Relevant to security architects for governance, auditability, and detecting adversarial manipulation.', domains: ['D3'], lesson: '0002', lessonTitle: '0002: AI Security Primer', lessonFile: '../lessons/0002-ai-security-primer.html' },
+      // G
+      { id: 'gray-box', term: 'Gray-box Test', def: 'An assessment where the tester has partial knowledge of the target (e.g. some architecture diagrams or credentials). Balances realism with efficiency — the most common configuration for web application assessments.', domains: ['D6'], lesson: '0001', lessonTitle: '0001: Domain Map & Diagnostic', lessonFile: '../lessons/0001-cissp-domain-map-and-diagnostic.html' },
+      // I
+      { id: 'iso-27005', term: 'ISO/IEC 27005', def: 'The international standard for information security risk management. Vendor-neutral and aligns with ISO 27001. Provides guidance on the risk management lifecycle: identification, assessment, treatment, acceptance, and monitoring.', domains: ['D1'], lesson: '0003', lessonTitle: '0003: Risk Management Foundations', lessonFile: '../lessons/0003-risk-management-foundations.html' },
+      // K
+      { id: 'kri', term: 'Key Risk Indicators (KRI)', def: 'Metrics used to signal that risk exposure is moving beyond acceptable thresholds. Used in the Monitor step of the risk management lifecycle to trigger review or treatment escalation.', domains: ['D1', 'D7'], lesson: '0003', lessonTitle: '0003: Risk Management Foundations', lessonFile: '../lessons/0003-risk-management-foundations.html' },
+      // M
+      { id: 'mac', term: 'Mandatory Access Control (MAC)', def: 'An access control model where access decisions are made by the system based on security labels (clearances and classifications), not by individual owners. Used in high-security environments (government, military).', domains: ['D5'], lesson: '0001', lessonTitle: '0001: Domain Map & Diagnostic', lessonFile: '../lessons/0001-cissp-domain-map-and-diagnostic.html' },
+      { id: 'membership-inference', term: 'Membership Inference', def: 'An AI privacy attack where an adversary determines whether a specific individual\'s data was in a model\'s training set — a privacy violation even without reconstructing the actual data.', domains: ['D1', 'D3', 'D6'], lesson: '0002', lessonTitle: '0002: AI Security Primer', lessonFile: '../lessons/0002-ai-security-primer.html' },
+      { id: 'model-inversion', term: 'Model Inversion', def: 'An AI attack where an adversary queries a model repeatedly to reconstruct sensitive data from the training set (e.g. recovering medical records from a diagnostic model\'s outputs).', domains: ['D3', 'D6'], lesson: '0002', lessonTitle: '0002: AI Security Primer', lessonFile: '../lessons/0002-ai-security-primer.html' },
+      { id: 'model-theft', term: 'Model Theft', def: 'An AI attack where an adversary extracts a functional copy of a proprietary model by querying it at scale. The model weights and architecture become stolen intellectual property.', domains: ['D2', 'D4'], lesson: '0002', lessonTitle: '0002: AI Security Primer', lessonFile: '../lessons/0002-ai-security-primer.html' },
+      // N
+      { id: 'nist-ai-rmf', term: 'NIST AI RMF', def: 'The NIST AI Risk Management Framework (January 2023). Four core functions: Govern → Map → Measure → Manage. The AI analogue of NIST SP 800-37 — applies the risk management lifecycle to AI systems.', domains: ['D1'], lesson: '0002', lessonTitle: '0002: AI Security Primer', lessonFile: '../lessons/0002-ai-security-primer.html' },
+      { id: 'nist-rmf', term: 'NIST RMF (SP 800-37)', def: 'The NIST Risk Management Framework for federal information systems. Six steps: Categorize → Select → Implement → Assess → Authorize → Monitor. The Authorize step produces an ATO (Authority to Operate).', domains: ['D1'], lesson: '0003', lessonTitle: '0003: Risk Management Foundations', lessonFile: '../lessons/0003-risk-management-foundations.html' },
+      // P
+      { id: 'pen-test', term: 'Penetration Test', def: 'A structured, authorised simulation of an adversarial attack to determine whether vulnerabilities are exploitable. Produces an attack narrative and proof-of-concept exploits. A type of security assessment.', domains: ['D6'], lesson: '0003', lessonTitle: '0003: Risk Management Foundations', lessonFile: '../lessons/0003-risk-management-foundations.html' },
+      { id: 'prompt-injection', term: 'Prompt Injection', def: 'An attack on LLMs where crafted user input overrides system instructions — the natural language equivalent of SQL injection. Can exfiltrate data, bypass guardrails, or trigger unintended actions.', domains: ['D3', 'D8'], lesson: '0002', lessonTitle: '0002: AI Security Primer', lessonFile: '../lessons/0002-ai-security-primer.html' },
+      // R
+      { id: 'rbac', term: 'Role-Based Access Control (RBAC)', def: 'An access control model that grants permissions to roles, and assigns users to roles. Simplifies administration for large organisations. Does not inherently enforce time or location constraints.', domains: ['D5'], lesson: '0001', lessonTitle: '0001: Domain Map & Diagnostic', lessonFile: '../lessons/0001-cissp-domain-map-and-diagnostic.html' },
+      { id: 'red-team', term: 'Red Team Exercise', def: 'A broad adversarial simulation — beyond application testing — that includes physical intrusion, social engineering, and technical attack. Tests the organisation\'s detection and response capability end-to-end.', domains: ['D6'], lesson: '0001', lessonTitle: '0001: Domain Map & Diagnostic', lessonFile: '../lessons/0001-cissp-domain-map-and-diagnostic.html' },
+      { id: 'residual-risk', term: 'Residual Risk', def: 'The risk that remains after controls have been applied. Must be formally accepted by senior leadership (not the security team). The ATO decision is management\'s formal acceptance of residual risk.', domains: ['D1'], lesson: '0003', lessonTitle: '0003: Risk Management Foundations', lessonFile: '../lessons/0003-risk-management-foundations.html' },
+      { id: 'risk', term: 'Risk', def: 'The probability that a threat exploits a vulnerability, multiplied by the impact if it does. Risk requires both a credible threat AND a vulnerability to exist.', domains: ['D1'], lesson: '0003', lessonTitle: '0003: Risk Management Foundations', lessonFile: '../lessons/0003-risk-management-foundations.html' },
+      { id: 'risk-assessment', term: 'Risk Assessment', def: 'A formal evaluation of the likelihood and impact of identified threats against organisational assets. A point-in-time deliverable that feeds the Assess step of the risk management lifecycle and updates the risk register.', domains: ['D1', 'D6'], lesson: '0003', lessonTitle: '0003: Risk Management Foundations', lessonFile: '../lessons/0003-risk-management-foundations.html' },
+      { id: 'risk-management-lifecycle', term: 'Risk Management Lifecycle', def: 'The continuous, cyclical process: Identify → Assess → Treat → Monitor → repeat. It is the programme — never-ending as long as the organisation operates. Security assessments are inputs to the Assess step.', domains: ['D1'], lesson: '0003', lessonTitle: '0003: Risk Management Foundations', lessonFile: '../lessons/0003-risk-management-foundations.html' },
+      { id: 'risk-register', term: 'Risk Register', def: 'A living document that records all identified risks with their ratings (likelihood × impact), assigned owners, treatment decisions, and current status. Updated after each assessment and treatment review.', domains: ['D1'], lesson: '0003', lessonTitle: '0003: Risk Management Foundations', lessonFile: '../lessons/0003-risk-management-foundations.html' },
+      { id: 'rule-based-ac', term: 'Rule-Based Access Control', def: 'An access control model that enforces administrator-defined rules, which can include time-of-day, day-of-week, source IP, or physical location. Distinct from RBAC — it is condition-based, not role-based.', domains: ['D5'], lesson: '0001', lessonTitle: '0001: Domain Map & Diagnostic', lessonFile: '../lessons/0001-cissp-domain-map-and-diagnostic.html' },
+      // S
+      { id: 'security-assessment', term: 'Security Assessment', def: 'A structured, time-bounded evaluation of whether controls are present, effective, and appropriately implemented. Point-in-time activity — an input to the Assess step of risk management. Types: vulnerability scan, pen test, controls review, risk assessment.', domains: ['D1', 'D6'], lesson: '0003', lessonTitle: '0003: Risk Management Foundations', lessonFile: '../lessons/0003-risk-management-foundations.html' },
+      // T
+      { id: 'threat', term: 'Threat', def: 'Any circumstance or event with the potential to exploit a vulnerability and cause harm. No vulnerability means no exploitable threat. Threats can be natural, human (intentional or accidental), or environmental.', domains: ['D1'], lesson: '0003', lessonTitle: '0003: Risk Management Foundations', lessonFile: '../lessons/0003-risk-management-foundations.html' },
+      // V
+      { id: 'vulnerability', term: 'Vulnerability', def: 'A weakness in a system, process, or control that could be exploited by a threat. A vulnerability alone does not constitute risk — there must also be a credible threat and an asset of value.', domains: ['D1'], lesson: '0003', lessonTitle: '0003: Risk Management Foundations', lessonFile: '../lessons/0003-risk-management-foundations.html' },
+      { id: 'vulnerability-assessment', term: 'Vulnerability Assessment', def: 'An automated or manual evaluation that identifies known weaknesses in systems and configurations. Output is a prioritised list of vulnerabilities (often with CVSS scores). A type of security assessment.', domains: ['D6'], lesson: '0003', lessonTitle: '0003: Risk Management Foundations', lessonFile: '../lessons/0003-risk-management-foundations.html' },
+      // W
+      { id: 'white-box', term: 'White-box Test', def: 'An assessment where the tester has full access to source code, architecture diagrams, and database schemas. Enables thorough code-path coverage and surfaces logic flaws invisible from outside. Also called crystal-box testing.', domains: ['D6'], lesson: '0001', lessonTitle: '0001: Domain Map & Diagnostic', lessonFile: '../lessons/0001-cissp-domain-map-and-diagnostic.html' },
+    ];
+
+    // ─── Render ──────────────────────────────────────────────────────────────
+    let activeFilter = 'all';
+
+    function badgeHtml(domain) {
+      return `<span class="badge ${domain.toLowerCase()}">${domain}</span>`;
+    }
+
+    function buildGlossary(filtered) {
+      const body = document.getElementById('glossary-body');
+      const alphaEl = document.getElementById('alpha-index');
+      const countEl = document.getElementById('entry-count');
+      const emptyEl = document.getElementById('empty-state');
+      body.innerHTML = '';
+      alphaEl.innerHTML = '';
+
+      if (filtered.length === 0) {
+        emptyEl.style.display = 'block';
+        countEl.textContent = '';
+        return;
+      }
+      emptyEl.style.display = 'none';
+      countEl.textContent = `Showing ${filtered.length} term${filtered.length !== 1 ? 's' : ''}`;
+
+      // Group by first letter
+      const groups = {};
+      filtered.forEach(t => {
+        const letter = t.term[0].toUpperCase();
+        if (!groups[letter]) groups[letter] = [];
+        groups[letter].push(t);
+      });
+
+      // Alpha index
+      Object.keys(groups).sort().forEach(letter => {
+        const a = document.createElement('a');
+        a.href = `#alpha-${letter}`;
+        a.textContent = letter;
+        alphaEl.appendChild(a);
+      });
+
+      // Entries
+      Object.keys(groups).sort().forEach(letter => {
+        const hdr = document.createElement('div');
+        hdr.className = 'alpha-header';
+        hdr.id = `alpha-${letter}`;
+        hdr.textContent = letter;
+        body.appendChild(hdr);
+
+        groups[letter].forEach(t => {
+          const div = document.createElement('div');
+          div.className = 'entry';
+          div.id = t.id;
+          div.dataset.domains = t.domains.join(' ');
+          div.innerHTML = `
+            <div class="entry-header">
+              <span class="entry-term">${t.term}</span>
+              ${t.domains.map(badgeHtml).join(' ')}
+            </div>
+            <div class="entry-def">${t.def}</div>
+            <div class="entry-footer">
+              <a class="entry-lesson" href="${t.lessonFile}">→ Lesson ${t.lessonTitle}</a>
+            </div>
+          `;
+          body.appendChild(div);
+        });
+      });
+    }
+
+    function applyFilters() {
+      const query = document.getElementById('search-input').value.toLowerCase().trim();
+      const filtered = terms.filter(t => {
+        const domainMatch = activeFilter === 'all' || t.domains.includes(activeFilter);
+        const textMatch = !query ||
+          t.term.toLowerCase().includes(query) ||
+          t.def.toLowerCase().includes(query);
+        return domainMatch && textMatch;
+      });
+      buildGlossary(filtered);
+    }
+
+    function setFilter(filter, btn) {
+      activeFilter = filter;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      applyFilters();
+    }
+
+    // Initial render
+    buildGlossary(terms);
+  </script>
+
+</body>
+</html>
