@@ -39,3 +39,49 @@ Every lesson HTML file **must** include a `<div class="nav-links">` footer with 
   1. Update the *previous* lesson's forward nav link from `href="#"` to the new file's actual filename.
   2. Add the new lesson to `index.html` under the correct course and phase section.
 - **`index.html` is the authoritative course hub.** Every lesson must be listed there. If a lesson is not in `index.html`, it is not discoverable.
+
+## CISSP Glossary
+The CISSP course maintains a living glossary at `cissp-course/reference/glossary.html`.
+
+**When creating a new CISSP lesson**, always:
+1. **Extract new terms** introduced in the lesson — any defined concept, framework, acronym, or vocabulary item the learner may not know.
+2. **Add each term to the glossary** with:
+   - `id` slug (kebab-case, e.g. `risk-register`)
+   - Full definition (1–3 sentences, precise)
+   - Domain badge(s) — which CISSP domains the term appears in
+   - `lesson` and `lessonTitle` pointing to the current lesson
+3. **Link each term inline** in the lesson body wherever it first appears meaningfully:
+   ```html
+   <a href="../reference/glossary.html#slug" class="g" data-tip="One-line summary shown on hover.">term text</a>
+   ```
+4. **Include the `.g` tooltip CSS** in every lesson's `<style>` block (copy from lesson 0003).
+5. **Add `📖 Glossary` link** to the lesson's `nav-links` footer.
+
+**Tooltip CSS** (add once per lesson `<style>` block):
+```css
+.g {
+  border-bottom: 1px dotted var(--accent);
+  cursor: help;
+  color: inherit;
+  text-decoration: none;
+  position: relative;
+}
+.g:hover::after {
+  content: attr(data-tip);
+  position: absolute;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1a1a1a;
+  color: #fff;
+  padding: 0.4rem 0.65rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  white-space: normal;
+  max-width: 280px;
+  z-index: 10;
+  font-family: system-ui, sans-serif;
+  pointer-events: none;
+  line-height: 1.4;
+}
+```

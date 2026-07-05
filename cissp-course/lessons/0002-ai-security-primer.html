@@ -214,6 +214,33 @@
     }
     .attack-card .a-def { color: var(--ink); margin-bottom: 0.3rem; }
     .attack-card .a-domain { color: var(--muted); font-size: 0.8rem; }
+
+    /* ── Glossary term tooltip ── */
+    .g {
+      border-bottom: 1px dotted var(--accent);
+      cursor: help;
+      color: inherit;
+      text-decoration: none;
+      position: relative;
+    }
+    .g:hover::after {
+      content: attr(data-tip);
+      position: absolute;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1a1a1a;
+      color: #fff;
+      padding: 0.4rem 0.65rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      white-space: normal;
+      max-width: 280px;
+      z-index: 10;
+      font-family: system-ui, sans-serif;
+      pointer-events: none;
+      line-height: 1.4;
+    }
   </style>
 </head>
 <body>
@@ -296,32 +323,32 @@ graph LR
 
   <div class="attack-grid">
     <div class="attack-card">
-      <div class="a-label">Data Poisoning</div>
+      <div class="a-label"><a href="../reference/glossary.html#data-poisoning" class="g" data-tip="Training-phase attack: corrupts training data to embed a backdoor or degrade model accuracy from the start.">Data Poisoning</a></div>
       <div class="a-def">Attacker corrupts training data to cause the model to learn incorrect patterns — a backdoor or degraded accuracy baked in from the start.</div>
       <div class="a-domain">📌 Most relevant to: D2 (asset security of training data), D3 (architecture), D8 (SDLC)</div>
     </div>
     <div class="attack-card">
-      <div class="a-label">Model Inversion</div>
+      <div class="a-label"><a href="../reference/glossary.html#model-inversion" class="g" data-tip="Repeated model queries reconstruct sensitive training data (e.g. medical records) from the model's outputs.">Model Inversion</a></div>
       <div class="a-def">By querying a model repeatedly, an attacker reconstructs sensitive training data (e.g., medical records used to train a diagnostic model).</div>
       <div class="a-domain">📌 Most relevant to: D3 (defences: differential privacy), D6 (testing)</div>
     </div>
     <div class="attack-card">
-      <div class="a-label">Membership Inference</div>
+      <div class="a-label"><a href="../reference/glossary.html#membership-inference" class="g" data-tip="Determines whether a specific individual's data was in the training set — a privacy violation without reconstructing the data.">Membership Inference</a></div>
       <div class="a-def">Attacker determines whether a specific individual's data was in the training set — a privacy violation even without reconstructing the data itself.</div>
       <div class="a-domain">📌 Most relevant to: D1 (privacy risk), D3 (architecture), D6 (testing)</div>
     </div>
     <div class="attack-card">
-      <div class="a-label">Evasion Attack</div>
+      <div class="a-label"><a href="../reference/glossary.html#evasion-attack" class="g" data-tip="Crafted inputs cause a trained model to misclassify. Imperceptibly altered images are a classic example.">Evasion Attack</a></div>
       <div class="a-def">Crafted inputs (adversarial examples) that cause a model to misclassify. Classic example: imperceptibly altered images that fool image recognition systems.</div>
       <div class="a-domain">📌 Most relevant to: D3 (robustness), D6 (adversarial testing), D7 (SOC)</div>
     </div>
     <div class="attack-card">
-      <div class="a-label">Prompt Injection</div>
+      <div class="a-label"><a href="../reference/glossary.html#prompt-injection" class="g" data-tip="Crafted user input overrides LLM system instructions — the natural language equivalent of SQL injection.">Prompt Injection</a></div>
       <div class="a-def">In LLMs: crafted user input overrides system instructions — the equivalent of a SQL injection but for natural language. Can exfiltrate data or trigger unintended actions.</div>
       <div class="a-domain">📌 Most relevant to: D8 (AppSec), D3 (input validation), D6 (red-teaming)</div>
     </div>
     <div class="attack-card">
-      <div class="a-label">Model Theft</div>
+      <div class="a-label"><a href="../reference/glossary.html#model-theft" class="g" data-tip="Attacker extracts a functional copy of a proprietary model by querying it at scale — model weights become stolen IP.">Model Theft</a></div>
       <div class="a-def">Attacker extracts a functional copy of a proprietary model by querying it at scale. The model weights and architecture become stolen intellectual property.</div>
       <div class="a-domain">📌 Most relevant to: D2 (model as IP asset), D4 (rate limiting APIs)</div>
     </div>
@@ -332,7 +359,7 @@ graph LR
   ───────────────────────────────────────────────── -->
   <h2>3. NIST AI Risk Management Framework (AI RMF 1.0)</h2>
 
-  <p>The <a href="https://airc.nist.gov/RMF" target="_blank">NIST AI RMF</a> (January 2023) is the most important AI governance framework for CISSP purposes. It is the AI analogue to NIST CSF and NIST SP 800-37 — a voluntary framework for managing AI risk across the lifecycle.</p>
+  <p>The <a href="../reference/glossary.html#nist-ai-rmf" class="g" data-tip="Four functions: Govern → Map → Measure → Manage. The AI analogue of NIST SP 800-37 for managing AI risk.">NIST AI RMF</a> (January 2023) is the most important AI governance framework for CISSP purposes. It is the AI analogue to NIST CSF and NIST SP 800-37 — a voluntary framework for managing AI risk across the lifecycle.</p>
 
   <div class="mermaid" id="rmf-diagram">
 graph TD
@@ -388,7 +415,7 @@ graph TD
   ───────────────────────────────────────────────── -->
   <h2>4. EU AI Act — Risk-Tiered Regulation</h2>
 
-  <p>The <a href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" target="_blank">EU AI Act</a> (effective August 2024; enforcement phased through 2027) is the world's first binding horizontal AI regulation. For CISSP purposes, understand the risk tier structure — it mirrors how we think about data classification and regulatory compliance in Domain 1.</p>
+  <p>The <a href="../reference/glossary.html#eu-ai-act" class="g" data-tip="World's first binding AI regulation. Four risk tiers: Unacceptable (prohibited), High, Limited, and Minimal. In force August 2024.">EU AI Act</a> (effective August 2024; enforcement phased through 2027) is the world's first binding horizontal AI regulation. For CISSP purposes, understand the risk tier structure — it mirrors how we think about data classification and regulatory compliance in Domain 1.</p>
 
   <div class="mermaid" id="euai-diagram">
 graph TB
@@ -433,7 +460,7 @@ graph TB
       <tr>
         <td><strong>D3</strong> Security Architecture &amp; Engineering</td>
         <td>🔴🔴 High</td>
-        <td>Adversarial ML attacks and defences, differential privacy, Explainable AI (XAI), securing AI workloads (GPU clusters, cloud AI)</td>
+        <td>Adversarial ML attacks and defences, <a href="../reference/glossary.html#differential-privacy" class="g" data-tip="Adds calibrated statistical noise to query outputs so no individual record can be identified — defends against model inversion and membership inference.">differential privacy</a>, Explainable AI (XAI), securing AI workloads (GPU clusters, cloud AI)</td>
       </tr>
       <tr>
         <td><strong>D4</strong> Communication &amp; Network Security</td>
@@ -578,7 +605,11 @@ graph TB
   <!-- ── Nav ── -->
   <div class="nav-links">
     <a href="0001-cissp-domain-map-and-diagnostic.html">← Lesson 0001: Domain Map &amp; Diagnostic</a>
-    <a href="0003-risk-management-foundations.html">Lesson 0003: D1 — Risk Management Foundations →</a>
+    <span>
+      <a href="../reference/glossary.html">📖 Glossary</a>
+      &nbsp;·&nbsp;
+      <a href="0003-risk-management-foundations.html">Lesson 0003: D1 — Risk Management Foundations →</a>
+    </span>
   </div>
 
   <!-- ─────────────────────────────────────────────────

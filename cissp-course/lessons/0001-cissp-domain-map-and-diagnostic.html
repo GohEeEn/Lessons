@@ -200,6 +200,33 @@
       font-size: 0.9rem;
     }
     .ask-teacher strong { display: block; margin-bottom: 0.3rem; }
+
+    /* ── Glossary term tooltip ── */
+    .g {
+      border-bottom: 1px dotted var(--accent);
+      cursor: help;
+      color: inherit;
+      text-decoration: none;
+      position: relative;
+    }
+    .g:hover::after {
+      content: attr(data-tip);
+      position: absolute;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1a1a1a;
+      color: #fff;
+      padding: 0.4rem 0.65rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      white-space: normal;
+      max-width: 280px;
+      z-index: 10;
+      font-family: system-ui, sans-serif;
+      pointer-events: none;
+      line-height: 1.4;
+    }
   </style>
 </head>
 <body>
@@ -374,7 +401,11 @@ gantt
 
   <div class="nav-links">
     <span style="color:var(--muted);">← No previous lesson</span>
-    <a href="0002-ai-security-primer.html">Next: AI Security Primer →</a>
+    <span>
+      <a href="../reference/glossary.html">📖 Glossary</a>
+      &nbsp;·&nbsp;
+      <a href="0002-ai-security-primer.html">Next: AI Security Primer →</a>
+    </span>
   </div>
 
   <!-- ── QUIZ LOGIC ── -->
