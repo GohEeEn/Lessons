@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lesson 0003 — Risk Management Foundations</title>
+  <style>
+    :root {
+      --ink: #1a1a1a;
+      --muted: #555;
+      --accent: #0050c8;
+      --accent-light: #e8f0fe;
+      --danger: #c0392b;
+      --danger-bg: #fdecea;
+      --success: #1a7a4a;
+      --success-bg: #e6f4ea;
+      --warn-bg: #fffbea;
+      --warn-border: #f0c040;
+      --border: #ddd;
+      --bg: #fafafa;
+      --ai-bg: #f3f0ff;
+      --ai-border: #7b2d8b;
+      font-size: 17px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.75;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 6rem;
+    }
+    h1 { font-size: 2rem; line-height: 1.2; margin-bottom: 0.25rem; }
+    h2 { font-size: 1.35rem; margin-top: 2.5rem; margin-bottom: 0.6rem; border-bottom: 1px solid var(--border); padding-bottom: 0.25rem; }
+    h3 { font-size: 1.1rem; margin-top: 1.5rem; margin-bottom: 0.4rem; }
+    p { margin-bottom: 1rem; }
+    ul, ol { margin-left: 1.5rem; margin-bottom: 1rem; }
+    li { margin-bottom: 0.3rem; }
+    a { color: var(--accent); }
+    .meta {
+      color: var(--muted);
+      font-family: system-ui, sans-serif;
+      font-size: 0.85rem;
+      margin-bottom: 2rem;
+    }
+    .meta span { margin-right: 1.5rem; }
+    .callout {
+      border-left: 4px solid var(--accent);
+      background: var(--accent-light);
+      padding: 0.8rem 1.1rem;
+      margin: 1.5rem 0;
+      border-radius: 0 4px 4px 0;
+    }
+    .callout.warn {
+      border-left-color: var(--warn-border);
+      background: var(--warn-bg);
+    }
+    .callout.ai {
+      border-left-color: var(--ai-border);
+      background: var(--ai-bg);
+    }
+    .callout.key {
+      border-left-color: var(--success);
+      background: var(--success-bg);
+    }
+    .callout.danger {
+      border-left-color: var(--danger);
+      background: var(--danger-bg);
+    }
+    .mermaid {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.2rem 1.5rem;
+      margin: 1.5rem 0;
+      text-align: center;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.2rem 0;
+      font-family: system-ui, sans-serif;
+      font-size: 0.92rem;
+    }
+    th {
+      background: var(--accent-light);
+      text-align: left;
+      padding: 0.55rem 0.8rem;
+      border: 1px solid var(--border);
+    }
+    td { padding: 0.5rem 0.8rem; border: 1px solid var(--border); vertical-align: top; }
+    tr:nth-child(even) td { background: #f7f7f7; }
+    .progress-bar { height: 6px; background: #e0e0e0; border-radius: 3px; margin-bottom: 2rem; }
+    .progress-bar-fill { height: 100%; width: 6%; background: var(--accent); border-radius: 3px; }
+    .cite { font-size: 0.82rem; color: var(--muted); font-family: system-ui, sans-serif; }
+
+    /* ── Vocab cards ── */
+    .vocab-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.85rem;
+      margin: 1.2rem 0;
+    }
+    @media (max-width: 560px) { .vocab-grid { grid-template-columns: 1fr; } }
+    .vocab-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.9rem 1rem;
+      font-family: system-ui, sans-serif;
+      font-size: 0.88rem;
+    }
+    .vocab-card .v-label {
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 0.83rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.35rem;
+    }
+    .vocab-card .v-def { color: var(--ink); margin-bottom: 0.3rem; }
+    .vocab-card .v-example { color: var(--muted); font-size: 0.8rem; font-style: italic; }
+
+    /* ── Treatment cards ── */
+    .treatment-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+      margin: 1.2rem 0;
+    }
+    @media (max-width: 560px) { .treatment-grid { grid-template-columns: 1fr; } }
+    .treatment-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.9rem 1rem;
+      font-family: system-ui, sans-serif;
+      font-size: 0.88rem;
+    }
+    .treatment-card .t-label {
+      font-weight: 700;
+      font-size: 0.92rem;
+      margin-bottom: 0.35rem;
+    }
+    .treatment-card .t-def { color: var(--ink); margin-bottom: 0.3rem; }
+    .treatment-card .t-example { color: var(--muted); font-size: 0.8rem; font-style: italic; }
+
+    /* ── Quiz ── */
+    .question {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.2rem 1.4rem;
+      margin-bottom: 1.4rem;
+    }
+    .q-domain-tag {
+      font-family: system-ui, sans-serif;
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    .question p { margin-bottom: 0.9rem; font-weight: bold; }
+    .options { list-style: none; margin: 0; }
+    .options li { margin-bottom: 0.4rem; }
+    .options label {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      cursor: pointer;
+      padding: 0.5rem 0.7rem;
+      border-radius: 4px;
+      border: 1px solid transparent;
+      transition: background 0.15s;
+      font-family: system-ui, sans-serif;
+      font-size: 0.95rem;
+    }
+    .options label:hover { background: var(--accent-light); border-color: #c0d4f8; }
+    .options input[type="radio"] { margin-top: 3px; flex-shrink: 0; }
+    .opt-correct label { background: var(--success-bg) !important; border-color: #a8d5b5 !important; }
+    .opt-wrong   label { background: var(--danger-bg)  !important; border-color: #f5b7b1 !important; }
+    .explanation {
+      margin-top: 0.8rem;
+      padding: 0.65rem 0.9rem;
+      background: #f4f4f4;
+      border-left: 3px solid #aaa;
+      border-radius: 0 4px 4px 0;
+      font-family: system-ui, sans-serif;
+      font-size: 0.9rem;
+      display: none;
+    }
+    .explanation.show { display: block; }
+    .submit-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 0.75rem 2rem;
+      font-size: 1rem;
+      cursor: pointer;
+      font-family: system-ui, sans-serif;
+      margin-top: 0.5rem;
+      transition: background 0.15s;
+    }
+    .submit-btn:hover { background: #003fa0; }
+    .submit-btn:disabled { background: #999; cursor: not-allowed; }
+
+    /* ── Results ── */
+    #results-summary { display: none; margin-top: 2.5rem; }
+    .score-banner {
+      text-align: center;
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      font-family: system-ui, sans-serif;
+      border: 1px solid var(--border);
+    }
+    .score-number { font-size: 3rem; font-weight: 700; line-height: 1; }
+    .score-label { font-size: 1rem; color: var(--muted); margin-top: 0.3rem; }
+
+    /* ── Nav ── */
+    .nav-links {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-family: system-ui, sans-serif;
+      font-size: 0.9rem;
+      display: flex;
+      justify-content: space-between;
+    }
+    .ask-teacher {
+      margin-top: 2.5rem;
+      padding: 1rem 1.2rem;
+      background: #f0f7ff;
+      border: 1px solid #b3d4f5;
+      border-radius: 6px;
+      font-family: system-ui, sans-serif;
+      font-size: 0.9rem;
+    }
+    .ask-teacher strong { display: block; margin-bottom: 0.3rem; }
+
+    /* ── Glossary term tooltip ── */
+    .g {
+      border-bottom: 1px dotted var(--accent);
+      cursor: help;
+      color: inherit;
+      text-decoration: none;
+      position: relative;
+    }
+    .g:hover::after {
+      content: attr(data-tip);
+      position: absolute;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1a1a1a;
+      color: #fff;
+      padding: 0.4rem 0.65rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      white-space: normal;
+      max-width: 280px;
+      z-index: 10;
+      font-family: system-ui, sans-serif;
+      pointer-events: none;
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="progress-bar"><div class="progress-bar-fill"></div></div>
+
+  <h1>Risk Management Foundations</h1>
+  <p style="font-size:1.15rem; color:var(--muted); font-family:system-ui,sans-serif; margin-bottom:0.5rem;">
+    The mindset that drives every CISSP decision
+  </p>
+  <div class="meta">
+    <span>🛡️ Phase 1 — Foundation</span>
+    <span>⏱ ~40 min</span>
+    <span>🗓 Lesson 0003 · Domain 1, Ch 1–2</span>
+  </div>
+
+  <div class="callout">
+    <strong>Lesson goal:</strong> Understand the risk management lifecycle, where security assessments fit within it, how both map onto the SDLC, and how to apply the four risk treatment options. You will also build the vocabulary to distinguish vulnerability, threat, and risk — three terms the CISSP exam uses with surgical precision.
+  </div>
+
+  <div class="callout warn">
+    <strong>⚠️ CISSP mindset check:</strong> The CISSP does not test how to configure controls. It tests whether you, as a <em>manager of security</em>, make risk-based decisions in the right order. Every question in this domain can be answered by asking: <em>What is the risk? What should be done first? Who decides?</em>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────
+       SECTION 1: The SDLC × RM Lifecycle Map
+  ───────────────────────────────────────────────── -->
+  <h2>1. The Big Picture: SDLC Meets Risk Management</h2>
+
+  <p>Risk management is not a separate programme that runs beside the business — it is woven into every phase of how you build, operate, and retire systems. The diagram below maps the Software Development Lifecycle (left) onto the Risk Management Lifecycle (right), showing where each RM activity belongs and — critically — where <strong>security assessment</strong> sits as a specific, bounded activity within the larger process.</p>
+
+  <div class="mermaid" id="sdlc-rm-diagram">
+graph LR
+    subgraph SDLC["📋 Software Development Lifecycle"]
+        direction TB
+        S1["🎯 Plan<br/><small>Scope · stakeholders<br/>risk appetite</small>"]
+        S2["📐 Design<br/><small>Architecture · threat model<br/>control selection</small>"]
+        S3["🔨 Implement<br/><small>Build · integrate<br/>secure coding</small>"]
+        S4["🧪 Test<br/><small>Validation · security testing<br/>vulnerability scan</small>"]
+        S5["🚀 Deploy &amp; Operate<br/><small>Go-live · monitoring<br/>incident response</small>"]
+        S6["🗑️ Retire<br/><small>Decommission<br/>secure disposal</small>"]
+        S1 --> S2 --> S3 --> S4 --> S5 --> S6
+    end
+
+    subgraph RML["🛡️ Risk Management Lifecycle"]
+        direction TB
+        R1["🔍 Identify<br/><small>Assets · threats<br/>risk register</small>"]
+        R2["📊 Assess<br/><small>Likelihood × Impact<br/>prioritise risks</small>"]
+        R3["🔧 Treat<br/><small>Accept · Avoid<br/>Transfer · Mitigate</small>"]
+        R4["👁️ Monitor<br/><small>KRIs · metrics<br/>continuous review</small>"]
+        R1 --> R2 --> R3 --> R4
+        R4 -.->|"continuous loop"| R1
+    end
+
+    ASSESS["🔬 Security Assessment<br/><small><i>Point-in-time evaluation —<br/>pen test · controls review<br/>compliance audit</i></small>"]:::sa
+
+    S1 -.->|"scope assets"| R1
+    S2 -.->|"threat model"| R2
+    S3 -.->|"apply controls"| R3
+    S4 -.->|"triggers"| ASSESS
+    ASSESS -.->|"feeds findings into"| R2
+    S5 -.->|"continuous"| R4
+    S6 -.->|"final treatment"| R3
+
+    classDef sa fill:#fffbea,stroke:#f0c040,color:#1a1a1a,font-style:italic
+  </div>
+
+  <p class="cite">Framework synthesised from NIST SP 800-37 (RMF) and ISO/IEC 27005:2022 (information security risk management).</p>
+
+  <div class="callout key">
+    <strong>The key insight:</strong> <a href="../reference/glossary.html#risk-management-lifecycle" class="g" data-tip="Continuous, cyclical programme: Identify → Assess → Treat → Monitor → repeat. Never stops.">Security risk management</a> is the <em>whole loop</em> — a continuous, cyclical process. A <a href="../reference/glossary.html#security-assessment" class="g" data-tip="A structured, time-bounded evaluation of whether controls are present and effective. Point-in-time activity.">security assessment</a> is a <em>point-in-time activity</em> that re-enters the Assess step. Confusing the two is one of the most common CISSP exam traps in Domain 1.
+  </div>
+
+  <!-- ─────────────────────────────────────────────────
+       SECTION 2: What is Security Risk Management?
+  ───────────────────────────────────────────────── -->
+  <h2>2. Security Risk Management — The Continuous Process</h2>
+
+  <p>Security risk management is the <strong>ongoing, cyclical programme</strong> through which an organisation identifies its assets and threats, evaluates the likelihood and impact of harm, selects appropriate responses, and monitors outcomes — then repeats. It never ends as long as the organisation operates.</p>
+
+  <p>Two frameworks dominate the CISSP exam:</p>
+
+  <table>
+    <thead>
+      <tr><th>Framework</th><th>Origin</th><th>What it gives you</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong><a href="../reference/glossary.html#nist-rmf" class="g" data-tip="Six steps: Categorize → Select → Implement → Assess → Authorize → Monitor. The Authorize step produces an ATO.">NIST RMF</a></strong><br/><small>SP 800-37 Rev. 2</small></td>
+        <td>US NIST (2018)</td>
+        <td>Six-step lifecycle for federal systems: Categorize → Select → Implement → Assess → Authorize → Monitor. The Authorize step (<a href="../reference/glossary.html#ato" class="g" data-tip="Authority to Operate — formal management decision accepting residual risk and granting a system permission to operate.">ATO</a> — Authority to Operate) is exam-relevant: leadership formally accepts <a href="../reference/glossary.html#residual-risk" class="g" data-tip="Risk remaining after controls have been applied. Must be formally accepted by senior leadership.">residual risk</a>.</td>
+      </tr>
+      <tr>
+        <td><strong><a href="../reference/glossary.html#iso-27005" class="g" data-tip="International standard for information security risk management. Aligns with ISO 27001. Vendor-neutral lifecycle guidance.">ISO/IEC 27005</a></strong></td>
+        <td>ISO (2022)</td>
+        <td>Vendor-neutral, international standard for information security risk management. Maps cleanly onto ISO 27001 and is the framework most referenced outside US federal contexts.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <strong>Architect's lens:</strong> As a security architect, you are responsible for the <em>design</em> of the risk management programme — defining the risk register structure, selecting the risk methodology (qualitative vs. quantitative), and ensuring the lifecycle is embedded in SDLC governance, not bolted on at the end.
+  </div>
+
+  <!-- ─────────────────────────────────────────────────
+       SECTION 3: What is a Security Assessment?
+  ───────────────────────────────────────────────── -->
+  <h2>3. Security Assessment — The Point-in-Time Activity</h2>
+
+  <p>A security assessment is a <strong>structured, time-bounded evaluation</strong> of whether <a href="../reference/glossary.html#control" class="g" data-tip="A safeguard that reduces the likelihood or impact of a risk. Types: preventive, detective, corrective, deterrent, recovery, compensating.">controls</a> are present, effective, and appropriately implemented against a defined standard or threat model. It produces a snapshot — a report of findings, gaps, and recommendations at a moment in time.</p>
+
+  <p>Security assessments come in several forms. All of them are <em>inputs</em> to the Assess step of the risk management lifecycle:</p>
+
+  <table>
+    <thead>
+      <tr><th>Type</th><th>What it evaluates</th><th>Output</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong><a href="../reference/glossary.html#vulnerability-assessment" class="g" data-tip="Automated scan identifying known weaknesses. Output is a prioritised list with CVSS scores.">Vulnerability Assessment</a></strong></td>
+        <td>Known weaknesses in systems, applications, or configurations (automated scanning)</td>
+        <td>Prioritised list of vulnerabilities with CVSS scores</td>
+      </tr>
+      <tr>
+        <td><strong><a href="../reference/glossary.html#pen-test" class="g" data-tip="Authorised adversarial simulation testing whether vulnerabilities are exploitable. Produces attack narrative and PoC exploits.">Penetration Test</a></strong></td>
+        <td>Exploitability of vulnerabilities in a controlled, adversarial simulation</td>
+        <td>Attack narrative, proof-of-concept exploits, remediation guidance</td>
+      </tr>
+      <tr>
+        <td><strong>Controls Review / Audit</strong></td>
+        <td>Existence, design, and operating effectiveness of documented controls against a framework (SOC 2, ISO 27001, NIST CSF)</td>
+        <td>Findings report, compliance gap analysis</td>
+      </tr>
+      <tr>
+        <td><strong><a href="../reference/glossary.html#risk-assessment" class="g" data-tip="Formal evaluation of likelihood × impact of identified threats. Feeds the Assess step and updates the risk register.">Risk Assessment</a></strong></td>
+        <td>Likelihood and impact of identified threats against assets; often the formal deliverable within a risk management programme</td>
+        <td><a href="../reference/glossary.html#risk-register" class="g" data-tip="Living document recording all identified risks with ratings, owners, treatment decisions, and current status.">Risk register</a> update, risk ratings, treatment recommendations</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout warn">
+    <strong>⚠️ Exam trap:</strong> "Risk assessment" is a <em>type</em> of security assessment — it is not the same as "risk management." A risk assessment is a formal deliverable produced during the Assess step. Risk management is the programme that commissions the assessment, acts on its findings, and monitors the outcomes.
+  </div>
+
+  <!-- ─────────────────────────────────────────────────
+       SECTION 4: Side-by-side comparison
+  ───────────────────────────────────────────────── -->
+  <h2>4. Risk Management vs. Security Assessment — Side by Side</h2>
+
+  <table>
+    <thead>
+      <tr><th>Dimension</th><th>Security Risk Management</th><th>Security Assessment</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Nature</strong></td>
+        <td>Continuous, cyclical programme</td>
+        <td>Point-in-time, bounded activity</td>
+      </tr>
+      <tr>
+        <td><strong>Frequency</strong></td>
+        <td>Always running — never stops</td>
+        <td>Scheduled or triggered (annual, post-change, regulatory)</td>
+      </tr>
+      <tr>
+        <td><strong>Scope</strong></td>
+        <td>All organisational assets, threats, and controls</td>
+        <td>Defined scope per engagement (a system, a domain, a standard)</td>
+      </tr>
+      <tr>
+        <td><strong>Output</strong></td>
+        <td>Risk register, treatment decisions, residual risk posture</td>
+        <td>Point-in-time report, gap list, prioritised findings</td>
+      </tr>
+      <tr>
+        <td><strong>Owner</strong></td>
+        <td>Senior leadership / CISO — risk appetite decisions are business decisions</td>
+        <td>Security team, internal audit, or third-party assessor</td>
+      </tr>
+      <tr>
+        <td><strong>Relationship</strong></td>
+        <td>Commissions and consumes assessments</td>
+        <td>Provides data that updates the risk register</td>
+      </tr>
+      <tr>
+        <td><strong>CISSP domain</strong></td>
+        <td>Domain 1 — Security &amp; Risk Management</td>
+        <td>Domain 6 — Security Assessment &amp; Testing (primarily)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ─────────────────────────────────────────────────
+       SECTION 5: Risk Treatment Options
+  ───────────────────────────────────────────────── -->
+  <h2>5. Risk Treatment — The Four Options</h2>
+
+  <p>Once a risk is assessed, the organisation must decide what to do with it. There are exactly four options. The CISSP exam tests whether you can identify which option is being applied in a scenario — and which one is appropriate given the context.</p>
+
+  <div class="treatment-grid">
+    <div class="treatment-card">
+      <div class="t-label" style="color:#1a7a4a;">✅ Mitigate (Reduce)</div>
+      <div class="t-def">Implement controls to reduce likelihood or impact to an acceptable level. The most common response.</div>
+      <div class="t-example">Example: Apply MFA to reduce the risk of credential compromise.</div>
+    </div>
+    <div class="treatment-card">
+      <div class="t-label" style="color:#c0392b;">🚫 Avoid</div>
+      <div class="t-def">Eliminate the risk entirely by removing the activity or asset that creates it.</div>
+      <div class="t-example">Example: Cancel a high-risk product feature that cannot be secured within budget.</div>
+    </div>
+    <div class="treatment-card">
+      <div class="t-label" style="color:#0050c8;">📋 Accept</div>
+      <div class="t-def">Formally acknowledge the risk and decide to operate without additional controls. Risk is within appetite or cost of mitigation exceeds benefit.</div>
+      <div class="t-example">Example: Accept a low-severity CVE in a non-internet-facing legacy system until next maintenance window.</div>
+    </div>
+    <div class="treatment-card">
+      <div class="t-label" style="color:#7b2d8b;">🤝 Transfer (Share)</div>
+      <div class="t-def">Shift the financial impact of the risk to a third party — typically through cyber insurance or contract indemnification. The <em>technical</em> risk remains; only the financial consequence transfers.</div>
+      <div class="t-example">Example: Purchase cyber liability insurance to cover breach notification costs.</div>
+    </div>
+  </div>
+
+  <div class="mermaid" id="treatment-diagram">
+graph TD
+    START["📊 Risk is Assessed<br/><small>Likelihood × Impact rated</small>"]
+    Q1{"Is the risk<br/>within appetite?"}
+    Q2{"Can the activity<br/>be eliminated?"}
+    Q3{"Can cost of<br/>mitigation be justified?"}
+
+    ACCEPT["✅ Accept<br/><small>Document &amp; monitor</small>"]
+    AVOID["🚫 Avoid<br/><small>Eliminate the activity<br/>or asset</small>"]
+    MITIGATE["🔧 Mitigate<br/><small>Implement controls<br/>to reduce to appetite</small>"]
+    TRANSFER["🤝 Transfer<br/><small>Insurance or contract<br/>(financial impact only)</small>"]
+    RESIDUAL["📌 Residual Risk<br/><small>Remaining risk after treatment —<br/>must be formally accepted<br/>by leadership (ATO)</small>"]
+
+    START --> Q1
+    Q1 -->|"Yes"| ACCEPT
+    Q1 -->|"No"| Q2
+    Q2 -->|"Yes"| AVOID
+    Q2 -->|"No"| Q3
+    Q3 -->|"Yes"| MITIGATE
+    Q3 -->|"No — cost too high"| TRANSFER
+    MITIGATE --> RESIDUAL
+    TRANSFER --> RESIDUAL
+    ACCEPT --> RESIDUAL
+  </div>
+
+  <div class="callout">
+    <strong>Residual risk:</strong> After treatment, some risk always remains. This is called <a href="../reference/glossary.html#residual-risk" class="g" data-tip="Risk remaining after controls have been applied. Must be formally accepted by senior leadership — not the security team.">residual risk</a>. The CISSP exam expects you to know that residual risk must be <em>formally accepted</em> by senior leadership — not the security team, not the system owner, but the executive or board with the authority to make business risk decisions.
+  </div>
+
+  <!-- ─────────────────────────────────────────────────
+       SECTION 6: Vocabulary — Vulnerability vs Threat vs Risk
+  ───────────────────────────────────────────────── -->
+  <h2>6. Vocabulary: Vulnerability, Threat, and Risk</h2>
+
+  <p>The CISSP uses these three terms with surgical precision. Confusing them is an easy way to eliminate yourself from the right answer. Commit these definitions to memory before attempting any Domain 1 question.</p>
+
+  <div class="vocab-grid">
+    <div class="vocab-card">
+      <div class="v-label">Vulnerability</div>
+      <div class="v-def">A <a href="../reference/glossary.html#vulnerability" class="g" data-tip="A weakness in a system or process that could be exploited by a threat. Alone it does not constitute risk.">weakness</a> in a system, process, or control that <em>could be exploited</em>.</div>
+      <div class="v-example">"The web server is running an unpatched version of OpenSSL."</div>
+    </div>
+    <div class="vocab-card">
+      <div class="v-label">Threat</div>
+      <div class="v-def">Any circumstance or event with the <em>potential</em> to exploit a <a href="../reference/glossary.html#vulnerability" class="g" data-tip="A weakness in a system or process that could be exploited.">vulnerability</a> and cause harm.</div>
+      <div class="v-example">"A nation-state actor is actively scanning for this OpenSSL CVE."</div>
+    </div>
+    <div class="vocab-card">
+      <div class="v-label">Risk</div>
+      <div class="v-def">The <em>probability</em> that a <a href="../reference/glossary.html#threat" class="g" data-tip="Any circumstance or event with potential to exploit a vulnerability and cause harm.">threat</a> exploits a <a href="../reference/glossary.html#vulnerability" class="g" data-tip="A weakness in a system that could be exploited.">vulnerability</a>, <em>multiplied by</em> the impact if it does.</div>
+      <div class="v-example">"If exploited, we lose customer PII — risk is HIGH."</div>
+    </div>
+  </div>
+
+  <div class="mermaid" id="vocab-diagram">
+graph LR
+    V["🔓 Vulnerability<br/><small>Weakness in the system</small>"]
+    T["⚡ Threat<br/><small>Actor or event that<br/>could exploit it</small>"]
+    R["⚠️ Risk<br/><small>Probability × Impact</small>"]
+    C["🛡️ Control<br/><small>Reduces likelihood<br/>or impact</small>"]
+
+    T -->|"exploits"| V
+    V -->|"if exploited"| R
+    C -->|"reduces"| R
+
+    classDef riskNode fill:#fdecea,stroke:#c0392b,color:#7b1c14
+    class R riskNode
+  </div>
+
+  <div class="callout warn">
+    <strong>⚠️ The formula:</strong> Risk = Threat × Vulnerability × Asset Value. No threat → no risk. No vulnerability → no risk. No asset value → no risk. Controls reduce risk by reducing <em>either</em> the likelihood (address the vulnerability) or the impact (protect the asset).
+  </div>
+
+  <!-- ─────────────────────────────────────────────────
+       SECTION 7: AI Cross-Domain Callout
+  ───────────────────────────────────────────────── -->
+  <h2>7. ⚠️ AI in Domain 1 — Governance and Risk Tier Classification</h2>
+
+  <p>Domain 1 carries the highest AI exam weight of all 8 domains. The two frameworks from <a href="0002-ai-security-primer.html">Lesson 0002</a> connect directly to risk management:</p>
+
+  <div class="callout ai">
+    <strong>🤖 NIST AI RMF → Classical NIST RMF</strong><br/>
+    The <a href="../reference/glossary.html#nist-ai-rmf" class="g" data-tip="Four functions: Govern → Map → Measure → Manage. The AI analogue of NIST SP 800-37 for managing AI risk.">NIST AI RMF</a> (Govern → Map → Measure → Manage) is a specialised application of the classical risk management lifecycle to AI systems. When you deploy an AI system, it is an <em>asset</em> — it goes into the <a href="../reference/glossary.html#risk-register" class="g" data-tip="Living document recording all identified risks with ratings, owners, treatment decisions, and current status.">risk register</a>. Its training data is an asset. Its model weights are IP. The AI RMF gives you the vocabulary to run the same Identify → Assess → Treat → Monitor loop over that new class of asset.
+  </div>
+
+  <div class="callout ai">
+    <strong>🤖 EU AI Act → Risk Classification</strong><br/>
+    The EU AI Act imposes risk-tiered obligations on AI systems (Unacceptable / High / Limited / Minimal). From a risk management perspective, this is <em>regulatory risk treatment</em>: the regulator has pre-classified the risk and mandated the minimum treatment (conformity assessment, documentation, human oversight for High-risk systems). A security architect operating in the EU must classify any AI system under the Act as part of the Identify and Assess steps — before controls are designed.
+  </div>
+
+  <p class="cite">See <a href="0002-ai-security-primer.html">Lesson 0002 — AI Security Primer</a> for the full AI RMF and EU AI Act breakdowns. D1 AI exam heat: 🔴🔴 High.</p>
+
+  <!-- ─────────────────────────────────────────────────
+       SECTION 8: Architect Lens
+  ───────────────────────────────────────────────── -->
+  <h2>8. The Architect's Lens</h2>
+
+  <div class="callout key">
+    <strong>Why a security architect must hold the risk management view:</strong><br/>
+    Architects make <em>design decisions</em> — which controls to build in, where to draw trust boundaries, what to defer. Every design decision is implicitly a risk decision. Without a risk management lens, an architect optimises for technical elegance rather than proportionality. The risk management lifecycle gives the architect a rational basis to:
+    <ul style="margin-top:0.5rem; margin-left:1.2rem;">
+      <li>Justify security investment to leadership (residual risk after treatment)</li>
+      <li>Prioritise controls by the risks they address (not by personal preference)</li>
+      <li>Communicate trade-offs clearly — "if we skip MFA, here is the residual risk we are accepting"</li>
+      <li>Ensure security is embedded at the Design phase of the SDLC, not retrofitted at Test</li>
+    </ul>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────
+       SECTION 9: Retrieval Practice
+  ───────────────────────────────────────────────── -->
+  <h2>9. Retrieval Practice</h2>
+
+  <p>Four questions — all scenario-based, all CISSP manager-mindset style. Submit all answers before results are revealed.</p>
+
+  <div id="quiz-form">
+
+    <!-- Q1 -->
+    <div class="question" id="q1">
+      <div class="q-domain-tag">D1 — Risk Management vs. Security Assessment</div>
+      <p>A CISO tells her team: "We need to understand our current security posture before the board meeting next month." She commissions an external firm to evaluate the organisation's controls against ISO 27001. Six months later, that same firm is hired again to do the same exercise. Which statement BEST describes the relationship between these activities and the organisation's security risk management programme?</p>
+      <ul class="options">
+        <li><label><input type="radio" name="q1" value="a"/> The ISO 27001 evaluations ARE the security risk management programme — running them twice constitutes the continuous cycle</label></li>
+        <li><label><input type="radio" name="q1" value="b"/> The evaluations are point-in-time security assessments that feed findings into the Assess step of the broader, continuous risk management lifecycle</label></li>
+        <li><label><input type="radio" name="q1" value="c"/> Security risk management is a subset of the ISO 27001 assessment process</label></li>
+        <li><label><input type="radio" name="q1" value="d"/> The two activities are the same — "risk management" and "security assessment" are interchangeable terms in ISO standards</label></li>
+      </ul>
+      <div class="explanation" id="exp1">
+        <strong>Correct: B.</strong> The ISO 27001 evaluations are structured, time-bounded security assessments. They are an input — not the programme itself. Security risk management is continuous and cyclical: identify, assess, treat, monitor, repeat. The assessments re-enter the Assess step and update the risk register, but the lifecycle runs between engagements too (monitoring, tracking treatment effectiveness, updating the risk register as the environment changes). A and D conflate the activity with the programme. C inverts the relationship.
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="question" id="q2">
+      <div class="q-domain-tag">D1 — Risk Treatment</div>
+      <p>A legacy manufacturing control system (ICS) has a critical vulnerability that cannot be patched without a 72-hour production shutdown. The business unit estimates the revenue loss from the shutdown exceeds the calculated annual loss expectancy (ALE) from the vulnerability being exploited. Leadership formally documents the decision and assigns an owner to review it at the next quarterly risk meeting. Which risk treatment has been applied?</p>
+      <ul class="options">
+        <li><label><input type="radio" name="q2" value="a"/> Risk avoidance — the business is choosing not to address the vulnerability</label></li>
+        <li><label><input type="radio" name="q2" value="b"/> Risk transfer — the financial exposure is being shifted to the next quarterly review</label></li>
+        <li><label><input type="radio" name="q2" value="c"/> Risk acceptance — leadership has formally acknowledged and documented the risk within appetite</label></li>
+        <li><label><input type="radio" name="q2" value="d"/> Risk mitigation — compensating controls will be reviewed next quarter</label></li>
+      </ul>
+      <div class="explanation" id="exp2">
+        <strong>Correct: C.</strong> Risk acceptance requires three things the scenario explicitly describes: a formal decision, documentation, and an assigned owner. The business has evaluated the cost of mitigation (shutdown loss) against the expected impact (ALE) and chosen to live with the risk. This is not avoidance — the system still exists and the vulnerability is unresolved. It is not transfer — no insurance or contract is involved. It is not mitigation — no controls are being applied. Acceptance is a legitimate treatment when cost > expected loss, but it must be explicit and documented.
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question" id="q3">
+      <div class="q-domain-tag">D1 — Vocabulary</div>
+      <p>A security analyst finds that a web application is missing input validation on a form field (weakness), and threat intelligence indicates that an organised criminal group is actively developing an exploit for this class of weakness (potential harm actor). When presenting to the board, the CISO correctly labels the combination of these two facts as:</p>
+      <ul class="options">
+        <li><label><input type="radio" name="q3" value="a"/> A vulnerability — because the missing input validation is the core finding</label></li>
+        <li><label><input type="radio" name="q3" value="b"/> A risk — because a credible threat is pairing with a known vulnerability to create potential harm to an asset</label></li>
+        <li><label><input type="radio" name="q3" value="c"/> A threat — because the criminal group is the active element driving the concern</label></li>
+        <li><label><input type="radio" name="q3" value="d"/> A control gap — because input validation should have been implemented by the development team</label></li>
+      </ul>
+      <div class="explanation" id="exp3">
+        <strong>Correct: B.</strong> Risk emerges from the intersection of a threat (the criminal group) and a vulnerability (missing input validation) against an asset (the web application and its data). Vulnerability alone is not risk — there must also be a credible threat. Threat alone is not risk — there must be a vulnerability it can exploit. Only when both are present, paired with an asset of value, does a risk exist. A and C correctly identify components but not the combined concept the board needs to hear. D is informal engineering language, not a CISSP term.
+      </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="question" id="q4">
+      <div class="q-domain-tag">D1 — Order of Operations</div>
+      <p>A newly-appointed CISO at a mid-size financial services firm wants to build a security risk management programme from scratch. She has budget approval and executive support. Which sequence correctly represents the order in which she should proceed through the risk management lifecycle?</p>
+      <ul class="options">
+        <li><label><input type="radio" name="q4" value="a"/> Assess risks → Identify assets → Treat with controls → Monitor outcomes</label></li>
+        <li><label><input type="radio" name="q4" value="b"/> Identify assets and threats → Assess likelihood and impact → Treat risks → Monitor and review</label></li>
+        <li><label><input type="radio" name="q4" value="c"/> Treat the highest-severity risks immediately → Identify remaining assets → Assess residual risk</label></li>
+        <li><label><input type="radio" name="q4" value="d"/> Monitor the existing environment → Identify gaps → Assess maturity → Treat gaps</label></li>
+      </ul>
+      <div class="explanation" id="exp4">
+        <strong>Correct: B.</strong> The risk management lifecycle always starts with Identify — you cannot assess what you haven't scoped and named. You cannot treat what you haven't assessed. And you cannot monitor what you haven't treated. The CISSP exam heavily tests order-of-operations: "what should be done FIRST?" The answer is almost always: understand the environment before acting on it. C is a classic wrong-answer trap — treating high-severity risks before you've identified the full inventory means you may be optimising for the wrong risks. A and D start in the wrong place.
+      </div>
+    </div>
+
+    <button class="submit-btn" id="submit-btn" onclick="submitQuiz()">Submit answers</button>
+
+  </div>
+
+  <div id="results-summary">
+    <div class="score-banner" id="score-banner">
+      <div class="score-number" id="score-number"></div>
+      <div class="score-label" id="score-label"></div>
+    </div>
+    <div id="score-recommendation"></div>
+  </div>
+
+  <!-- ── Ask the teacher ── -->
+  <div class="ask-teacher">
+    <strong>💬 Ask a follow-up</strong>
+    Encountering risk management in your current security design review work? Ask how any of these concepts (treatment decisions, residual risk, assessment scoping) apply to a specific system or situation you're working on. Concrete scenarios from your real environment are the fastest way to internalise these frameworks.
+  </div>
+
+  <!-- ── Nav ── -->
+  <div class="nav-links">
+    <a href="0002-ai-security-primer.html">← Lesson 0002: AI Security Primer</a>
+    <span>
+      <a href="../reference/glossary.html">📖 Glossary</a>
+      &nbsp;·&nbsp;
+      <a href="#">Lesson 0004: D1 — Security Governance &amp; Policy →</a>
+    </span>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────
+       Mermaid init
+  ───────────────────────────────────────────────── -->
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: true,
+      securityLevel: 'loose',
+      theme: 'base',
+      themeVariables: {
+        primaryColor: '#e8f0fe',
+        primaryTextColor: '#1a1a1a',
+        primaryBorderColor: '#0050c8',
+        lineColor: '#0050c8',
+        secondaryColor: '#f3f0ff',
+        tertiaryColor: '#fafafa'
+      }
+    });
+  </script>
+
+  <!-- ─────────────────────────────────────────────────
+       Quiz logic
+  ───────────────────────────────────────────────── -->
+  <script>
+    const answers = { q1: 'b', q2: 'c', q3: 'b', q4: 'b' };
+
+    function submitQuiz() {
+      let score = 0;
+      const total = Object.keys(answers).length;
+      let unanswered = [];
+
+      for (const [qid, correct] of Object.entries(answers)) {
+        const selected = document.querySelector(`input[name="${qid}"]:checked`);
+        if (!selected) { unanswered.push(qid); continue; }
+
+        const allOpts = document.querySelectorAll(`input[name="${qid}"]`);
+        allOpts.forEach(opt => {
+          const li = opt.closest('li');
+          if (opt.value === correct) li.className = 'opt-correct';
+          else if (opt.checked)      li.className = 'opt-wrong';
+        });
+
+        const exp = document.getElementById('exp' + qid.slice(1));
+        if (exp) exp.classList.add('show');
+
+        if (selected.value === correct) score++;
+      }
+
+      if (unanswered.length > 0) {
+        alert(`Please answer all questions before submitting. Missing: ${unanswered.join(', ').toUpperCase()}`);
+        return;
+      }
+
+      document.querySelectorAll('.options input').forEach(i => i.disabled = true);
+      document.getElementById('submit-btn').disabled = true;
+
+      const pct = Math.round((score / total) * 100);
+      const banner = document.getElementById('score-banner');
+      const numEl  = document.getElementById('score-number');
+      const lblEl  = document.getElementById('score-label');
+      const recEl  = document.getElementById('score-recommendation');
+
+      numEl.textContent = `${score}/${total}`;
+      lblEl.textContent = `${pct}% — Risk Management Foundations`;
+
+      if (pct >= 75) {
+        banner.style.background = '#e6f4ea';
+        banner.style.borderColor = '#a8d5b5';
+        recEl.innerHTML = `<div class="callout key"><strong>✅ Solid foundation.</strong> You have the core risk management vocabulary and lifecycle ordering right. The most important thing to carry forward: risk management is the <em>programme</em>; assessments are <em>inputs</em>. When you encounter risk questions across all 8 domains, map them back to this lifecycle. Move ahead to Lesson 0004 (Security Governance &amp; Policy) — it builds directly on what you've just learned.</div>`;
+      } else if (pct >= 50) {
+        banner.style.background = '#fffbea';
+        banner.style.borderColor = '#f0c040';
+        recEl.innerHTML = `<div class="callout warn"><strong>⚠️ Partial grasp.</strong> Re-read the sections covering the questions you missed. The most commonly confused pairs are: risk management vs. security assessment (Section 1–4), and the four treatment options (Section 5). Re-attempt after reviewing, then move to Lesson 0004.</div>`;
+      } else {
+        banner.style.background = '#fdecea';
+        banner.style.borderColor = '#f5b7b1';
+        recEl.innerHTML = `<div class="callout danger"><strong>🔁 Review recommended.</strong> Re-read Sections 1–6 carefully. Focus on: (1) the SDLC ↔ RM lifecycle mapping diagram, (2) what makes a security assessment different from the overall programme, and (3) the risk treatment decision flow. Ask your teacher to walk through any question explanation that wasn't clear.</div>`;
+      }
+
+      document.getElementById('results-summary').style.display = 'block';
+      document.getElementById('results-summary').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  </script>
+
+</body>
+</html>
