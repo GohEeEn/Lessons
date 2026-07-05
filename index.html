@@ -90,6 +90,12 @@
     .course.sc500 .lesson-number { color: var(--accent-blue); }
     .course.sc500 .section-title { color: var(--accent-blue); }
 
+    /* CISSP accent */
+    :root { --accent-purple: #7b2d8b; --accent-purple-light: #f3f0ff; }
+    .course.cissp .course-header { border-left: 5px solid var(--accent-purple); }
+    .course.cissp .lesson-number { color: var(--accent-purple); }
+    .course.cissp .section-title { color: var(--accent-purple); }
+
     /* Threat modelling accent */
     .course.threat .course-header { border-left: 5px solid var(--accent-green); }
     .course.threat .lesson-number { color: var(--accent-green); }
@@ -175,10 +181,50 @@
 
   <header class="site-header">
     <h1>Security Lessons</h1>
-    <p>Personal learning workspace — SC-500 exam prep &amp; AI-assisted threat modelling.</p>
+    <p>Personal learning workspace — CISSP exam prep, SC-500 exam prep &amp; AI-assisted threat modelling.</p>
   </header>
 
   <main class="courses">
+
+    <!-- ── CISSP Course ──────────────────────────────────────────── -->
+    <article class="course cissp">
+      <div class="course-header">
+        <h2>CISSP — Certified Information Systems Security Professional</h2>
+        <div class="course-meta">
+          <span class="tag">Security</span>
+          <span class="tag">8 domains · self-paced</span>
+          <span class="tag">Certification prep</span>
+        </div>
+      </div>
+      <p class="mission">
+        Build deep understanding across all 8 CISSP domains — from risk and governance through
+        cryptography, network security, and software security. Exam-ready, not just paper-certified.
+      </p>
+
+      <div class="lesson-section">
+        <div class="section-title">Domain 1 · Security &amp; Risk Management</div>
+        <ul class="lesson-list">
+          <li>
+            <span class="lesson-number">0001</span>
+            <a href="cissp-course/lessons/0001-cissp-domain-map-and-diagnostic.html">
+              Domain Map &amp; Diagnostic
+            </a>
+          </li>
+          <li>
+            <span class="lesson-number">0002</span>
+            <a href="cissp-course/lessons/0002-ai-security-primer.html">
+              AI Security Primer
+            </a>
+          </li>
+          <li>
+            <span class="lesson-number">0003</span>
+            <a href="cissp-course/lessons/0003-risk-management-foundations.html">
+              Risk Management Foundations — D1, Ch 1–2
+            </a>
+          </li>
+        </ul>
+      </div>
+    </article>
 
     <!-- ── SC-500 Course ─────────────────────────────────────────── -->
     <article class="course sc500">
@@ -202,6 +248,12 @@
             <span class="lesson-number">0001</span>
             <a href="sc-500-course/lessons/0001-azure-entra-id-identity-model.html">
               The Azure Identity Model: Entra ID, Tenants &amp; Subscriptions
+            </a>
+          </li>
+          <li>
+            <span class="lesson-number">0002</span>
+            <a href="sc-500-course/lessons/0002-privileged-identity-management.html">
+              Privileged Identity Management (PIM)
             </a>
           </li>
         </ul>
