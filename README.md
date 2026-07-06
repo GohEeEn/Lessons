@@ -4,6 +4,25 @@ Repository for security-focused lesson materials, including threat modeling and 
 
 ## Repository Structure
 
+### cissp-course/
+CISSP (Certified Information Systems Security Professional) certification prep, organized by the 8 official CISSP domains.
+
+- **lessons/** - Core lesson content (HTML), grouped by domain
+  - **General · Cross-Domain** (root of lessons/)
+    - 0001: Domain Map & Diagnostic
+    - 0002: AI Security Primer
+  - **domain-1-security-and-risk-management/** - each populated domain folder has its own `index.html` with a Mermaid concept map
+    - 0003: Risk Management Foundations — D1, Ch 1–2
+
+- **reference/** - Supporting reference materials
+  - Glossary (with per-term domain tags and lesson cross-references)
+
+- **learning-records/** - Key insights and notes from each lesson
+
+- **MISSION.md** - Course learning objectives
+- **NOTES.md** - Teaching notes and preferences
+- **RESOURCES.md** - Curated external resources
+
 ### threat-modeling-course/
 Complete threat modeling curriculum with 7 lessons plus supporting materials.
 
