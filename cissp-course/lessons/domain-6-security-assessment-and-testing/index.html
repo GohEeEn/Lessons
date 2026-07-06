@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CISSP Domain 6 — Security Assessment &amp; Testing</title>
+  <style>
+    :root {
+      --ink: #1a1a1a;
+      --muted: #555;
+      --accent: #7b2d8b;
+      --accent-light: #f3f0ff;
+      --border: #ddd;
+      --bg: #fafafa;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.75;
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 6rem;
+    }
+    h1 { font-size: 1.9rem; line-height: 1.2; margin-bottom: 0.4rem; }
+    p.lede { color: var(--muted); font-family: system-ui, sans-serif; font-size: 0.95rem; margin-bottom: 2rem; }
+    h2 { font-size: 1.2rem; margin-top: 2.5rem; margin-bottom: 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.25rem; color: var(--accent); }
+    .diagram {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      overflow-x: auto;
+    }
+    .lesson-list { list-style: none; margin-bottom: 1rem; }
+    .lesson-list li {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 0.98rem;
+    }
+    .lesson-list li:last-child { border-bottom: none; }
+    .lesson-number {
+      font-family: 'Courier New', monospace;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent);
+      min-width: 2.8rem;
+      flex-shrink: 0;
+    }
+    a { color: var(--accent); }
+    .callout {
+      border-left: 4px solid var(--accent);
+      background: var(--accent-light);
+      padding: 0.8rem 1.1rem;
+      margin: 1.5rem 0;
+      border-radius: 0 4px 4px 0;
+      font-family: system-ui, sans-serif;
+      font-size: 0.92rem;
+    }
+    .nav-links {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      font-family: system-ui, sans-serif;
+      font-size: 0.85rem;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Domain 6 — Security Assessment &amp; Testing</h1>
+  <p class="lede">Full exam scope for this domain (Ch 15 of the official study guide), showing what's covered by an existing lesson vs. what's still a gap. Prioritized ahead of the original phase order — see <code>MISSION.md</code>'s "Current Focus" section — because it's directly relevant to current threat modeling / risk assessment / consultation work.</p>
+
+  <div class="callout">
+    <strong>🎯 Current focus:</strong> This domain is being studied out of the original phase order because it maps most directly onto day-to-day work. All 6 sub-topics below need full depth — this is a genuine knowledge gap, not a fast-track review.
+  </div>
+
+  <h2>Domain Skeleton — Full Scope (Ch 15)</h2>
+  <p class="lede" style="margin-bottom:1rem;">Solid, colored, clickable nodes are covered by an existing lesson. Dashed, grey nodes are in-scope for this domain but not yet taught — this map always reflects the true exam scope, not just what's been written so far.</p>
+  <div class="diagram">
+    <div class="mermaid" id="domain6-skeleton-map">
+graph TD
+    D6["🔬 Domain 6<br/>Security Assessment &amp; Testing"]
+
+    subgraph CH15["Ch 15 · Security Assessment and Testing"]
+        C15A["✅ Building a Security<br/>Assessment &amp; Testing Program<br/><small>Lesson 0001</small>"]
+        C15B["Performing Vulnerability<br/>Assessments"]
+        C15C["Testing Your Software"]
+        C15D["Training and Exercises"]
+        C15E["Implementing Security<br/>Management Processes"]
+        C15F["Collecting Security<br/>Process Data"]
+    end
+
+    D6 --> CH15
+
+    classDef covered fill:#f3f0ff,stroke:#7b2d8b,color:#1a1a1a,font-weight:bold
+    classDef pending fill:#fafafa,stroke:#bbb,color:#888,stroke-dasharray: 4 3
+
+    class C15A covered
+    class C15B,C15C,C15D,C15E,C15F pending
+
+    click C15A "0001-building-a-security-assessment-and-testing-program.html" "Lesson 0001: Building a Security Assessment and Testing Program"
+    </div>
+  </div>
+  <p class="cite" style="font-family:system-ui,sans-serif;font-size:0.82rem;color:var(--muted);margin-bottom:2rem;">
+    Chapter and sub-topic titles sourced from the <em>ISC2 CISSP Official Study Guide, 10th Edition</em> table of contents (Ch 15), the primary source for this domain per <code>RESOURCES.md</code>.
+  </p>
+
+  <h2>Lessons in this Domain</h2>
+  <ul class="lesson-list">
+    <li>
+      <span class="lesson-number">0001</span>
+      <a href="0001-building-a-security-assessment-and-testing-program.html">Building a Security Assessment and Testing Program — D6, Ch 15</a>
+    </li>
+  </ul>
+
+  <div class="nav-links">
+    <a href="../../../index.html">← Back to Security Lessons</a>
+    <a href="../../reference/glossary.html">📖 Glossary</a>
+  </div>
+
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: true,
+      securityLevel: 'loose',
+      theme: 'base',
+      themeVariables: {
+        primaryColor: '#f3f0ff',
+        primaryTextColor: '#1a1a1a',
+        primaryBorderColor: '#7b2d8b',
+        lineColor: '#7b2d8b',
+        secondaryColor: '#e8f0fe',
+        tertiaryColor: '#fafafa'
+      }
+    });
+  </script>
+
+</body>
+</html>

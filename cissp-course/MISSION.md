@@ -26,7 +26,32 @@ You have 4 years of cloud security engineering experience (IAM, threat modelling
 
 ---
 
-## Learning Path (26 Weeks)
+## Current Focus (overrides phase order below)
+
+As of 2026-07-06, sequencing has shifted from strict phase order to **work-relevance-driven**:
+lessons are prioritized by what's most useful for current job scope (threat modeling, security
+risk assessment, security consultation) rather than the original week-by-week plan.
+
+- **Active priority: Domain 6 — Security Assessment and Testing (Ch 15).** Despite adjacent
+  experience in risk assessment/threat modeling, this is a genuine knowledge gap — full depth
+  needed, no fast-tracking. Broken into 6 lessons, one per Ch 15 sub-topic:
+  1. Building a Security Assessment and Testing Program
+  2. Performing Vulnerability Assessments
+  3. Testing Your Software
+  4. Training and Exercises
+  5. Implementing Security Management Processes
+  6. Collecting Security Process Data
+- Every D6 lesson includes a dedicated **"🔧 In your work"** callout bridging the concept to
+  threat modeling / risk assessment / consultation tasks (in addition to the existing "AI in
+  this domain" callout).
+- D1 (in progress) and other domains are paused, not abandoned — resume per relevance, not a
+  fixed schedule.
+- The 26-week phase table below is kept as a **reference baseline** (original intent, useful
+  for gauging overall scope/pacing) but no longer dictates lesson order.
+
+---
+
+## Learning Path (26 Weeks) — reference baseline, superseded by Current Focus above
 
 | Phase | Weeks | Focus | Domains |
 |-------|-------|-------|---------|
