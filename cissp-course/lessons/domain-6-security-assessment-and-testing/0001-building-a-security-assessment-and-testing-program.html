@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lesson 0001 — Building a Security Assessment and Testing Program</title>
+  <style>
+    :root {
+      --ink: #1a1a1a;
+      --muted: #555;
+      --accent: #0050c8;
+      --accent-light: #e8f0fe;
+      --danger: #c0392b;
+      --danger-bg: #fdecea;
+      --success: #1a7a4a;
+      --success-bg: #e6f4ea;
+      --warn-bg: #fffbea;
+      --warn-border: #f0c040;
+      --border: #ddd;
+      --bg: #fafafa;
+      --ai-bg: #f3f0ff;
+      --ai-border: #7b2d8b;
+      --work-bg: #eafaf3;
+      --work-border: #1a9e63;
+      font-size: 17px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.75;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 6rem;
+    }
+    h1 { font-size: 2rem; line-height: 1.2; margin-bottom: 0.25rem; }
+    h2 { font-size: 1.35rem; margin-top: 2.5rem; margin-bottom: 0.6rem; border-bottom: 1px solid var(--border); padding-bottom: 0.25rem; }
+    h3 { font-size: 1.1rem; margin-top: 1.5rem; margin-bottom: 0.4rem; }
+    p { margin-bottom: 1rem; }
+    ul, ol { margin-left: 1.5rem; margin-bottom: 1rem; }
+    li { margin-bottom: 0.3rem; }
+    a { color: var(--accent); }
+    .meta {
+      color: var(--muted);
+      font-family: system-ui, sans-serif;
+      font-size: 0.85rem;
+      margin-bottom: 2rem;
+    }
+    .meta span { margin-right: 1.5rem; }
+    .callout {
+      border-left: 4px solid var(--accent);
+      background: var(--accent-light);
+      padding: 0.8rem 1.1rem;
+      margin: 1.5rem 0;
+      border-radius: 0 4px 4px 0;
+    }
+    .callout.warn { border-left-color: var(--warn-border); background: var(--warn-bg); }
+    .callout.ai { border-left-color: var(--ai-border); background: var(--ai-bg); }
+    .callout.key { border-left-color: var(--success); background: var(--success-bg); }
+    .callout.danger { border-left-color: var(--danger); background: var(--danger-bg); }
+    .callout.work { border-left-color: var(--work-border); background: var(--work-bg); }
+    .mermaid {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.2rem 1.5rem;
+      margin: 1.5rem 0;
+      text-align: center;
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.2rem 0;
+      font-family: system-ui, sans-serif;
+      font-size: 0.92rem;
+    }
+    th { background: var(--accent-light); text-align: left; padding: 0.55rem 0.8rem; border: 1px solid var(--border); }
+    td { padding: 0.5rem 0.8rem; border: 1px solid var(--border); vertical-align: top; }
+    tr:nth-child(even) td { background: #f7f7f7; }
+    .progress-bar { height: 6px; background: #e0e0e0; border-radius: 3px; margin-bottom: 2rem; }
+    .progress-bar-fill { height: 100%; width: 6%; background: var(--accent); border-radius: 3px; }
+    .cite { font-size: 0.82rem; color: var(--muted); font-family: system-ui, sans-serif; }
+
+    /* ── Quiz ── */
+    .question { background: #fff; border: 1px solid var(--border); border-radius: 6px; padding: 1.2rem 1.4rem; margin-bottom: 1.4rem; }
+    .q-domain-tag { font-family: system-ui, sans-serif; font-size: 0.76rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); margin-bottom: 0.5rem; }
+    .question p { margin-bottom: 0.9rem; font-weight: bold; }
+    .options { list-style: none; margin: 0; }
+    .options li { margin-bottom: 0.4rem; }
+    .options label {
+      display: flex; align-items: flex-start; gap: 0.6rem; cursor: pointer;
+      padding: 0.5rem 0.7rem; border-radius: 4px; border: 1px solid transparent;
+      transition: background 0.15s; font-family: system-ui, sans-serif; font-size: 0.95rem;
+    }
+    .options label:hover { background: var(--accent-light); border-color: #c0d4f8; }
+    .options input[type="radio"] { margin-top: 3px; flex-shrink: 0; }
+    .opt-correct label { background: var(--success-bg) !important; border-color: #a8d5b5 !important; }
+    .opt-wrong   label { background: var(--danger-bg)  !important; border-color: #f5b7b1 !important; }
+    .explanation {
+      margin-top: 0.8rem; padding: 0.65rem 0.9rem; background: #f4f4f4;
+      border-left: 3px solid #aaa; border-radius: 0 4px 4px 0;
+      font-family: system-ui, sans-serif; font-size: 0.9rem; display: none;
+    }
+    .explanation.show { display: block; }
+    .submit-btn {
+      background: var(--accent); color: #fff; border: none; border-radius: 6px;
+      padding: 0.75rem 2rem; font-size: 1rem; cursor: pointer;
+      font-family: system-ui, sans-serif; margin-top: 0.5rem; transition: background 0.15s;
+    }
+    .submit-btn:hover { background: #003fa0; }
+    .submit-btn:disabled { background: #999; cursor: not-allowed; }
+
+    /* ── Results ── */
+    #results-summary { display: none; margin-top: 2.5rem; }
+    .score-banner { text-align: center; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; font-family: system-ui, sans-serif; border: 1px solid var(--border); }
+    .score-number { font-size: 3rem; font-weight: 700; line-height: 1; }
+    .score-label { font-size: 1rem; color: var(--muted); margin-top: 0.3rem; }
+
+    /* ── Nav ── */
+    .nav-links {
+      margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
+      font-family: system-ui, sans-serif; font-size: 0.9rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;
+    }
+    .ask-teacher {
+      margin-top: 2.5rem; padding: 1rem 1.2rem; background: #f0f7ff; border: 1px solid #b3d4f5;
+      border-radius: 6px; font-family: system-ui, sans-serif; font-size: 0.9rem;
+    }
+    .ask-teacher strong { display: block; margin-bottom: 0.3rem; }
+
+    /* ── Glossary term tooltip ── */
+    .g { border-bottom: 1px dotted var(--accent); cursor: help; color: inherit; text-decoration: none; position: relative; }
+    .g:hover::after {
+      content: attr(data-tip); position: absolute; bottom: 125%; left: 50%; transform: translateX(-50%);
+      background: #1a1a1a; color: #fff; padding: 0.4rem 0.65rem; border-radius: 4px; font-size: 0.8rem;
+      white-space: normal; max-width: 280px; z-index: 10; font-family: system-ui, sans-serif; pointer-events: none; line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="progress-bar"><div class="progress-bar-fill"></div></div>
+
+  <h1>Building a Security Assessment and Testing Program</h1>
+  <p style="font-size:1.15rem; color:var(--muted); font-family:system-ui,sans-serif; margin-bottom:0.5rem;">
+    Turning ad-hoc tests into a governed, continuous programme
+  </p>
+  <div class="meta">
+    <span>🎯 Current Focus — Domain 6</span>
+    <span>⏱ ~40 min</span>
+    <span>🗓 Lesson 0001 · Domain 6, Ch 15</span>
+  </div>
+
+  <div class="callout">
+    <strong>Lesson goal:</strong> Understand what a formal <a href="../../reference/glossary.html#security-assessment-program" class="g" data-tip="A governed, recurring programme of security assessments and tests — driven by policy, not ad-hoc requests.">Security Assessment and Testing Program (SATP)</a> is, why it must be policy-driven rather than reactive, how it differs from a single <a href="../../reference/glossary.html#security-assessment" class="g" data-tip="A structured, time-bounded evaluation of whether controls are present, effective, and appropriately implemented.">security assessment</a>, and the landscape of test/audit types you'll build the programme from. This lesson sets up the map for the five sub-topic lessons that follow (vulnerability assessment, software testing, training &amp; exercises, security management processes, process data collection).
+  </div>
+
+  <div class="callout warn">
+    <strong>⚠️ CISSP mindset check:</strong> The exam does not test "how do I run an nmap scan." It tests whether you, as a <em>manager of security</em>, can design a programme that produces reliable, repeatable, auditable evidence of control effectiveness — and know which test type answers which question.
+  </div>
+
+  <!-- ─────────────────────────────────────────────────
+       SECTION 1: From one assessment to a programme
+  ───────────────────────────────────────────────── -->
+  <h2>1. From a Single Assessment to a Programme</h2>
+
+  <p><a href="../domain-1-security-and-risk-management/0001-risk-management-foundations.html">Lesson 0001 (Domain 1)</a> established that a security assessment is a point-in-time input that feeds the Assess step of the continuous risk management lifecycle. A <strong>Security Assessment and Testing Program (SATP)</strong> is the governance layer that turns those one-off inputs into a reliable, recurring stream of evidence:</p>
+
+  <div class="mermaid" id="satp-overview">
+graph LR
+    POL["📜 Policy<br/>What must be tested,<br/>how often, by whom"]
+    SCOPE["🎯 Scope &amp; Cadence<br/>Systems, frequency,<br/>trigger events"]
+    EXEC["🔬 Execute<br/>Assessments &amp; Tests"]
+    FIND["📋 Findings"]
+    RISK["🛡️ Risk Management<br/>Lifecycle (Assess step)"]
+    REPORT["📊 Report to<br/>Leadership / Audit Committee"]
+
+    POL --> SCOPE --> EXEC --> FIND --> RISK
+    FIND --> REPORT
+    REPORT -.->|"informs next cycle's scope"| POL
+
+    classDef fw fill:#e8f0fe,stroke:#0050c8,color:#1a1a1a
+    class POL,SCOPE fw
+  </div>
+
+  <p>Three things distinguish a programme from ad-hoc testing:</p>
+  <ul>
+    <li><strong>Policy-driven, not request-driven.</strong> The programme defines mandatory tests (e.g. annual penetration test, quarterly vulnerability scans) rather than waiting for someone to ask for one.</li>
+    <li><strong>Governed cadence.</strong> Frequency is tied to risk tier, regulatory requirement, and change velocity — not convenience.</li>
+    <li><strong>Closed feedback loop.</strong> Findings must reach leadership/the audit committee and feed back into scope for the next cycle — an assessment whose findings vanish into a ticket queue is not part of a programme.</li>
+  </ul>
+
+  <!-- ─────────────────────────────────────────────────
+       SECTION 2: Audit types
+  ───────────────────────────────────────────────── -->
+  <h2>2. Audit Types: Who Is Looking, and Why It Matters</h2>
+
+  <p>The exam frequently tests whether you can identify which <a href="../../reference/glossary.html#audit-types" class="g" data-tip="Internal audits are performed by employees for management; external/independent audits are performed by a disinterested third party, often for a specific standard (e.g. SOC 2, ISO 27001).">audit type</a> is being described and why its independence level matters:</p>
+
+  <table>
+    <tr><th>Audit Type</th><th>Performed By</th><th>Primary Audience</th><th>Independence</th></tr>
+    <tr><td>Internal Audit</td><td>Employees (internal audit function)</td><td>Management, internal risk committee</td><td>Lowest — reports to the same organisation being audited</td></tr>
+    <tr><td>External / Independent Audit</td><td>Outside audit firm</td><td>Board, regulators, customers</td><td>High — contractually and professionally independent</td></tr>
+    <tr><td>Third-Party Audit</td><td>Auditor hired to evaluate a <em>supplier/vendor</em>, not your own org</td><td>Your organisation (as the customer)</td><td>High — evaluates someone else's controls on your behalf</td></tr>
+    <tr><td>Regulatory / Statutory Audit</td><td>Government or industry regulator</td><td>Regulator, public</td><td>Highest — mandated by law, non-negotiable scope</td></tr>
+  </table>
+
+  <p>A concrete artefact you'll encounter constantly in consultation work is the <a href="../../reference/glossary.html#soc-2" class="g" data-tip="A SOC 2 report attests to a service organization's controls against the Trust Services Criteria. Type I = controls exist at a point in time; Type II = controls operated effectively over a period (usually 6–12 months).">SOC 2 report</a>: Type I attests controls exist at a point in time, Type II attests they operated effectively over a period — the CISSP loves testing this exact distinction.</p>
+
+  <!-- ─────────────────────────────────────────────────
+       SECTION 3: Test types landscape
+  ───────────────────────────────────────────────── -->
+  <h2>3. The Test-Type Landscape</h2>
+
+  <p>Chapter 15 groups tests by <em>what they evaluate</em> and <em>from what perspective</em>. This lesson maps the landscape; the next two lessons (vulnerability assessment, software testing) go deep on the technical mechanics.</p>
+
+  <table>
+    <tr><th>Test Type</th><th>Evaluates</th><th>Typical Output</th></tr>
+    <tr><td><a href="../../reference/glossary.html#vulnerability-assessment" class="g" data-tip="An automated or manual evaluation that identifies known weaknesses in systems and configurations.">Vulnerability Assessment</a></td><td>Known weaknesses in systems/configs</td><td>Prioritised list, often with CVSS scores</td></tr>
+    <tr><td><a href="../../reference/glossary.html#pen-test" class="g" data-tip="A structured, authorised simulation of an adversarial attack to determine whether vulnerabilities are exploitable.">Penetration Test</a></td><td>Whether vulnerabilities are actually exploitable</td><td>Attack narrative + proof-of-concept exploits</td></tr>
+    <tr><td>Log Review</td><td>Historical evidence of anomalous or malicious activity</td><td>Incident indicators, control-gap evidence</td></tr>
+    <tr><td>Synthetic Transactions</td><td>Whether a system behaves correctly under simulated real user activity</td><td>Availability/functional-correctness evidence</td></tr>
+    <tr><td>Code Review</td><td>Source code for insecure patterns</td><td>Defect list mapped to code location</td></tr>
+    <tr><td>Misuse Case Testing</td><td>How the system behaves under deliberate abuse, not just intended use</td><td>Abuse-path findings</td></tr>
+    <tr><td>Interface Testing</td><td>APIs, UIs, and physical interfaces for unexpected behaviour</td><td>Boundary/input-handling defects</td></tr>
+    <tr><td><a href="../../reference/glossary.html#bas" class="g" data-tip="Automated, continuous simulation of adversary techniques (often mapped to MITRE ATT&CK) against production or production-like environments to validate detective/preventive controls.">Breach and Attack Simulation (BAS)</a></td><td>Whether detective/preventive controls actually fire</td><td>Control-validation scorecard, often continuous</td></tr>
+  </table>
+
+  <p>Penetration tests are further classified by testing perspective: <a href="../../reference/glossary.html#black-box" class="g" data-tip="Tester has no prior knowledge of the target system. Simulates an external attacker's perspective.">black-box</a> (no prior knowledge — simulates an external attacker), <a href="../../reference/glossary.html#white-box" class="g" data-tip="Tester has full access to source code, architecture diagrams, and database schemas. Also called crystal-box testing.">white-box</a> (full knowledge, including source/architecture — simulates a malicious insider or thorough audit), and <a href="../../reference/glossary.html#gray-box" class="g" data-tip="Tester has partial knowledge of the target (e.g. some architecture diagrams or credentials). The most common configuration for web application assessments.">gray-box</a> (partial knowledge — the most common real-world engagement, e.g. starting from a compromised low-privilege account). A security architect should specify perspective explicitly in every statement of work — it changes both cost and what the test can actually prove.</p>
+
+  <!-- ─────────────────────────────────────────────────
+       SECTION 4: In your work
+  ───────────────────────────────────────────────── -->
+  <h2>4. 🔧 In Your Work</h2>
+
+  <div class="callout work">
+    <strong>🔧 Threat modeling connection:</strong> Your threat models identify <em>candidate</em> attack paths through structured brainstorming. A penetration test or BAS engagement is how you get empirical evidence on whether those candidate paths are <em>actually exploitable</em> in the deployed system — treat threat-modeling output as a prioritisation input for what to scope into the next test cycle, and treat test findings as feedback that should update the threat model itself.
+  </div>
+
+  <div class="callout work">
+    <strong>🔧 Risk assessment connection:</strong> When a client asks for a "security assessment," the first job is disambiguation: do they need a vulnerability assessment (breadth, automated), a penetration test (depth, exploit-driven), a controls audit (compliance-driven), or a full risk assessment (business-impact-driven)? Naming the wrong instrument wastes budget and produces evidence that doesn't answer the actual risk question.
+  </div>
+
+  <div class="callout work">
+    <strong>🔧 Consultation connection:</strong> When advising a client on programme maturity, the SOC 2 Type I vs. Type II distinction is a fast maturity signal — Type I says "we designed controls," Type II says "we ran them and they held up." Push clients toward Type II (or equivalent continuous evidence, like BAS) whenever the finding needs to survive board or regulator scrutiny.
+  </div>
+
+  <!-- ─────────────────────────────────────────────────
+       SECTION 5: AI Cross-Domain Callout
+  ───────────────────────────────────────────────── -->
+  <h2>5. ⚠️ AI in Domain 6 — Assessing AI Systems, and AI-Assisted Assessment</h2>
+
+  <p>Per ISC2's April 2026 AI exam guidance, Domain 6 now has two distinct AI angles that the exam can test independently — read both carefully, they are not the same idea:</p>
+
+  <div class="callout ai">
+    <strong>🤖 AI as an assessment target</strong><br/>
+    When the system under test <em>is</em> an AI/ML system, standard test types need AI-specific variants: adversarial testing (crafted inputs to cause misclassification), model extraction/inversion testing (can an attacker steal the model or its training data via queries?), and red-teaming for prompt injection / jailbreaks in LLM-based applications. These sit alongside — not instead of — conventional vulnerability assessment and pen testing of the surrounding infrastructure.
+  </div>
+
+  <div class="callout ai">
+    <strong>🤖 AI as an assessment tool</strong><br/>
+    AI-assisted triage (ranking vulnerability-scan output by exploitability), LLM-driven pen-test copilots, and automated code-review assistants are increasingly part of the assessment programme's tooling itself. The governance question the exam cares about: who validates the AI tool's findings before they're reported to leadership? An unvalidated AI-generated finding is not yet evidence — treat it the same way you'd treat an untrusted input, per the <a href="../0002-ai-security-primer.html">AI Security Primer (Lesson 0002)</a>.
+  </div>
+
+  <p class="cite">See <a href="../0002-ai-security-primer.html">Lesson 0002 — AI Security Primer</a> for foundational AI risk vocabulary. D6 AI exam heat: 🔴 Moderate (verify against the official ISC2 guidance PDF in <code>RESOURCES.md</code> — not yet locally cached in this workspace).</p>
+
+  <!-- ─────────────────────────────────────────────────
+       SECTION 6: Architect Lens
+  ───────────────────────────────────────────────── -->
+  <h2>6. The Architect's Lens</h2>
+
+  <div class="callout key">
+    <strong>Why a security architect must own the assessment programme's design, not just its findings:</strong><br/>
+    Architects are frequently the ones who decide <em>what</em> gets tested and <em>how deep</em> — because they understand the system's trust boundaries better than a generic pentest firm's initial scoping call. Owning programme design means:
+    <ul style="margin-top:0.5rem; margin-left:1.2rem;">
+      <li>Mapping test scope to actual trust boundaries and data flows, not just asset inventories</li>
+      <li>Choosing black/white/gray-box perspective deliberately, based on the threat actor you're validating against</li>
+      <li>Ensuring findings close the loop back into the risk register and threat model — not just a remediation ticket</li>
+      <li>Recognising when a compliance-driven audit (SOC 2, ISO 27001) is necessary but not sufficient evidence of real-world resilience</li>
+    </ul>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────
+       SECTION 7: Retrieval Practice
+  ───────────────────────────────────────────────── -->
+  <h2>7. Retrieval Practice</h2>
+
+  <p>Three questions — all scenario-based, all CISSP manager-mindset style. Submit all answers before results are revealed.</p>
+
+  <div id="quiz-form">
+
+    <!-- Q1 -->
+    <div class="question" id="q1">
+      <div class="q-domain-tag">D6 — Audit Types</div>
+      <p>A SaaS vendor provides your organisation with a report attesting that its access-control and change-management controls operated effectively over the past 12 months, issued by an independent CPA firm. What is this MOST likely to be?</p>
+      <ul class="options">
+        <li><label><input type="radio" name="q1" value="a"/> An internal audit report</label></li>
+        <li><label><input type="radio" name="q1" value="b"/> A SOC 2 Type II report</label></li>
+        <li><label><input type="radio" name="q1" value="c"/> A SOC 2 Type I report</label></li>
+        <li><label><input type="radio" name="q1" value="d"/> A penetration test report</label></li>
+      </ul>
+      <div class="explanation" id="exp1">
+        <strong>Correct: B.</strong> "Operated effectively over the past 12 months" is the defining phrase for Type II (a period of time, with operating effectiveness evidence). Type I only attests controls existed/were designed at a single point in time. It's issued by an independent CPA firm, not internal staff, ruling out A. It's a controls attestation, not an exploit-driven engagement, ruling out D.
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="question" id="q2">
+      <div class="q-domain-tag">D6 — Test Perspective</div>
+      <p>A client wants to know whether a real external attacker, with no insider knowledge or credentials, could compromise their public-facing application. Which test perspective should be specified in the statement of work?</p>
+      <ul class="options">
+        <li><label><input type="radio" name="q2" value="a"/> White-box</label></li>
+        <li><label><input type="radio" name="q2" value="b"/> Gray-box</label></li>
+        <li><label><input type="radio" name="q2" value="c"/> Black-box</label></li>
+        <li><label><input type="radio" name="q2" value="d"/> Internal audit</label></li>
+      </ul>
+      <div class="explanation" id="exp2">
+        <strong>Correct: C.</strong> Black-box testing simulates an attacker with no prior knowledge of the system's internals — exactly the scenario described (no insider knowledge, no credentials). White-box gives the tester full internal knowledge (useful for thorough code-level review, not this scenario). Gray-box starts from partial knowledge/limited access. An internal audit is a compliance-governance activity, not an attack simulation.
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question" id="q3">
+      <div class="q-domain-tag">D6 — Programme vs. Assessment</div>
+      <p>A newly appointed security architect discovers that penetration tests only happen when a customer contractually demands one, with no defined scope standard, cadence, or reporting path to leadership. What is the MOST important first step to fix this?</p>
+      <ul class="options">
+        <li><label><input type="radio" name="q3" value="a"/> Immediately schedule the most comprehensive penetration test possible</label></li>
+        <li><label><input type="radio" name="q3" value="b"/> Draft and get leadership approval for a security assessment and testing policy defining mandatory scope, cadence, and reporting</label></li>
+        <li><label><input type="radio" name="q3" value="c"/> Hire an additional pentest vendor to increase testing frequency</label></li>
+        <li><label><input type="radio" name="q3" value="d"/> Wait until the next customer contractually requires a test</label></li>
+      </ul>
+      <div class="explanation" id="exp3">
+        <strong>Correct: B.</strong> The root problem is governance, not volume of testing — there's no programme, only reactive, contract-driven testing. Per the CISSP "what should be done FIRST" mindset, you fix the policy/governance gap before running more tests, otherwise you're still just reacting. A and C add more of the same ad-hoc activity without fixing the underlying gap. D preserves the broken status quo.
+      </div>
+    </div>
+
+    <button class="submit-btn" id="submit-btn" onclick="submitQuiz()">Submit answers</button>
+
+  </div>
+
+  <div id="results-summary">
+    <div class="score-banner" id="score-banner">
+      <div class="score-number" id="score-number"></div>
+      <div class="score-label" id="score-label"></div>
+    </div>
+    <div id="score-recommendation"></div>
+  </div>
+
+  <!-- ── Ask the teacher ── -->
+  <div class="ask-teacher">
+    <strong>💬 Ask a follow-up</strong>
+    Scoping a real assessment or reviewing a vendor's SOC 2 report right now? Bring the specifics — audit type, test perspective, or how a finding should feed back into a risk register — and we'll work through it against this framework.
+  </div>
+
+  <!-- ── Nav ── -->
+  <div class="nav-links">
+    <a href="../domain-1-security-and-risk-management/0001-risk-management-foundations.html">← Lesson D1/0001: Risk Management Foundations</a>
+    <span>
+      <a href="../../reference/glossary.html">📖 Glossary</a>
+      &nbsp;·&nbsp;
+      <a href="#">Lesson D6/0002: Performing Vulnerability Assessments →</a>
+    </span>
+  </div>
+
+  <!-- ─────────────────────────────────────────────────
+       Mermaid init
+  ───────────────────────────────────────────────── -->
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: true,
+      securityLevel: 'loose',
+      theme: 'base',
+      themeVariables: {
+        primaryColor: '#e8f0fe',
+        primaryTextColor: '#1a1a1a',
+        primaryBorderColor: '#0050c8',
+        lineColor: '#0050c8',
+        secondaryColor: '#f3f0ff',
+        tertiaryColor: '#fafafa'
+      }
+    });
+  </script>
+
+  <!-- ─────────────────────────────────────────────────
+       Quiz logic
+  ───────────────────────────────────────────────── -->
+  <script>
+    const answers = { q1: 'b', q2: 'c', q3: 'b' };
+
+    function submitQuiz() {
+      let score = 0;
+      const total = Object.keys(answers).length;
+      let unanswered = [];
+
+      for (const [qid, correct] of Object.entries(answers)) {
+        const selected = document.querySelector(`input[name="${qid}"]:checked`);
+        if (!selected) { unanswered.push(qid); continue; }
+
+        const allOpts = document.querySelectorAll(`input[name="${qid}"]`);
+        allOpts.forEach(opt => {
+          const li = opt.closest('li');
+          if (opt.value === correct) li.className = 'opt-correct';
+          else if (opt.checked)      li.className = 'opt-wrong';
+        });
+
+        const exp = document.getElementById('exp' + qid.slice(1));
+        if (exp) exp.classList.add('show');
+
+        if (selected.value === correct) score++;
+      }
+
+      if (unanswered.length > 0) {
+        alert(`Please answer all questions before submitting. Missing: ${unanswered.join(', ').toUpperCase()}`);
+        return;
+      }
+
+      document.querySelectorAll('.options input').forEach(i => i.disabled = true);
+      document.getElementById('submit-btn').disabled = true;
+
+      const pct = Math.round((score / total) * 100);
+      const banner = document.getElementById('score-banner');
+      const numEl  = document.getElementById('score-number');
+      const lblEl  = document.getElementById('score-label');
+      const recEl  = document.getElementById('score-recommendation');
+
+      numEl.textContent = `${score}/${total}`;
+      lblEl.textContent = `${pct}% — Building a Security Assessment and Testing Program`;
+      document.getElementById('results-summary').style.display = 'block';
+
+      if (pct >= 75) {
+        banner.style.background = '#e6f4ea';
+        banner.style.borderColor = '#a8d5b5';
+        recEl.innerHTML = `<div class="callout key"><strong>✅ Solid foundation.</strong> You have the programme-vs-assessment distinction and the audit/test-type vocabulary right. Move on to the next D6 lesson: Performing Vulnerability Assessments.</div>`;
+      } else if (pct >= 50) {
+        banner.style.background = '#fffbea';
+        banner.style.borderColor = '#f0c040';
+        recEl.innerHTML = `<div class="callout warn"><strong>⚠️ Partial grasp.</strong> Re-read Sections 2–3 (audit types, test-type landscape) — these vocabulary distinctions are exam-favourite traps. Re-attempt after reviewing.</div>`;
+      } else {
+        banner.style.background = '#fdecea';
+        banner.style.borderColor = '#f5b7b1';
+        recEl.innerHTML = `<div class="callout danger"><strong>🔁 Review recommended.</strong> Re-read Sections 1–3 carefully, focusing on: (1) programme vs. single assessment, (2) the four audit types, and (3) black/white/gray-box test perspective.</div>`;
+      }
+    }
+  </script>
+
+</body>
+</html>

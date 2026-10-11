@@ -25,7 +25,7 @@ This repo contains self-contained teaching workspaces. Each has:
 `cissp-course/lessons/` is organized by the 8 official CISSP domains, not flat:
 - Domain-specific lessons live in `lessons/domain-N-<official-domain-name>/` (kebab-case, e.g. `domain-1-security-and-risk-management/`). Only create a domain folder once it has its first lesson.
 - Cross-domain lessons (covering all 8 domains, e.g. the diagnostic and AI primer) stay directly in `lessons/` root, not inside any domain folder.
-- Lesson numbers stay globally sequential across the whole course regardless of which folder they land in — numbers reflect creation order, not position within a domain.
+- Lesson numbers are **scoped per folder**, not global to the course: cross-domain `lessons/` root and each `domain-N-.../` folder each restart their own sequence at `0001`. A lesson's number reflects its position within its own folder only — the same number (e.g. `0001`) legitimately appears once per folder across the course.
 - Each populated domain folder **must** have its own `index.html` containing a Mermaid diagram that maps how that domain's lesson concepts relate to and build on each other, plus a linked list of the domain's lessons.
 - Concept maps are **full-skeleton, not lesson-scoped**: show every chapter/sub-topic from the study guide's table of contents for that domain (see `RESOURCES.md`/`MISSION.md` for the chapter range per domain), not just what's been taught. Render covered topics as solid/colored/clickable nodes linking to their lesson; render not-yet-covered topics as dashed/grey, unlinked nodes. This keeps the map an honest picture of true exam scope instead of silently looking complete. Hardcode the skeleton directly into the domain's `index.html` — no separate manifest file.
 

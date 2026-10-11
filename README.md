@@ -12,7 +12,9 @@ CISSP (Certified Information Systems Security Professional) certification prep, 
     - 0001: Domain Map & Diagnostic
     - 0002: AI Security Primer
   - **domain-1-security-and-risk-management/** - each populated domain folder has its own `index.html` with a Mermaid concept map
-    - 0003: Risk Management Foundations — D1, Ch 1–2
+    - 0001: Risk Management Foundations — D1, Ch 1–2
+  - **domain-6-security-assessment-and-testing/** - prioritized ahead of original phase order (see `MISSION.md` Current Focus) for direct relevance to current work
+    - 0001: Building a Security Assessment and Testing Program — D6, Ch 15
 
 - **reference/** - Supporting reference materials
   - Glossary (with per-term domain tags and lesson cross-references)
